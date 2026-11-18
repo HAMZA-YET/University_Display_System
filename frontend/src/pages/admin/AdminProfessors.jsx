@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import PageHeader from '../../components/layout/PageHeader';
 import Table from '../../components/ui/Table';
 import Button from '../../components/ui/Button';
@@ -79,13 +80,14 @@ export default function AdminProfessors() {
       <PageHeader
         title="Manage professors"
         actions={
-          <Button icon="plus" onClick={() => setEditing({})}>
+          <Button icon="plus" disabled={!departments.length} onClick={() => setEditing({})}>
             Add professor
           </Button>
         }
       />
       <div className="stack">
         {flash && <Alert type="success">{flash}</Alert>}
+        {!departments.length && <Alert type="info">Add a department before creating a professor profile. <Link to="/admin/departments">Manage departments</Link></Alert>}
         <div className="grid grid-2">
           <Input label="Search by name or subject" type="search" value={q} onChange={(e) => setQ(e.target.value)} />
           <Select label="Department" value={params.department} onChange={(e) => setParams({ department: e.target.value })} placeholder="All departments" options={departments.map((d) => ({ value: d.code, label: d.name }))} />

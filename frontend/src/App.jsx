@@ -22,6 +22,7 @@ import ReviewNotice from './pages/reviewer/ReviewNotice';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminProfessors from './pages/admin/AdminProfessors';
 import AdminUsers from './pages/admin/AdminUsers';
+import AdminDepartments from './pages/admin/AdminDepartments';
 import DomainEvents from './pages/admin/DomainEvents';
 import Member4Routes from './member4/Member4Routes';
 
@@ -69,6 +70,7 @@ export default function App() {
             <Route element={<ProtectedRoute roles={['ADMIN']} />}>
               <Route path="/admin" element={<AdminDashboard />} />
               <Route path="/admin/professors" element={<AdminProfessors />} />
+              <Route path="/admin/departments" element={<AdminDepartments />} />
               <Route path="/admin/users" element={<AdminUsers />} />
             </Route>
 

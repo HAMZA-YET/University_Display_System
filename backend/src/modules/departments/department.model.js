@@ -5,9 +5,9 @@ const schemaOptions = require('../../utils/schemaOptions');
 
 const departmentSchema = new mongoose.Schema(
   {
-    code: { type: String, required: true, unique: true, uppercase: true, trim: true },
-    name: { type: String, required: true, trim: true },
-    displayOrder: { type: Number, default: 0 },
+    code: { type: String, required: true, unique: true, uppercase: true, trim: true, immutable: true, match: /^[A-Z]{2,10}$/ },
+    name: { type: String, required: true, trim: true, minlength: 2, maxlength: 160 },
+    displayOrder: { type: Number, default: 0, min: 0, max: 10000, validate: Number.isInteger },
   },
   schemaOptions
 );

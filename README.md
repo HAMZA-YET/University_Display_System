@@ -56,4 +56,4 @@ Health endpoints:
 
 ## Application routes
 
-Public routes include `/`, `/notices`, `/notices/:id`, `/events`, `/professors` and `/search`. Accounts use `/login` and `/register`. Signed-in members use `/saved-interests` and `/notifications`. Author, reviewer and administrator routes require server-verified roles. Source visibility is rechecked when opening saved notices, attachments and notifications; withdrawing a notice removes access through those entry points too.
+Public routes include `/`, `/notices`, `/notices/:id`, `/events`, `/professors` and `/search`. Accounts use `/login` and `/register`. Signed-in members use `/saved-interests` and `/notifications`. Administrators can add real department definitions at `/admin/departments` before creating professors or department-specific notices. Author, reviewer and administrator routes require server-verified roles. Source visibility is rechecked when opening saved notices, attachments and notifications; withdrawing a notice removes access through those entry points too.

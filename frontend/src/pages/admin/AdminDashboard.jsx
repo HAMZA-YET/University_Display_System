@@ -25,6 +25,9 @@ export default function AdminDashboard() {
             <Button variant="secondary" to="/admin/professors" icon="book">
               Professors
             </Button>
+            <Button variant="secondary" to="/admin/departments" icon="building">
+              Departments
+            </Button>
           </>
         }
       />

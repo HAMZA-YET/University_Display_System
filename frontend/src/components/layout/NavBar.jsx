@@ -87,6 +87,7 @@ export default function NavBar() {
                 Admin Dashboard
               </NavLink>
               <NavLink to="/admin/professors">Manage Professors</NavLink>
+              <NavLink to="/admin/departments">Departments</NavLink>
               <NavLink to="/admin/users">Users</NavLink>
             </>
           )}
