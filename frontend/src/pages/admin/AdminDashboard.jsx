@@ -7,6 +7,7 @@ import useApi from '../../hooks/useApi';
 import { adminSummary } from '../../api/users';
 import { formatDateTime } from '../../lib/time';
 import { humanize } from '../../lib/labels';
+import SampleContentPanel from '../../components/admin/SampleContentPanel';
 
 const ORDER = ['DRAFT', 'SUBMITTED', 'RETURNED', 'REJECTED', 'SCHEDULED', 'PUBLISHED', 'EXPIRED', 'WITHDRAWN', 'ARCHIVED'];
 
@@ -16,7 +17,7 @@ export default function AdminDashboard() {
     <>
       <PageHeader
         title="Admin dashboard"
-        description="Counts are computed live from the publication window (no background job)."
+        description="Manage your campus information, people, and publishing activity."
         actions={
           <>
             <Button variant="secondary" to="/admin/users" icon="user">
@@ -31,6 +32,7 @@ export default function AdminDashboard() {
           </>
         }
       />
+      <SampleContentPanel onInstalled={result.reload} />
       <DataState {...result} onRetry={result.reload}>
         {(d) => (
           <div className="stack">

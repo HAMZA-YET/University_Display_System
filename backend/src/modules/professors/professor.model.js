@@ -19,6 +19,7 @@ const slotSchema = new mongoose.Schema(
 
 const professorSchema = new mongoose.Schema(
   {
+    sampleContentKey: { type: String, immutable: true, select: false },
     name: { type: String, required: true, trim: true, minlength: 2, maxlength: 100 },
     titlePrefix: { type: String, trim: true, maxlength: 20, default: null },
     department: { type: String, required: true },

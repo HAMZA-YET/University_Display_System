@@ -24,13 +24,14 @@ export function InitialsAvatar({ name, size = 72 }) {
 }
 
 export default function ProfessorCard({ professor, departmentName }) {
-  const [imgFailed, setImgFailed] = useState(false);
+  const [failedSource, setFailedSource] = useState(null);
   const fullName = [professor.titlePrefix, professor.name].filter(Boolean).join(' ');
+  const illustrated = professor.profileImage?.startsWith('/assets/avatars/');
   return (
     <article className="prof-card">
       <div className="prof-head">
-        {professor.profileImage && !imgFailed ? (
-          <img className="prof-photo" src={professor.profileImage} alt={`Photo of ${fullName}`} onError={() => setImgFailed(true)} />
+        {professor.profileImage && professor.profileImage !== failedSource ? (
+          <img className="prof-photo" src={professor.profileImage} alt={`${illustrated ? 'Illustration for' : 'Photo of'} ${fullName}`} loading="lazy" width="72" height="72" onError={() => setFailedSource(professor.profileImage)} />
         ) : (
           <InitialsAvatar name={professor.name} />
         )}
@@ -38,6 +39,7 @@ export default function ProfessorCard({ professor, departmentName }) {
           <h3>{fullName}</h3>
           <div className="small">{humanize(professor.position)}</div>
           <div className="small muted">{departmentName || professor.department}</div>
+          {/\(Demo\)\s*$/i.test(professor.name) && <span className="sample-badge">Fictional sample profile</span>}
         </div>
       </div>
       <dl>

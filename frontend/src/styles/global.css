@@ -4,7 +4,6 @@
 *::before,
 *::after {
   box-sizing: border-box;
-  border-radius: 0 !important; /* Zero border radius on every element. */
 }
 
 html {
@@ -40,7 +39,9 @@ a:hover { color: var(--color-primary); }
   outline-offset: 2px;
 }
 
-* { transition: none !important; animation: none !important; } /* No decorative animation. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}
 
 .visually-hidden {
   position: absolute !important;

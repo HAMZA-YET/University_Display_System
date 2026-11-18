@@ -82,7 +82,7 @@ async function syncInbox(user) {
   const since = new Date(Math.max(p.deliverySince.getTime(), Math.min(...follows.map((f) => f.createdAt.getTime()))));
   // Stream authentic publishing events rather than trusting caller-supplied events.
   // Scheduled approvals are reconsidered after their publication start, without an external worker.
-  const candidates = DomainEvent.find({ type: { $in: NOTIFICATION_TYPES }, $or: [{ timestamp: { $gte: since } }, { type: 'NOTICE_SCHEDULED', 'payload.publicationStart': { $gte: since } }] }).sort({ timestamp: 1, _id: 1 }).lean().cursor();
+  const candidates = DomainEvent.find({ 'payload.sample': { $ne: true }, type: { $in: NOTIFICATION_TYPES }, $or: [{ timestamp: { $gte: since } }, { type: 'NOTICE_SCHEDULED', 'payload.publicationStart': { $gte: since } }] }).sort({ timestamp: 1, _id: 1 }).lean().cursor();
   for await (const event of candidates) {
     const occurredAt = event.type === 'NOTICE_SCHEDULED' ? new Date(event.payload.publicationStart) : event.timestamp;
     if (!Number.isFinite(occurredAt.getTime()) || occurredAt < since || occurredAt > clock.now()) continue;

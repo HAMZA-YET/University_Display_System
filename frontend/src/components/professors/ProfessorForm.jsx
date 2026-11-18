@@ -54,7 +54,7 @@ export default function ProfessorForm({ professor, departments, onSave, onCancel
     if (!values.officeBuilding.trim()) e.officeBuilding = 'Office building is required';
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email.trim())) e.email = 'Email format is not valid';
     if (values.phone && !/^\+?[0-9][0-9 ()-]{6,19}$/.test(values.phone.trim())) e.phone = 'Phone number format is not valid';
-    if (values.profileImage && !/^https?:\/\//i.test(values.profileImage.trim())) e.profileImage = 'Use an http or https URL';
+    if (values.profileImage && !/^https?:\/\//i.test(values.profileImage.trim()) && !/^\/assets\/(?:[A-Za-z0-9_-]+\/)*[A-Za-z0-9_-]+\.(?:svg|png|jpe?g|webp)$/i.test(values.profileImage.trim())) e.profileImage = 'Use an http or https URL, or a local /assets/ image path';
     if (values.subjects.length < 1) e.subjects = 'Add at least one subject';
     if (Object.keys(findSlotProblems(values.counsellingHours)).length) e.counsellingHours = 'Fix the counselling hours above';
     setErrors(e);
@@ -113,7 +113,7 @@ export default function ProfessorForm({ professor, departments, onSave, onCancel
         <Input label="Office building" required value={values.officeBuilding} onChange={set('officeBuilding')} error={errors.officeBuilding} />
         <Input label="Email" type="email" required value={values.email} onChange={set('email')} error={errors.email} />
         <Input label="Phone (optional)" type="tel" value={values.phone} onChange={set('phone')} error={errors.phone} />
-        <Input className="span-2" label="Profile image URL (optional)" type="url" value={values.profileImage} onChange={set('profileImage')} error={errors.profileImage} hint="Leave empty to show an initials placeholder." />
+        <Input className="span-2" label="Profile image URL (optional)" value={values.profileImage} onChange={set('profileImage')} error={errors.profileImage} hint="Use https or a local /assets/ image. Leave empty to show initials." />
         <div className="span-2">
           <SubjectsEditor value={values.subjects} onChange={(subjects) => setValues((v) => ({ ...v, subjects }))} error={errors.subjects} />
         </div>

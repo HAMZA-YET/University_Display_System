@@ -27,6 +27,7 @@ const scheduleChangeSchema = new Schema(
 
 const eventSchema = new Schema(
   {
+    sampleContentKey: { type: String, immutable: true, select: false },
     notice: { type: Schema.Types.ObjectId, ref: 'Notice', required: true },
     title: { type: String, required: true, trim: true, minlength: 3, maxlength: 150 },
     start: { type: Date, required: true },

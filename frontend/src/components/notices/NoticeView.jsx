@@ -17,6 +17,7 @@ export default function NoticeView({ notice, departments = {}, preview = false }
       <header>
         <div className="row" style={{ marginBottom: 'var(--space-3)' }}>
           <PriorityBadge priority={notice.priority} pinned={notice.pinned} />
+          {/\[(?:demo|sample)\]/i.test(notice.title) && <span className="sample-badge">Fictional sample notice</span>}
           {notice.category && <span className="tag">{humanize(notice.category)}</span>}
           <span className="tag">{deptName}</span>
           {notice.audience && <span className="tag">For: {humanize(notice.audience)}</span>}

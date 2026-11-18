@@ -25,6 +25,7 @@ const contentSnapshotSchema = new Schema(
 
 const revisionSchema = new Schema(
   {
+    sampleContentKey: { type: String, immutable: true, select: false },
     notice: { type: Schema.Types.ObjectId, ref: 'Notice', required: true },
     revisionNumber: { type: Number, required: true, min: 1 },
     kind: { type: String, enum: ['INITIAL', 'CORRECTION'], required: true },

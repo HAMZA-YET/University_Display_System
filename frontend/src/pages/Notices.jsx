@@ -17,7 +17,7 @@ export default function Notices() {
 
   return (
     <>
-      <PageHeader title="Notices" description="Pinned notices appear first, then by priority and publication date." />
+      <PageHeader title="Campus notices" description="Your place for university updates, opportunities, and announcements." />
       <FilterBar params={params} setParams={setParams} departments={departments} />
       <div aria-live="polite" className="small muted" style={{ margin: 'var(--space-3) 0' }}>
         {result.data && `${result.data.meta.total} notice${result.data.meta.total === 1 ? '' : 's'} found`}

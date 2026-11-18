@@ -16,6 +16,7 @@ const TYPES = [
 
 const domainEventSchema = new mongoose.Schema(
   {
+    sampleContentKey: { type: String, immutable: true, select: false },
     eventId: { type: String, required: true, unique: true },
     idempotencyKey: { type: String, required: true, unique: true },
     type: { type: String, enum: TYPES, required: true },

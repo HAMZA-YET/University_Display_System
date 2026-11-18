@@ -49,11 +49,11 @@ export default function Events() {
 
   return (
     <>
-      <PageHeader title="Events" description="Events always belong to a published notice. Times are shown in Korea Standard Time (Asia/Seoul)." />
+      <PageHeader title="Events & activities" description="Discover what's happening around campus. All times are shown in Korea Standard Time (Asia/Seoul)." />
       <div className="stack">
-        <div className="tabs" role="tablist" aria-label="Event state">
+        <div className="tabs" role="group" aria-label="Filter by event state">
           {TABS.map((t) => (
-            <button key={t.value} type="button" role="tab" aria-selected={state === t.value} onClick={() => setParams({ state: t.value })}>
+            <button key={t.value} type="button" aria-pressed={state === t.value} onClick={() => setParams({ state: t.value })}>
               {t.label}
             </button>
           ))}
@@ -88,6 +88,7 @@ export default function Events() {
             </div>
           </div>
         </div>
+        {view === 'month' && <p className="calendar-mobile-tip small muted">On a small screen? Switch to List for full event details.</p>}
         <DataState {...result} onRetry={result.reload}>
           {(d) => (view === 'month' ? <EventCalendar year={year} month={month} events={d.data} /> : <EventList events={d.data} />)}
         </DataState>

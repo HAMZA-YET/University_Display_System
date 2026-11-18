@@ -59,6 +59,7 @@ const profileImage = z
       .max(500)
       .url('Profile image must be a URL')
       .refine((u) => /^https?:\/\//i.test(u), 'Profile image must use http or https'),
+    z.string().regex(/^\/assets\/[A-Za-z0-9/_-]+\.(svg|webp|png|jpe?g)$/, 'Use a local /assets/ image path or an http(s) URL'),
     z.literal(''),
     z.null(),
   ])

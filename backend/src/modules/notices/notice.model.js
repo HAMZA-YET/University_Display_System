@@ -51,6 +51,7 @@ const publicSearchSchema = new Schema(
 
 const noticeSchema = new Schema(
   {
+    sampleContentKey: { type: String, immutable: true, select: false },
     // Working copy. Drafts may be incomplete; full validation runs at submit.
     title: { type: String, required: true, trim: true, minlength: 5, maxlength: 150 },
     summary: { type: String, trim: true, maxlength: 300, default: null },

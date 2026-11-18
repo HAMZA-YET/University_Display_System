@@ -14,6 +14,7 @@ const domainEvents = require('../domainEvents/domainEvent.service');
 const audit = require('../audit/audit.service');
 
 const router = express.Router();
+router.use('/sample-content', require('../sample-content/sampleContent.routes'));
 
 /** GET /api/admin/summary - data for the admin dashboard (computed live, D1). */
 router.get(
