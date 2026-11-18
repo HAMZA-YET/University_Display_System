@@ -7,11 +7,12 @@
     "dev": "nodemon --watch src src/server.js",
     "start": "node src/server.js",
     "seed": "node scripts/bootstrap-production.js",
-    "test": "jest --runInBand",
+    "test": "jest --runInBand && node --test tests/operator-sample-content.test.cjs",
     "smoke": "node scripts/smoke.js",
     "seed:development": "node src/seed/seed.js",
     "bootstrap:production": "node scripts/bootstrap-production.js",
-    "test:readiness": "jest --config jest.readiness.config.cjs --runInBand"
+    "test:readiness": "jest --config jest.readiness.config.cjs --runInBand",
+    "test:operator": "node --test tests/operator-sample-content.test.cjs"
   },
   "dependencies": {
     "@vercel/blob": "2.4.0",

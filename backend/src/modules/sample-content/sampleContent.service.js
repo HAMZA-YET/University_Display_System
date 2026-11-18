@@ -79,7 +79,7 @@ async function publishingEvent(type, entity, payload, session, administrator, ti
   }, session);
 }
 
-async function install(ctx) {
+async function install(ctx, { invocationSource = 'administrator-ui' } = {}) {
   return atomic(async (session, state) => {
     const baseline = state.baseDate || clock.now();
     const data = fixtures(ctx.user._id, baseline);
@@ -110,7 +110,9 @@ async function install(ctx) {
     }
     if (Object.values(created).some(Boolean)) await audit.record(ctx, {
       action: 'SAMPLE_CONTENT_INSTALLED', entityType: 'SAMPLE_CONTENT', entityId: SOURCE,
-      reason: 'Explicit administrator installation of labelled fictional demonstration content.',
+      reason: invocationSource === 'deployment-maintenance'
+        ? 'Operator-invoked deployment maintenance installed labelled fictional content. An existing active administrator was assigned as content owner; no browser session was used.'
+        : 'Explicit administrator installation of labelled fictional demonstration content.',
     }, session);
     return { ...(await status(session)), created };
   });

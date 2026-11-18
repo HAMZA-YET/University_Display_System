@@ -144,3 +144,15 @@ test('concurrent installs create one set of samples with no duplicate publicatio
   expect(await DomainEvent.countDocuments(mark)).toBe(20);
   expect(await AuditLog.countDocuments({ action: 'SAMPLE_CONTENT_INSTALLED' })).toBe(1);
 });
+
+test('trusted operator installation records maintenance provenance without pretending to use a browser session', async () => {
+  const administrator = await F.createUser('ADMIN');
+  const service = require('../src/modules/sample-content/sampleContent.service');
+  const result = await service.install({ user: administrator, requestId: 'operator-deployment-maintenance-sample-install', ip: null }, { invocationSource: 'deployment-maintenance' });
+  expect(result.created).toEqual(COUNTS);
+  const entry = await AuditLog.findOne({ action: 'SAMPLE_CONTENT_INSTALLED' }).lean();
+  expect(entry.reason).toContain('Operator-invoked deployment maintenance');
+  expect(entry.reason).toContain('no browser session was used');
+  expect(entry.requestId).toBe('operator-deployment-maintenance-sample-install');
+  expect(entry.ip).toBeNull();
+});
