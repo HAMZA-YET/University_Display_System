@@ -1,5 +1,9 @@
 # Integration requirements
 
+## Current integration
+
+The repository application now mounts Member 4 routes inside the shared Member 2 layout and React Router. Public search uses the server's notice and professor APIs. Member tools use authenticated API routes and MongoDB persistence. Synthetic identity selectors, event injection and visibility test switches are excluded from deployed routes. The earlier proposal below is retained as submission context; its instruction to leave the welcome-screen entry point unchanged no longer describes the integrated application.
+
 No existing repository file is changed. All added paths were absent from main at the reviewed base. Existing member placeholders may overlap by responsibility; this contribution deliberately leaves them untouched. The isolated member4 namespace is a review boundary, not a second application.
 
 ## Exact pending host changes (owner to perform)

@@ -1,20 +1,19 @@
-/* eslint no-unused-vars: ["error", {"varsIgnorePattern":"^[A-Z_]"}] */
-import PublicNotices from './discovery/PublicNotices.jsx';
+import { useLocation } from 'react-router-dom';
 import SearchPage from './search/SearchPage.jsx';
 import ItemsApp from './items/ItemsApp.jsx';
 import InboxApp from './notifications/InboxApp.jsx';
-import './styles.css';
-import './discovery/public.css';
-import './search/search.css';
-import './items/items.css';
-import './notifications/inbox.css';
+import SavedInterests from './items/SavedInterests.jsx';
+import UnavailableFeature from './components/UnavailableFeature.jsx';
 
-// Optional component for L's integration review. Does not mount or replace the team app.
-// Dependencies are explicitly mock-only; protected production endpoints stay disabled.
+// The host owns navigation and public notice/event/directory views.
+// Production routes never import synthetic adapters or fixtures.
 export default function Member4Routes() {
- const pathname=window.location.pathname;
- const inbox=/^\/notifications\/?$/.test(pathname);
- const items=/^\/items(?:\/|$)/.test(pathname)||pathname.startsWith('/saved-interests')||/^\/search-record\/(lost-|found-)/.test(pathname);
- const search=/^\/search\/?$/.test(pathname)||pathname.startsWith('/search-record/');
- return <div className="member4-root">{inbox?<InboxApp/>:items?<ItemsApp/>:search?<SearchPage/>:<PublicNotices/>}</div>;
+  const { pathname } = useLocation();
+  if (/^\/search\/?$/.test(pathname)) return <SearchPage />;
+  if (/^\/items(?:\/|$)/.test(pathname)) return <ItemsApp />;
+  if (/^\/notifications\/?$/.test(pathname)) return <InboxApp />;
+  if (/^\/saved-interests\/?$/.test(pathname)) {
+    return <SavedInterests />;
+  }
+  return <UnavailableFeature title="Information unavailable" message="This information is not available. You can search the connected public notices and professor directory." />;
 }

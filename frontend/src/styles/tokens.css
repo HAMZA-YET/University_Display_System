@@ -1,0 +1,78 @@
+/*
+ * Design tokens - sharp institutional style.
+ * Zero border radius everywhere. All text colours meet WCAG 2.1 AA (4.5:1)
+ * on the surface they are used on.
+ */
+:root {
+  /* Brand */
+  --color-primary: #0b2545;        /* deep navy, 15.2:1 on white */
+  --color-primary-hover: #13315c;
+  --color-primary-contrast: #ffffff;
+  --color-accent: #9a3412;         /* burnt orange accent, 7.0:1 on white */
+  --color-accent-soft: #fff4ed;
+
+  /* Surfaces */
+  --color-page: #f1f3f6;           /* light grey page background */
+  --color-surface: #ffffff;
+  --color-surface-alt: #f7f8fa;
+  --color-border: #c9ced6;
+  --color-border-strong: #8a93a3;
+
+  /* Text */
+  --color-text: #111827;           /* 17.7:1 on white */
+  --color-text-muted: #4b5563;     /* 7.6:1 on white */
+  --color-link: #0b4f9c;           /* 7.3:1 on white */
+
+  /* Feedback */
+  --color-danger: #a4161a;
+  --color-danger-soft: #fdecec;
+  --color-success: #166534;
+  --color-success-soft: #e9f7ee;
+  --color-warning: #8a4b00;
+  --color-warning-soft: #fff6e0;
+  --color-info: #1d4ed8;
+  --color-info-soft: #eaf0ff;
+
+  /* Status colours (always paired with a text label) */
+  --status-draft: #4b5563;
+  --status-submitted: #1d4ed8;
+  --status-returned: #8a4b00;
+  --status-rejected: #b91c1c;
+  --status-approved: #0f766e;
+  --status-scheduled: #4338ca;
+  --status-published: #166534;
+  --status-withdrawn: #7f1d1d;
+  --status-expired: #475569;
+  --status-archived: #111111;
+  --status-postponed: #8a4b00;
+  --status-cancelled: #b91c1c;
+  --status-completed: #475569;
+
+  /* Typography */
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.375rem;
+  --text-2xl: 1.75rem;
+  --text-3xl: 2.125rem;
+  --leading: 1.55;
+
+  /* Spacing */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+
+  /* Shape */
+  --radius: 0;
+  --border-width: 1px;
+  --focus-ring: 3px solid var(--color-accent);
+  --max-width: 1200px;
+  --shadow: 0 1px 0 rgba(11, 37, 69, 0.08);
+}

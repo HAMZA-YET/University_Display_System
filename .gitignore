@@ -11,6 +11,13 @@ node_modules
 dist
 dist-ssr
 *.local
+.env
+.env.*
+!.env.example
+.vercel
+backend/storage/
+coverage/
+member2/kdu-uids/
 
 # Editor directories and files
 .vscode/*

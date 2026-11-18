@@ -1,0 +1,23 @@
+# Production data setup
+
+The deployed app uses the Member 2 API and MongoDB. It does not create demo users, fictional notices or professors, or fake successful responses. Missing database/authentication settings produce a public setup message and HTTP 503 from data routes.
+
+1. Create a MongoDB database (Atlas replica set is recommended for transactional notice publication). Configure its network access to allow the Vercel service and use a dedicated database user. The Vercel Atlas integration provisions `MONGODB_URI` automatically; the original `MONGO_URI` name is also supported. Configure the selected variable in the Vercel project for Production and Preview, as appropriate.
+2. Generate a random secret of at least 32 characters and set `JWT_SECRET` in the same environments. Never commit either value. `CLIENT_ORIGIN` is optional for a same-origin deployment; set it to the site URL if a separate browser client calls the API.
+3. Redeploy. `/api/health` should report `ready: true`; `/api/ready` returns HTTP 200 only when credentials and MongoDB connectivity are working. No collection data is included in public health output.
+4. Prefer browser setup for a new empty database: set a random `BOOTSTRAP_TOKEN` of at least 32 characters in Vercel and redeploy. Open `/setup`, create your own reader account and password, sign in, then supply the one-time setup token and explicitly promote your current account. The token belongs in the URL fragment or the setup form only; never send it in a query string. The API checks the token with a timing-safe comparison, promotes only the authenticated reader, rotates their session, and uses a mandatory MongoDB transaction plus a unique singleton claim so concurrent attempts cannot create multiple first administrators. Setup is disabled once any administrator exists. Remove `BOOTSTRAP_TOKEN` after completion.
+5. Alternatively, bootstrap explicitly from a trusted shell, against the intended database. Export `MONGODB_URI` (or `MONGO_URI`), `JWT_SECRET`, `NODE_ENV=production`, `BOOTSTRAP_ADMIN_NAME`, `BOOTSTRAP_ADMIN_EMAIL`, and a unique `BOOTSTRAP_ADMIN_PASSWORD` (12+ characters, at most 72 UTF-8 bytes, containing a letter and number). Run `npm run bootstrap:production --workspace backend`. This command is never part of build, startup, or deployment. Clear the bootstrap password from the shell afterward; do not save it as a runtime Vercel environment variable.
+6. To initialize real department metadata, set `BOOTSTRAP_DEPARTMENTS_FILE` to an administrator-reviewed JSON file before the bootstrap. Its format is `[{"code":"AI","name":"Official department name","displayOrder":1}]`. The script inserts missing departments only, preserves existing records, does not reset credentials, and will not promote an existing reader account. A populated database should use its existing administrator.
+7. Use the administrator account to manage staff roles. Self-registration always produces a reader account. Create real professors and publish notices through the application review workflow.
+
+## Attachments
+
+Connect a **private** Vercel Blob store to the project and set `ATTACHMENT_STORAGE=vercel-blob`. The connected project uses `BLOB_STORE_ID` and short-lived Vercel OIDC credentials; `BLOB_READ_WRITE_TOKEN` is also supported for stores using the static-token flow. Credentials stay on the server. Redeploy after connecting the store.
+
+The adapter uploads with `access: 'private'` and stores only a random internal object pathname in MongoDB. Every download passes the same uploader/staff authorization or current approved-publication visibility checks before the API streams the private blob. Uploads are limited to 4 MB to fit the Vercel Function request limit (including multipart overhead). The UI reads this limit from `/api/health`. Failed metadata writes remove the uploaded object instead of reporting success. The original local adapter remains available for persistent local servers with a 10 MB limit; it is never selected on Vercel.
+
+Without a connected persistent store, uploads/downloads return `ATTACHMENT_STORAGE_UNAVAILABLE`; the API never reports a temporary local upload as durable storage.
+
+## Development sample data
+
+The imported Member 2 fixtures remain available for isolated local testing. `npm run seed:development --workspace backend` requires `ALLOW_DEVELOPMENT_SEED=true` and is blocked when `NODE_ENV=production` or `VERCEL` is present. It clears its selected database and must only target a disposable local test database. It is not production setup.

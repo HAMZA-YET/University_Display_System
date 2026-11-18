@@ -1,0 +1,19 @@
+{
+  "name": "university-display-system-workspace",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": ["frontend", "backend"],
+  "engines": { "node": ">=22.12.0" },
+  "scripts": {
+    "dev": "concurrently -n api,web \"npm run dev -w backend\" \"npm run dev -w frontend\"",
+    "build": "npm run build -w frontend",
+    "lint": "npm run lint -w frontend",
+    "test": "npm run test -w backend && npm run test -w frontend && npm run test:member4",
+    "test:member4": "node --test tests/member4/*.test.mjs",
+    "test:readiness": "npm run test:readiness -w backend",
+    "start": "npm run start -w backend",
+    "seed:development": "npm run seed:development -w backend",
+    "bootstrap:production": "npm run bootstrap:production -w backend"
+  },
+  "devDependencies": { "concurrently": "^8.2.2" }
+}

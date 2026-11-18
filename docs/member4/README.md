@@ -1,5 +1,9 @@
 # Member 4 — Discovery and member tools (D01–D06)
 
+## Integrated application
+
+The shared application now mounts live search, saved interests and inbox routes. Those routes use the Member 2 cookie session, current approved notice projections, and authenticated MongoDB endpoints. Private records are scoped to the server-verified member. No synthetic account selectors, event generators, or fixture records are imported by the deployed routes. Lost/found remains unavailable until its owning module is uploaded. The original isolated submission notes below describe the earlier review state and historical mock tests.
+
 Review-ready isolated modules for Mahato Nitesh (Team Leader). These extend the existing React + Vite + JSX project; they do not replace the team application. All records, identities, follows, events and inbox deliveries are fictional/local mock demonstrations. D03–D06 are not production-integrated or approved. D07–D08 are excluded.
 
 ## Included modules
