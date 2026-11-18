@@ -34,7 +34,7 @@ export default function EventCalendar({ year, month, events }) {
   const monthLabel = new Date(Date.UTC(year, month, 1)).toLocaleString('en-GB', { month: 'long', year: 'numeric', timeZone: 'UTC' });
 
   return (
-    <div className="table-wrap">
+    <div className="table-wrap calendar-scroll" role="region" aria-label="Monthly event calendar; scroll horizontally to see all days" tabIndex={0}>
       <table className="calendar">
         <caption className="visually-hidden">Events in {monthLabel}</caption>
         <thead>

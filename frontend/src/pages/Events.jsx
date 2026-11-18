@@ -50,7 +50,7 @@ export default function Events() {
   return (
     <>
       <PageHeader title="Events & activities" description="Discover what's happening around campus. All times are shown in Korea Standard Time (Asia/Seoul)." />
-      <div className="stack">
+      <div className="stack events-content">
         <div className="tabs" role="group" aria-label="Filter by event state">
           {TABS.map((t) => (
             <button key={t.value} type="button" aria-pressed={state === t.value} onClick={() => setParams({ state: t.value })}>
