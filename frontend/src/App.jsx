@@ -1,30 +1,33 @@
 import { Routes, Route } from 'react-router-dom';
-import { useState } from 'react';
+import { lazy, Suspense, useState } from 'react';
+import { LoadingState } from './components/ui/States';
 import NavBar from './components/layout/NavBar';
 import Footer from './components/layout/Footer';
 import ProtectedRoute from './components/layout/ProtectedRoute';
 import Home from './pages/Home';
 import Notices from './pages/Notices';
 import NoticeDetails from './pages/NoticeDetails';
-import Events from './pages/Events';
-import Professors from './pages/Professors';
 import Login from './pages/Login';
-import Register from './pages/Register';
-import Setup from './pages/Setup';
 import NotFound from './pages/NotFound';
 import Forbidden from './pages/Forbidden';
-import AuthorWorkspace from './pages/author/AuthorWorkspace';
-import NoticeEditor from './pages/author/NoticeEditor';
-import NoticePreview from './pages/author/NoticePreview';
-import NoticeRevise from './pages/author/NoticeRevise';
-import ReviewerQueue from './pages/reviewer/ReviewerQueue';
-import ReviewNotice from './pages/reviewer/ReviewNotice';
-import AdminDashboard from './pages/admin/AdminDashboard';
-import AdminProfessors from './pages/admin/AdminProfessors';
-import AdminUsers from './pages/admin/AdminUsers';
-import AdminDepartments from './pages/admin/AdminDepartments';
-import DomainEvents from './pages/admin/DomainEvents';
-import Member4Routes from './member4/Member4Routes';
+
+// Keep common public/login screens eager; load optional workflows on demand.
+const Events = lazy(() => import('./pages/Events'));
+const Professors = lazy(() => import('./pages/Professors'));
+const Register = lazy(() => import('./pages/Register'));
+const Setup = lazy(() => import('./pages/Setup'));
+const AuthorWorkspace = lazy(() => import('./pages/author/AuthorWorkspace'));
+const NoticeEditor = lazy(() => import('./pages/author/NoticeEditor'));
+const NoticePreview = lazy(() => import('./pages/author/NoticePreview'));
+const NoticeRevise = lazy(() => import('./pages/author/NoticeRevise'));
+const ReviewerQueue = lazy(() => import('./pages/reviewer/ReviewerQueue'));
+const ReviewNotice = lazy(() => import('./pages/reviewer/ReviewNotice'));
+const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard'));
+const AdminProfessors = lazy(() => import('./pages/admin/AdminProfessors'));
+const AdminUsers = lazy(() => import('./pages/admin/AdminUsers'));
+const AdminDepartments = lazy(() => import('./pages/admin/AdminDepartments'));
+const DomainEvents = lazy(() => import('./pages/admin/DomainEvents'));
+const Member4Routes = lazy(() => import('./member4/Member4Routes'));
 
 /** Routes only. Role checks here are a convenience; the server enforces them. */
 export default function App() {
@@ -37,6 +40,7 @@ export default function App() {
       <NavBar />
       <main id="main-content" tabIndex={-1}>
         <div className="container">
+          <Suspense fallback={<LoadingState label="Loading page…" />}>
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/notices" element={<Notices />} />
@@ -76,6 +80,7 @@ export default function App() {
 
             <Route path="*" element={<NotFound />} />
           </Routes>
+          </Suspense>
         </div>
       </main>
       <Footer />

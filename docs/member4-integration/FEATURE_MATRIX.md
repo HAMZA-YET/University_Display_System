@@ -1,0 +1,23 @@
+# Feature-by-feature status
+
+'Works' below means the local code is wired and the stated isolated tests ran. It does not mean team approval, production deployment or real university data verification.
+
+| Feature | API/data boundary | Verified local status | Remaining limitation / approval |
+|---|---|---|---|
+| D01 journeys, inventory, wireframes | Original docs/d01; no API | Preserved and backed up; architecture mapped in these reports | Official task division and updated UX sign-off pending |
+| D02 shared layout/nav/forms/states | frontend/src/components/layout and ui | Full frontend suite; built page/mobile menu and loading/empty states exercised | Legacy member4/components are overlapping disconnected prototype code; no duplicate shell mounted; full accessibility conformance not claimed |
+| D03 home / notice list / details | /api/public/home, /api/public/notices, /:id | Real HTTP, browser home/detail and backend publication/revision suites pass | Synthetic sample data only in the local preview; no production content verification |
+| D03 approved visibility / attachments | backend notices/visibility.js, public serializers and attachment gateway | DB-backed PUBLIC/CAMPUS/draft/withdrawn/security and attachment tests pass; guest campus-detail browser denial observed | Actual university audienceGroups and production media deployment require A/B review |
+| D04 notice keyword, category, department, date/sort | member4/search/liveSearch.js -> public notice API | Real filtered HTTP and rendered browser results; date payload validated by backend schema; KST inclusive bounds; newest/default sort | Scalar category/department only. Backend text-search semantics differ from prototype all-word matching; no draft/status public filter |
+| D04 professor search | /api/professors | Existing live-search contract tests and professor backend suite pass | Browser preview directory has no professor fixtures; no all-source ranking API |
+| D04 counts/pagination/URL/reset | backend metadata + React Router query state | HTTP disjoint pagination; frontend reset/URL tests; browser Back restored keyword/category/sort | Explicit detail Back-to-results/focus link is pending shared-page approval |
+| D05 public items / detail / approved photos | No mounted item endpoint on baseline main | /items unavailable state and missing API 404 verified; never falls back to mock records | C PR2 wiring/routes/privacy/photo service pending; old item/media mocks are isolated tests only |
+| D05 notice bookmarks | /api/member-tools/bookmarks[/noticeId] | Real cookie save/remove, duplicate prevention, owner separation and withdrawn eligibility tests pass; browser saved list verified | Item bookmarks unsupported; not inventing a type/id contract |
+| D05 categories/departments follows | /api/member-tools/follows | Real persistence, duplicates, owner tests; browser category follow verified | No C item topic/event contract; prototype compact/resolved display preferences are not production APIs |
+| D06 preferences | /api/member-tools/preferences | inApp/notices controls, owner isolation and browser save confirmation pass | Affects future notice/linked-event deliveries; no email/push or item backend |
+| D06 inbox/read/unread/count/all | /api/member-tools/inbox, PATCH /:id, POST /read-all | Backend 118-test suite includes delivery/read/isolation/idempotency; real HTTP and browser unread transition pass | Refresh-based inbox; no speculative realtime system |
+| D06 eligible event matching/dedup | Authentic DomainEvents -> owner/eventId unique Delivery index | Concurrent/retry/follow-time/schedule/withdrawal tests pass | C events not wired; production event retention/operations need review |
+| D06 safe navigation | /inbox/:id/open -> allowlisted notice path | Server eligibility/owner recheck, client URL rejection, real HTTP and browser opening verified | Explicit return-to-inbox link still pending shared NoticeDetails change |
+| Auth/authz/session | /api/auth cookie identity; protected server routes | Full auth/security suites, HTTP 401/403/cross-owner checks, browser login/logout/CAMPUS denial | Does not certify production identity configuration, real accounts or all screen-reader flows |
+| Samples and mocks | Mock directory disconnected; sample badges/footer | Build sentinel scan and browser fictional labels verified | Any future institution data import needs authoritative validation |
+| Tooling / bundle | Local test runner; dev dependencies; lazy routes | Zero audit findings; full suites; restart smoke; no >500 kB chunk warning | Shared changes need team review before publication; no remote CI result for these local edits |
