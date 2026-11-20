@@ -1,0 +1,242 @@
+--- a/server/src/app.js
++++ b/server/src/app.js
+@@ -23,6 +23,7 @@
+ const auditRoutes = require('./modules/audit/audit.routes');
+ const attachments = require('./modules/attachments/attachment.routes');
+ const adminRoutes = require('./modules/admin/admin.routes');
++const lostFound = require('./modules/lostFound/lostFound.routes');
+ 
+ /**
+  * Builds the Express app without listening, so tests can use it directly.
+@@ -76,6 +77,8 @@
+   app.use('/api/audit-logs', auditRoutes);
+   app.use('/api/attachments', attachments.managementRouter);
+   app.use('/api/admin', adminRoutes);
++  app.use('/api/public/lost-found', lostFound.publicRouter);
++  app.use('/api/lost-found', lostFound.router);
+ 
+   app.use('/api', notFound);
+   app.use(notFound);
+--- a/server/src/seed/seed.js
++++ b/server/src/seed/seed.js
+@@ -29,6 +29,7 @@
+ const { PRIORITY_RANK } = require('../modules/notices/notice.constants');
+ const accounts = require('./fixtures/accounts');
+ const professors = require('./fixtures/professors');
++const { seedLostFound } = require('../modules/lostFound/lostFound.seed');
+ 
+ const HOUR = 3600 * 1000;
+ const DAY = 24 * HOUR;
+@@ -648,7 +649,11 @@
+     await audit(admin, 'PROFESSOR_CREATED', 'PROFESSOR', doc._id, null, null, doc.name, at(-20 * DAY));
+   }
+ 
++  // Lost and found (Member 3)
++  const lostFoundCounts = await seedLostFound(users);
++
+   const counts = {
++    ...lostFoundCounts,
+     users: await User.countDocuments(),
+     notices: await Notice.countDocuments(),
+     revisions: await Revision.countDocuments(),
+--- a/server/src/seed/fixtures/accounts.js
++++ b/server/src/seed/fixtures/accounts.js
+@@ -7,4 +7,7 @@
+   { key: 'author2', name: 'Ben Writer', email: 'author2@kdu-uids.test', password: 'Author@12345', role: 'AUTHOR', department: 'AI' },
+   { key: 'reviewer', name: 'Rita Reviewer', email: 'reviewer@kdu-uids.test', password: 'Reviewer@12345', role: 'REVIEWER' },
+   { key: 'reader', name: 'Riley Reader', email: 'reader@kdu-uids.test', password: 'Reader@12345', role: 'READER' },
++  // Lost and found (Member 3): sample students
++  { key: 'student1', name: 'Sora Student', email: 'student1@kdu-uids.test', password: 'Student@12345', role: 'READER' },
++  { key: 'student2', name: 'Jun Student', email: 'student2@kdu-uids.test', password: 'Student@12345', role: 'READER' },
+ ];
+--- a/server/tests/helpers/testDb.js
++++ b/server/tests/helpers/testDb.js
+@@ -13,6 +13,11 @@
+ require('../../src/modules/domainEvents/domainEvent.model');
+ require('../../src/modules/audit/audit.model');
+ require('../../src/modules/attachments/storedFile.model');
++require('../../src/modules/lostFound/item.model');
++require('../../src/modules/lostFound/claim.model');
++require('../../src/modules/lostFound/caseEvent.model');
++require('../../src/modules/lostFound/counter.model');
++require('../../src/modules/lostFound/notice.model');
+ 
+ const { ensureDefaultDepartments } = require('../../src/modules/departments/department.service');
+ const { resetTransactionCache } = require('../../src/utils/transaction');
+--- a/server/package.json
++++ b/server/package.json
+@@ -8,7 +8,8 @@
+     "start": "node src/server.js",
+     "seed": "node src/seed/seed.js",
+     "test": "jest --runInBand",
+-    "smoke": "node scripts/smoke.js"
++    "smoke": "node scripts/smoke.js",
++    "lf:cleanup": "node scripts/lostFoundCleanup.js"
+   },
+   "dependencies": {
+     "bcrypt": "^5.1.1",
+--- a/client/src/App.jsx
++++ b/client/src/App.jsx
+@@ -21,6 +21,18 @@
+ import AdminProfessors from './pages/admin/AdminProfessors';
+ import AdminUsers from './pages/admin/AdminUsers';
+ import DomainEvents from './pages/admin/DomainEvents';
++import LostFoundBrowse from './pages/lostFound/LostFoundBrowse';
++import LostFoundItem from './pages/lostFound/LostFoundItem';
++import ReportItem from './pages/lostFound/ReportItem';
++import MyCases from './pages/lostFound/MyCases';
++import MyReport from './pages/lostFound/MyReport';
++import MyClaim from './pages/lostFound/MyClaim';
++import LfLayout from './components/lostFound/LfLayout';
++import NoticeToaster from './components/lostFound/NoticeToaster';
++import AdminLfDashboard from './pages/adminLostFound/AdminLfDashboard';
++import AdminLfItems from './pages/adminLostFound/AdminLfItems';
++import AdminLfItem from './pages/adminLostFound/AdminLfItem';
++import AdminLfClaims from './pages/adminLostFound/AdminLfClaims';
+ 
+ /** Routes only. Role checks here are a convenience; the server enforces them. */
+ export default function App() {
+@@ -30,6 +42,7 @@
+         Skip to content
+       </a>
+       <NavBar />
++      <NoticeToaster />
+       <main id="main-content" tabIndex={-1}>
+         <div className="container">
+           <Routes>
+@@ -41,6 +54,28 @@
+             <Route path="/login" element={<Login />} />
+             <Route path="/register" element={<Register />} />
+             <Route path="/forbidden" element={<Forbidden />} />
++            {/* Lost and found (Member 3): own theme via LfLayout */}
++            <Route element={<LfLayout />}>
++              <Route path="/lost-found" element={<LostFoundBrowse />} />
++              <Route path="/lost-found/items/:id" element={<LostFoundItem />} />
++
++              {/* any signed-in member */}
++              <Route element={<ProtectedRoute />}>
++                <Route path="/lost-found/report" element={<ReportItem />} />
++                <Route path="/lost-found/my-cases" element={<MyCases />} />
++                <Route path="/lost-found/my-reports/:id" element={<MyReport />} />
++                <Route path="/lost-found/my-reports/:id/edit" element={<ReportItem />} />
++                <Route path="/lost-found/my-claims/:id" element={<MyClaim />} />
++              </Route>
++
++              {/* admin only: the admin verifies claims and manages all reports */}
++              <Route element={<ProtectedRoute roles={['ADMIN']} />}>
++                <Route path="/admin/lost-found" element={<AdminLfDashboard />} />
++                <Route path="/admin/lost-found/items" element={<AdminLfItems />} />
++                <Route path="/admin/lost-found/items/:id" element={<AdminLfItem />} />
++                <Route path="/admin/lost-found/claims" element={<AdminLfClaims />} />
++              </Route>
++            </Route>
+ 
+             <Route element={<ProtectedRoute roles={['AUTHOR', 'ADMIN']} />}>
+               <Route path="/author/notices" element={<AuthorWorkspace />} />
+--- a/client/src/components/layout/NavBar.jsx
++++ b/client/src/components/layout/NavBar.jsx
+@@ -62,6 +62,7 @@
+           <NavLink to="/notices">Notices</NavLink>
+           <NavLink to="/events">Events</NavLink>
+           <NavLink to="/professors">Professors</NavLink>
++          <NavLink to="/lost-found">Lost &amp; Found</NavLink>
+           {hasRole('AUTHOR', 'ADMIN') && <NavLink to="/author/notices">My Notices</NavLink>}
+           {hasRole('REVIEWER', 'ADMIN') && (
+             <NavLink to="/reviewer/queue">
+--- a/client/src/components/layout/Footer.jsx
++++ b/client/src/components/layout/Footer.jsx
+@@ -1,17 +1,48 @@
++import logo from '../../assets/kdu-logo.png';
++import '../../styles/footer.css';
++
++const CAMPUSES = [
++  { name: 'KDU Global', address: '46 Bongpo 4-gil, Goseong-gun, Gangwon State 2476', tel: '+82.33.639.0168', fax: '+82.33.639.0303' },
++  {
++    name: 'KDU Medical Campus',
++    address: '815 Gyeonhwon-ro, Munmak, Wonju, Gangwon State 24695',
++    tel: '+82.33.738.1200',
++    fax: '+82.33.738.1209',
++  },
++  {
++    name: 'KDU Metropole Campus',
++    address: '27 Kyungdong University-ro, Yangju, Gyeonggi-do 11458',
++    tel: '+82.31.869.9900',
++    fax: '+82.31.869.9909',
++  },
++];
++
+ export default function Footer() {
+   return (
+-    <footer className="footer">
+-      <div className="container stack">
+-        <div>
+-          <strong>KDU Global (Kyungdong University)</strong> - University Information Display System, team plan UIDS-03.
+-          Member 2 module: notice publishing, events and professor directory.
++    <footer className="footer kdu-footer">
++      <div className="container kdu-footer-inner">
++        <div className="kdu-footer-logo">
++          <img src={logo} alt="Kyungdong University (KDU) - Man of Mission" />
+         </div>
+-        <div>
+-          Sample data notice: all professor names, contact details, notices and events shown in this MVP are fictional
+-          sample data and do not describe real people or real university contact details. Department names are editable
+-          sample data pending confirmation by the university.
++        <div className="kdu-footer-text">
++          <ul className="kdu-campuses">
++            {CAMPUSES.map((c) => (
++              <li key={c.name}>
++                <span className="kdu-campus-address">
++                  {c.name} : {c.address}
++                </span>
++                <span>Tel : {c.tel}</span>
++                <span className="kdu-sep" aria-hidden="true">
++                  |
++                </span>
++                <span>Fax : {c.fax}</span>
++              </li>
++            ))}
++          </ul>
++          <p className="kdu-email">
++            E-mail : <a href="mailto:info@kduniv.ac.kr">info@kduniv.ac.kr</a>
++          </p>
+         </div>
+-        <div>All times are shown in Korea Standard Time (Asia/Seoul).</div>
+       </div>
+     </footer>
+   );
+--- a/client/src/main.jsx
++++ b/client/src/main.jsx
+@@ -4,6 +4,7 @@
+ import App from './App';
+ import { AuthProvider } from './context/AuthContext';
+ import './styles/global.css';
++import './styles/lostFound.css';
+ 
+ ReactDOM.createRoot(document.getElementById('root')).render(
+   <React.StrictMode>
+--- a/README.md
++++ b/README.md
+@@ -111,6 +111,8 @@
+ | author2@kdu-uids.test | Author@12345 | AUTHOR (for the concurrency demo) |
+ | reviewer@kdu-uids.test | Reviewer@12345 | REVIEWER |
+ | reader@kdu-uids.test | Reader@12345 | READER |
++| student1@kdu-uids.test | Student@12345 | READER |
++| student2@kdu-uids.test | Student@12345 | READER |
+ 
+ The seed creates 15 notices (4 live published including one pinned URGENT,
+ one HIGH, one with an action deadline and one CAMPUS-only; plus a draft,
+@@ -197,6 +199,14 @@
+ 26. As admin, **Manage Professors**: add, edit (subjects and counselling hours) and delete. (AC27)
+ 27. Stop and restart the server, refresh the browser: everything persists. (AC28)
+ 
++## Lost and Found (Member 3 module)
++
++Routes: `/lost-found` (public list), `/lost-found/items/:id`, `/lost-found/report`
++and `/lost-found/my-cases` (signed-in members), `/admin/lost-found` (ADMIN).
++Reports are listed immediately; the admin verifies claims on found items.
++Design, API, privacy rules, concurrency explanation, tests and demo script:
++`docs/LOST_FOUND.md`.
++
+ ## More documentation
+ 
+ - `docs/API.md` - every endpoint, role, request, response and error
