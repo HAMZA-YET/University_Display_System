@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation, useSearchParams } from 'react-router-dom';
+import { CATEGORIES, humanize } from '../../lib/labels.js';
 import api from '../../api/client.js';
 import PageHeader from '../../components/layout/PageHeader.jsx';
 import NoticeCard from '../../components/notices/NoticeCard.jsx';
@@ -60,10 +61,16 @@ function ConnectedSearch({ search }) {
       <div className="stack">
         <form className="card stack" onSubmit={submit}>
           <div className="grid grid-3">
-            <Select label="Search in" value={draft.source} onChange={(event) => setDraft({ ...draft, source: event.target.value, department: draft.department === 'ALL' ? '' : draft.department })} options={Object.entries(SEARCH_SOURCES).map(([value, source]) => ({ value, label: source.label }))} />
+            <Select label="Search in" value={draft.source} onChange={(event) => setDraft({ ...draft, source: event.target.value, department: draft.department === 'ALL' ? '' : draft.department, category: '', from: '', to: '', sort: 'default' })} options={Object.entries(SEARCH_SOURCES).map(([value, source]) => ({ value, label: source.label }))} />
             <Input label="Search text" type="search" maxLength={100} value={draft.q} onChange={(event) => setDraft({ ...draft, q: event.target.value })} placeholder={draft.source === 'professor' ? 'Name or subject' : 'Notice title or content'} />
             <Select label="Department" value={draft.department} onChange={(event) => setDraft({ ...draft, department: event.target.value })} placeholder="All departments" options={[...(draft.source === 'notice' ? [{ value: 'ALL', label: 'University-wide' }] : []), ...departments.map((department) => ({ value: department.code, label: department.name }))]} />
           </div>
+          {draft.source === 'notice' && <div className="grid grid-2">
+            <Select label="Notice category" placeholder="All categories" value={draft.category} options={CATEGORIES.map((value) => ({ value, label: humanize(value) }))} onChange={(event) => setDraft({ ...draft, category: event.target.value })} />
+            <Select label="Sort notices" value={draft.sort} options={[{ value: 'default', label: 'University priority order' }, { value: 'newest', label: 'Newest publication first' }]} onChange={(event) => setDraft({ ...draft, sort: event.target.value })} />
+            <Input label="Published from (KST, inclusive)" type="date" value={draft.from} onChange={(event) => setDraft({ ...draft, from: event.target.value })} />
+            <Input label="Published through (KST, inclusive)" type="date" value={draft.to} onChange={(event) => setDraft({ ...draft, to: event.target.value })} />
+          </div>}
           <div className="row">
             <Button type="submit" icon="search">Search</Button>
             <Link to="/search" onClick={clear}>Clear search</Link>

@@ -1,3 +1,4 @@
+import { noticeDestination } from './noticeDestination.js';
 import api from '../../api/client.js';
 
 const value = (request) => request.then((response) => response.data.data);
@@ -9,4 +10,7 @@ export const removeFollow = (id) => value(api.delete(`/member-tools/follows/${en
 export const savePreferences = (changes) => value(api.patch('/member-tools/preferences', changes));
 export const setNotificationRead = (id, read) => value(api.patch(`/member-tools/inbox/${encodeURIComponent(id)}`, { read }));
 export const markAllNotificationsRead = () => value(api.post('/member-tools/inbox/read-all', {}));
-export const openNotification = (id) => value(api.get(`/member-tools/inbox/${encodeURIComponent(id)}/open`));
+export const openNotification = async (id) => {
+  const result = await value(api.get(`/member-tools/inbox/${encodeURIComponent(id)}/open`));
+  return { href: noticeDestination(result?.href) };
+};
