@@ -50,6 +50,7 @@ export default function NavBar() {
             <details className="account-menu" key={location.pathname}>
               <summary aria-label={`Account menu for ${user.name}`}><span className="user-avatar">{user.name?.trim().slice(0, 1).toUpperCase() || 'U'}</span><span className="account-summary-name">{user.name?.split(' ')[0]}<small>{humanize(user.role)}</small></span><Icon name="chevronDown" size={14} /></summary>
               <div className="account-dropdown"><div className="account-identity"><strong>{user.name}</strong><span>{user.email}</span><span className="tag">{humanize(user.role)}</span></div>
+                <Link to="/account-security">Account security</Link>
                 <Link to="/saved-interests"><Icon name="book" size={16} />Saved interests</Link><Link to="/notifications"><Icon name="mail" size={16} />Notifications</Link>
                 {hasRole('AUTHOR', 'ADMIN') && <Link to="/author/notices"><Icon name="edit" size={16} />My notices</Link>}
                 {canReview && <Link to="/reviewer/queue"><Icon name="check" size={16} />Review queue{pending !== null && <span className="nav-count">{pending}</span>}</Link>}

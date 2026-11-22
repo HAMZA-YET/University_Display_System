@@ -18,9 +18,13 @@ async function resolveUser(req) {
     return null;
   }
   if (!payload || typeof payload.sub !== 'string' || !/^[a-f0-9]{24}$/.test(payload.sub)) return null;
+  const { RevokedToken } = require('../modules/security/models');
+  const { digest } = require('../modules/security/crypto');
+  if (await RevokedToken.exists({ digest: digest(token) })) return null;
   const user = await User.findById(payload.sub).lean();
   if (!user || !user.isActive) return null;
   if (user.tokenVersion !== payload.tv) return null;
+  if (user.mfaEnabled && payload.mfa !== true) return null;
   return user;
 }
 

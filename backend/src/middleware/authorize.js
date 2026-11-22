@@ -10,7 +10,12 @@ const audit = require('../modules/audit/audit.service');
 module.exports = function authorize(...roles) {
   return async function authorizeMiddleware(req, res, next) {
     if (!req.user) return next(AppError.unauthenticated());
-    if (roles.includes(req.user.role)) return next();
+    if (roles.includes(req.user.role)) {
+      if (require('../config/env').loadEnv().REQUIRE_PRIVILEGED_MFA && ['ADMIN', 'AUTHOR', 'REVIEWER'].includes(req.user.role) && !req.user.mfaEnabled) {
+        return next(new AppError(403, 'MFA_ENROLLMENT_REQUIRED', 'Enroll MFA from Account security before using staff tools.'));
+      }
+      return next();
+    }
     await audit.recordSafe(audit.contextFromRequest(req), {
       action: 'AUTHORIZATION_FAILED',
       entityType: 'ROUTE',

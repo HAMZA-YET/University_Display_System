@@ -20,6 +20,8 @@ const userSchema = new mongoose.Schema(
     role: { type: String, enum: ROLES, default: 'READER' },
     department: { type: String, default: null },
     isActive: { type: Boolean, default: true },
+    activationPending: { type: Boolean, default: false },
+    mfaEnabled: { type: Boolean, default: false },
     tokenVersion: { type: Number, default: 0 },
   },
   schemaOptions

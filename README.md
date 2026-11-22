@@ -57,3 +57,11 @@ Health endpoints:
 ## Application routes
 
 Public routes include `/`, `/notices`, `/notices/:id`, `/events`, `/professors` and `/search`. Accounts use `/login` and `/register`. Signed-in members use `/saved-interests` and `/notifications`. Administrators can add real department definitions at `/admin/departments` before creating professors or department-specific notices. Author, reviewer and administrator routes require server-verified roles. Source visibility is rechecked when opening saved notices, attachments and notifications; withdrawing a notice removes access through those entry points too.
+
+## Member 1 security integration
+
+Accounts retain the team's bcrypt hashes, IDs, roles and HttpOnly JWT cookies. New account security screens are available at /account-security and /account-recovery. Existing accounts are not reset or automatically suspended.
+
+See [the integration guide](docs/member1/INTEGRATION.md) for setup, compatible model additions, API contracts, MFA rollout, private evidence boundaries and the A01–A08 checklist. See [operations](docs/member1/OPERATIONS.md) before cleanup or backup/restore, and [test evidence](docs/member1/TEST_EVIDENCE.md) for actual verification and pending reviews.
+
+New activation, recovery and MFA completion require a MongoDB replica set. They fail closed on a standalone MongoDB deployment; existing team routes keep their existing behavior. Never reuse the test database for a demonstration or production.

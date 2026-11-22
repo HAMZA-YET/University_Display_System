@@ -17,7 +17,9 @@ const schema = z.object({
 const HOME_BY_ROLE = { ADMIN: '/admin', AUTHOR: '/author/notices', REVIEWER: '/reviewer/queue', READER: '/' };
 
 export default function Login() {
-  const { login } = useAuth();
+  const { login, verifyMfa } = useAuth();
+  const [mfaRequired, setMfaRequired] = useState(false);
+  const [code, setCode] = useState('');
   const navigate = useNavigate();
   const location = useLocation();
   const [error, setError] = useState(null);
@@ -31,12 +33,26 @@ export default function Login() {
     setError(null);
     try {
       const user = await login(values.email, values.password);
+      if (user.mfaRequired) { setMfaRequired(true); return; }
       const from = location.state && location.state.from;
       navigate(from || HOME_BY_ROLE[user.role] || '/', { replace: true });
     } catch (err) {
       setError(err.message);
     }
   }
+
+  async function submitMfa(event) {
+    event.preventDefault(); setError(null);
+    try { const user = await verifyMfa(code); setCode(''); navigate(HOME_BY_ROLE[user.role] || '/', { replace: true }); }
+    catch (err) { setCode(''); setError(err.message); }
+  }
+  if (mfaRequired) return <div style={{ maxWidth: 480, margin: '0 auto' }}>
+    <PageHeader title="Verify your sign-in" description="Enter your authenticator code or a one-use recovery code." />
+    <form className="panel stack" onSubmit={submitMfa}>
+      <Input label="Authentication code" value={code} onChange={e => setCode(e.target.value)} autoComplete="one-time-code" required />
+      {error && <Alert type="error">{error}</Alert>}<Button type="submit">Verify</Button>
+      <Button type="button" onClick={() => { setMfaRequired(false); setCode(''); }}>Restart login</Button>
+    </form></div>;
 
   return (
     <div style={{ maxWidth: 480, margin: '0 auto' }}>
@@ -49,6 +65,7 @@ export default function Login() {
           Log in
         </Button>
         <p className="small">
+          <Link to="/account-recovery">Recover or activate an account</Link><br />
           No account? <Link to="/register" state={location.state?.from === '/setup' ? { from: '/setup' } : null}>Register as a reader</Link>
         </p>
       </form>

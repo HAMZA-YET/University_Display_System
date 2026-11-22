@@ -7,12 +7,13 @@
     "dev": "nodemon --watch src src/server.js",
     "start": "node src/server.js",
     "seed": "node scripts/bootstrap-production.js",
-    "test": "jest --runInBand && node --test tests/operator-sample-content.test.cjs",
+    "test": "jest --runInBand && node --test tests/operator-sample-content.test.cjs && node --test tests/security-cli.test.cjs",
     "smoke": "node scripts/smoke.js",
     "seed:development": "node src/seed/seed.js",
     "bootstrap:production": "node scripts/bootstrap-production.js",
     "test:readiness": "jest --config jest.readiness.config.cjs --runInBand",
-    "test:operator": "node --test tests/operator-sample-content.test.cjs"
+    "test:operator": "node --test tests/operator-sample-content.test.cjs",
+    "security:ops": "node scripts/security-operations.js"
   },
   "dependencies": {
     "@vercel/blob": "2.4.0",
@@ -28,8 +29,10 @@
     "mongoose": "^8.8.1",
     "multer": "^2.0.2",
     "node-cron": "^4.6.0",
+    "otpauth": "^9.4.1",
     "pino": "^9.5.0",
     "pino-http": "^10.3.0",
+    "sharp": "^0.35.5",
     "uuid": "^11.1.1",
     "zod": "^4.6.7"
   },

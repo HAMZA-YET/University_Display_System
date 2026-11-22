@@ -68,6 +68,8 @@ function createApp(options = {}) {
     res.status(data.ready ? 200 : 503).json({ data });
   }));
   app.use('/api', requireDatabase);
+  app.use('/api', require('./modules/security/operations').guard);
+  app.use('/api/operations', require('./modules/security/operations').router);
 
   app.use(
     '/api/auth',
@@ -76,6 +78,8 @@ function createApp(options = {}) {
       generalLimit: options.authRateLimit || env.AUTH_RATE_LIMIT,
     })
   );
+  app.use('/api/private-evidence', require('./modules/security/evidence').createEvidenceRouter(options.authorizeEvidence));
+  app.use('/api/security', require('./modules/security/routes')());
   app.use('/api/users', userRoutes);
   app.use('/api/departments', departmentRoutes);
   app.use('/api/public/home', notices.homeRouter);
