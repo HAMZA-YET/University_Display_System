@@ -13,7 +13,8 @@
     "bootstrap:production": "node scripts/bootstrap-production.js",
     "test:readiness": "jest --config jest.readiness.config.cjs --runInBand",
     "test:operator": "node --test tests/operator-sample-content.test.cjs",
-    "security:ops": "node scripts/security-operations.js"
+    "security:ops": "node scripts/security-operations.js",
+    "lf:cleanup": "node scripts/lostFoundCleanup.js"
   },
   "dependencies": {
     "@vercel/blob": "2.4.0",

@@ -11,7 +11,7 @@ A shared application for university notices, publication review, events, profess
 - `frontend/src/member4/`: live discovery and member tools. Earlier mock adapters remain isolated from deployed routes for historical regression tests.
 - `tests/member4/` and `backend/tests/`: adapter, database, authorization and publication regressions.
 
-The unimplemented legacy `backend/controller`, `backend/router`, and frontend placeholder files are retained for contributor history. They are not application entry points. No working Member 3 lost/found service has been uploaded; `/items` reports that service as unavailable instead of showing fictional reports.
+The unimplemented legacy `backend/controller`, `backend/router`, and frontend placeholder files are retained for contributor history. They are not application entry points. The Member 3 lost & found service is connected: `/items` opens the working feature (backend `backend/src/modules/lostFound`, frontend `frontend/src/pages/lostFound`). See `docs/member3/LOST_FOUND.md`.
 
 ## Development
 

@@ -4,6 +4,7 @@ import { LoadingState } from './components/ui/States';
 import NavBar from './components/layout/NavBar';
 import Footer from './components/layout/Footer';
 import ProtectedRoute from './components/layout/ProtectedRoute';
+import NoticeToaster from './components/lostFound/NoticeToaster';
 import Home from './pages/Home';
 import Notices from './pages/Notices';
 import NoticeDetails from './pages/NoticeDetails';
@@ -30,6 +31,18 @@ const AdminUsers = lazy(() => import('./pages/admin/AdminUsers'));
 const AdminDepartments = lazy(() => import('./pages/admin/AdminDepartments'));
 const DomainEvents = lazy(() => import('./pages/admin/DomainEvents'));
 const Member4Routes = lazy(() => import('./member4/Member4Routes'));
+// Lost and found (Member 3)
+const LfLayout = lazy(() => import('./components/lostFound/LfLayout'));
+const LostFoundBrowse = lazy(() => import('./pages/lostFound/LostFoundBrowse'));
+const LostFoundItem = lazy(() => import('./pages/lostFound/LostFoundItem'));
+const ReportItem = lazy(() => import('./pages/lostFound/ReportItem'));
+const MyCases = lazy(() => import('./pages/lostFound/MyCases'));
+const MyReport = lazy(() => import('./pages/lostFound/MyReport'));
+const MyClaim = lazy(() => import('./pages/lostFound/MyClaim'));
+const AdminLfDashboard = lazy(() => import('./pages/adminLostFound/AdminLfDashboard'));
+const AdminLfItems = lazy(() => import('./pages/adminLostFound/AdminLfItems'));
+const AdminLfItem = lazy(() => import('./pages/adminLostFound/AdminLfItem'));
+const AdminLfClaims = lazy(() => import('./pages/adminLostFound/AdminLfClaims'));
 
 /** Routes only. Role checks here are a convenience; the server enforces them. */
 export default function App() {
@@ -40,6 +53,7 @@ export default function App() {
         Skip to content
       </a>
       <NavBar />
+      <NoticeToaster />
       <main id="main-content" tabIndex={-1}>
         <div className="container">
           <Suspense fallback={<LoadingState label="Loading page…" />}>
@@ -57,7 +71,24 @@ export default function App() {
             <Route path="/forbidden" element={<Forbidden />} />
             <Route path="/search" element={<Member4Routes />} />
             <Route path="/search-record/*" element={<Member4Routes />} />
-            <Route path="/items/*" element={<Member4Routes />} />
+            {/* Lost and found (Member 3): /items is the shared menu entry point */}
+            <Route element={<LfLayout />}>
+              <Route path="/items" element={<LostFoundBrowse />} />
+              <Route path="/items/:id" element={<LostFoundItem />} />
+              <Route element={<ProtectedRoute />}>
+                <Route path="/items/report" element={<ReportItem />} />
+                <Route path="/items/my-cases" element={<MyCases />} />
+                <Route path="/items/my-reports/:id" element={<MyReport />} />
+                <Route path="/items/my-reports/:id/edit" element={<ReportItem />} />
+                <Route path="/items/my-claims/:id" element={<MyClaim />} />
+              </Route>
+              <Route element={<ProtectedRoute roles={['ADMIN']} />}>
+                <Route path="/admin/lost-found" element={<AdminLfDashboard />} />
+                <Route path="/admin/lost-found/items" element={<AdminLfItems />} />
+                <Route path="/admin/lost-found/items/:id" element={<AdminLfItem />} />
+                <Route path="/admin/lost-found/claims" element={<AdminLfClaims />} />
+              </Route>
+            </Route>
             <Route path="/saved-interests" element={<Member4Routes />} />
             <Route path="/notifications" element={<Member4Routes />} />
 

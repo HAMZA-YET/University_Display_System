@@ -29,6 +29,7 @@ const domainEvents = require('../modules/domainEvents/domainEvent.service');
 const { PRIORITY_RANK } = require('../modules/notices/notice.constants');
 const accounts = require('./fixtures/accounts');
 const professors = require('./fixtures/professors');
+const { seedLostFound } = require('../modules/lostFound/lostFound.seed');
 
 const HOUR = 3600 * 1000;
 const DAY = 24 * HOUR;
@@ -651,7 +652,11 @@ async function seed() {
     await audit(admin, 'PROFESSOR_CREATED', 'PROFESSOR', doc._id, null, null, doc.name, at(-20 * DAY));
   }
 
+  // Lost and found (Member 3)
+  const lostFoundCounts = await seedLostFound(users);
+
   const counts = {
+    ...lostFoundCounts,
     users: await User.countDocuments(),
     notices: await Notice.countDocuments(),
     revisions: await Revision.countDocuments(),
