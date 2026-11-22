@@ -1,33 +1,34 @@
-# Team dependencies and approval boundaries
+# Team dependencies — final review, 2026-11-22
 
-| Owner | Available and locally verified | Decision still needed |
+| Owner | Available boundary | Approval or work still needed |
 |---|---|---|
-| A — identity/media | Cookie identity, active/tokenVersion lookup, authenticated owner-scoped services, public attachment gateway; auth/security tests pass using fictional users | Institution audienceGroups and production identity/media setup; eligible C photos/revocation |
-| B — publishing | Public approved snapshots, publication/revision/window visibility and authentic DomainEvents; backend and browser tests pass | Review category/date/default-newest search semantics, KST bounds and shared detail-return UX; no lifecycle/schema change proposed |
-| C — Lost & Found | PR2 reviewed as an unmerged staged package; live main item endpoint absent | Approve path adaptation, mounts, public report/claim/photo rules, alias/navigation, item bookmark/event contracts; no claim/handover decisions implemented by D |
-| L — shared integration/directory | Workspace lock, existing directory/departments, protected member-tools persistence, all existing test suites pass locally | Review shared App loading boundaries and compatible dev-dependency pin/root lock; unified search decisions; final official assignment and submission approval |
+| A: identity/media | Member 1 PR #4 MFA, active-user/tokenVersion checks, copied-token logout revocation and security suites; Member 4 compatibility tests pass | Production audience groups, identity/media setup and C photograph eligibility/revocation. No auth/user-model changes authorized here |
+| B: notices/events | Approved snapshots, visibility/window rules, publication DomainEvents; Member 4 search/bookmark/inbox consume these | Confirm scalar search/date/default-newest semantics; explicit shared detail-return/focus UX |
+| C: Lost & Found | PR #2 merged; models/services/pages/tests exist under member3-lost-found | Adapt client/server paths to frontend/backend, resolve shared imports, mount routers/pages, agree canonical /items vs /lost-found, register/run C tests, verify claims/media/handover/privacy |
+| L: directory/shared integration | Live professor/departments API and root workspaces | Approve C adaptation and shared routes; confirm final assignment, accessibility acceptance, unified search and event ownership |
 
-## Local shared modifications explicitly disclosed
+## Member 3 requirement-by-requirement status
 
-- frontend/src/App.jsx: lazy optional route imports and Suspense fallback; common public screens and Login eager. All paths/role guards unchanged. Existing setup/login test preserved and passes.
-- backend/package.json: ONLY devDependency nodemon pinned to 3.1.11 (original compatible range included it), removing vulnerable minimatch 10. Start/restart tested.
-- package-lock.json: compatible ESLint toolchain and nodemon resolution/hoisting; production dependency version sets unchanged. Zero findings in final npm audit.
+- Models, report/list/search/filter logic, student/admin pages, claim decision and handover: IMPLEMENTED BUT NOT INTEGRATED.
+- Router mounts in backend/src/app.js and page registration in frontend/src/App.jsx: MISSING.
+- Navbar: PARTIALLY IMPLEMENTED; existing /items leads to a truthful unavailable screen.
+- Authentication/ownership/serialization, photo gateway, concurrent-claim indexes and status transitions: source exists, runtime behavior NOT VERIFIED in the shared app.
+- C automated tests/build compatibility: BLOCKED. Backend test imports ./helpers/testApp and shared model/utils paths absent within its staged subtree. Frontend API imports ./client absent there. Existing workspace commands do not include staged C tests.
+- React/Zod compatibility: NOT VERIFIED for C. Shared workspace uses React 19/Zod 4 and passes its own suites; C validation uses legacy errorMap options requiring validation against Zod 4, not assumed broken or compatible.
+- Notification delivery: PARTIALLY IMPLEMENTED. C stores deterministic LF_* events in LostFoundCaseEvent; Member 4 consumes publishing DomainEvent types only. Agree recipient authorization, privacy-safe source resolution, delivery acknowledgement/idempotency and destinations before connecting them.
 
-These are authorized local optimization/security changes from the continuation request and require team review before any later publication. Backend production source, schemas, publishing authorization, shared notice presentation, CI, Vercel and root README remain unchanged. Test-only scripts cannot connect to an externally supplied production database.
+C/L must also confirm immediate publication versus moderation, public contact consent, administrator claim policy and footer/sample-label decisions. Approval is not handover; Member 4 must not implement ownership decisions. Do not run staged seed instructions against any production database.
 
-## Intentionally not performed
+## Independent versus blocked verification
 
-No PR2 merge or shared.diff application, C routes/business decisions, production sample-content installation, new permanent API/schema/auth system, real credentials/accounts/data, upload/PR/merge/deployment. Explicit NoticeCard/NoticeDetails return-state integration remains a review item. Old Member4 prototype mocks are still isolated, not silently promoted into production routes.
+Notice/professor search, pagination, URL behavior, bookmarks, notice follows/preferences/inbox, schedule/privacy/account tests run independently and passed. Item discovery/detail/media, item bookmarks, claims and LF notifications remain blocked. No percentage is assigned: staged code coverage and runtime integration are different measures.
 
-Evidence and exact feature status are in FEATURE_MATRIX.md and TEST_RESULTS.md. Original source/document backup and prior integration checkout remain preserved. Team approval and production readiness are not claimed.
+## Shared integration concerns
 
-## Four concerns reviewed for the local review branch
+App.jsx lazy loading and the root lockfile/dev-tool changes are already merged through PR #3; they are not new final-review changes. No shared route/lock/config edit is proposed now. Lazy-chunk rejection recovery and explicit detail return/focus remain follow-up review items. No root README, Member 3 implementation, auth, user model, production configuration or database changes are included.
 
-| Concern | Included in this commit? | Decision / evidence |
-|---|---|---|
-| Route loading | Yes: App.jsx only | Optional pages lazy-loaded; Login/public screens and all role guards retained. Full test pipeline passes. Team review pending before submission/merge. |
-| Dependency lockfile | Yes: backend dev watcher pin + root lock | Compatible ESLint/minimatch fixes and nodemon 3.1.11. No production dependency version changes. Zero current audit findings; watcher start/restart verified. |
-| Lost & Found wiring | No | C PR2 not mounted; /items remains unavailable and missing API returns 404. C/L must approve route and business-logic integration separately. |
-| Detail-return navigation | No | Browser Back preserves search state. Explicit return-to-search/inbox and focus wiring remain a separate shared-page review. |
+## Updated-main preservation and compatibility
 
-The user authorized staging/committing this existing local scope for team review. This is not team approval or permission to publish.
+Member 1 PR #4 is now included through main a53db54. Auth/MFA/token revocation/user-model/security production files and tests match origin/main exactly; no conflicts or modifications to them were needed. Non-MFA synthetic accounts still work. MFA-only challenges cannot access personal Member 4 APIs; verified TOTP/recovery sessions can, and logged-out copied tokens cannot. Optional privileged-MFA rollout tests remain the unchanged Member 1 responsibility and ran in the full suite. Three Windows permission/symlink cases remain skipped, not passed. Production identity/media/delivery acceptance still belongs to A/L.
+
+The prior baseline in older reports was 529f459. Updated test counts are in TEST_RESULTS.md; do not reuse old counts as proof of current security compatibility. No C mounting/events or shared return/focus changes are included in this 13-file proposal.

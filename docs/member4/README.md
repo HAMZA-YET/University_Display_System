@@ -1,44 +1,23 @@
 # Member 4 — Discovery and member tools (D01–D06)
 
-## Integrated application
+Current status (2026-11-22), verified on main a53db54fa24f0237ef42bcad2f9a2eb33a4add45: Member 4 PR #3 and Member 1 security PR #4 are merged. The shared React/Vite app mounts live search, saved interests and notifications, using the shared cookie session and real backend APIs. Legacy mock adapters remain isolated historical test tools; current pages are not mock-only and require no new mounting.
 
-The shared application now mounts live search, saved interests and inbox routes. Those routes use the Member 2 cookie session, current approved notice projections, and authenticated MongoDB endpoints. Private records are scoped to the server-verified member. No synthetic account selectors, event generators, or fixture records are imported by the deployed routes. Lost/found remains unavailable until its owning module is uploaded. The original isolated submission notes below describe the earlier review state and historical mock tests.
+See [current D01–D06 feature mapping](../member4-integration/FEATURE_MATRIX.md), [actual final verification](../member4-integration/TEST_RESULTS.md), and [remaining dependencies](../member4-integration/TEAM_DEPENDENCIES.md).
 
-Review-ready isolated modules for Mahato Nitesh (Team Leader). These extend the existing React + Vite + JSX project; they do not replace the team application. All records, identities, follows, events and inbox deliveries are fictional/local mock demonstrations. D03–D06 are not production-integrated or approved. D07–D08 are excluded.
+## Routes and data
 
-## Included modules
+- `/`, `/notices`, `/notices/:id`: shared public notice views, approved snapshots and visibility rules.
+- `/search`: connected notice or professor search, scalar filters, pagination and URL state.
+- `/saved-interests`: authenticated notice bookmarks, category/department follows and notification preferences.
+- `/notifications`: authenticated, refresh-based inbox, counts/read state and visibility-rechecked notice navigation.
+- `/items`: explicit unavailable state. Member 3 PR #2 is merged but staged under member3-lost-found, not mounted into backend/frontend. Do not claim item discovery, photographs, claims or item events are connected.
 
-- Shared navigation/layout/footer, accessible form feedback, cards, tables, pagination, loading/empty/error states and scoped focus/responsive styles in frontend/src/member4/components.
-- Public homepage, notices and details in discovery; unified keyword/filter/sort/page/URL-state tools in search.
-- Public item discovery, allowlisted media placeholders, bookmarks, follows and shared preferences in items.
-- Inbox/read counts/read transitions, preferences, event deduplication and safe source navigation in notifications.
-- Replaceable synthetic adapters/fixtures in frontend/src/member4/mocks; pure mock service modules in backend/member4/mock. They register no HTTP endpoints and provide no real authentication or production authorization.
-- Portable adapter/service regression tests in tests/member4. One existing fictional SVG is included as a demonstration illustration, not an actual photograph or evidence.
+The team owns shared layout/UI/authentication and publishing. Member 4 does not replace those systems or implement ownership decisions. All synthetic preview records are explicitly fictional; no mock fallback is displayed on API failure. The original standalone D02 showcase and detailed plans remain preserved separately.
 
-## Setup and integration status
+## Setup and verification
 
-Use the existing frontend dependency manifest and lockfile. No additional package/config/entrypoint is included. Use a Node version supported by the team's Vite version (Node 22.12+ recommended):
+Use the root workspaces/lockfile, not a separate frontend installation. From the root, `npm ci` installs dependencies when needed; `npm run lint`, `npm run build`, frontend/backend tests and safe disposable preview instructions are in [REMAINING_WORK.md](../member4-integration/REMAINING_WORK.md). Do not use production credentials or seed/bootstrap commands for tests.
 
-~~~sh
-cd frontend
-npm ci
-npm run lint
-npm run build
-npm run dev -- --host 127.0.0.1
-~~~
+The earlier isolated test report in test-results.md is dated historical mock evidence. It does not describe the current mounted app. Official task-division alignment remains pending because the document is unavailable. Full production/security/accessibility approval is not claimed. D07/D08 are excluded.
 
-The default team application remains unchanged and will still show its current welcome screen. Member4Routes.jsx is an optional component, not a competing browser entrypoint. Leader L must approve and perform mounting/routing in the existing application before these pages appear in that app. See integration-requirements.md. The local original D02 showcase and detailed D01–D06 documents remain in the contributor's backup and are not duplicated here.
-
-Run tests from the repository root:
-
-~~~sh
-node --test tests/member4/*.test.mjs
-~~~
-
-Shared components can be imported individually from frontend/src/member4/components. Full feature composition uses Member4Routes, whose member4-root wrapper scopes styles. Existing links use clean-path navigation/reloads; hosting fallback and the team's router must be agreed before wiring. Proposed paths: /, /notices, /notices/:id, /search, /search-record/:id, /items, /items/:id, /saved-interests and /notifications. These are review proposals, not reserved production routes.
-
-## Mock boundaries
-
-Synthetic Alpha/Beta selection is a test harness, not login. Browser storage is provisional and user-editable. A client member ID is never accepted as authenticated identity by the mock service context checks; those checks do not prove real cross-member security. Protected production routes remain disabled. Fixture visibility checks hide unavailable source details, but authoritative checks must run in trusted backend services. External/unverified/private media URLs are rejected. Report/claim/profile/directory destinations stay disabled pending owner confirmation.
-
-Official Member 4 task-division alignment remains pending verification because that document is unavailable locally. Detailed user-provided D01–D06 checklists guided the existing implementation.
+Member 1 MFA and copied-token logout revocation are preserved and compatibility-tested with Member 4 personal tools using disposable accounts. The updated complete suite includes 173 backend passes (one Windows skip), 40 frontend passes, six operator passes, two security CLI passes (two Windows skips), 11 Member 4 runner entries, 13 HTTP groups and six Chrome groups. Historical mock checks do not prove production authorization. All logs/screenshots/fixture credentials and the PR draft remain local, outside the approved 13-file commit scope.

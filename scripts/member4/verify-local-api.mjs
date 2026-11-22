@@ -7,7 +7,8 @@ const checks = [];
 async function request(path, { cookie = '', method = 'GET', body } = {}) {
   assert.ok(path.startsWith('/api/'));
   const response = await fetch(fixture.baseURL + path, { method, headers: { ...(cookie ? { Cookie: cookie } : {}), ...(body !== undefined ? { 'Content-Type': 'application/json' } : {}) }, ...(body !== undefined ? { body: JSON.stringify(body) } : {}) });
-  return { status: response.status, data: await response.json(), cookie: response.headers.getSetCookie().map((value) => value.split(';')[0]).join(';') };
+  const setCookies = response.headers.getSetCookie();
+  return { status: response.status, data: await response.json(), setCookies, cookie: setCookies.map((value) => value.split(';')[0]).join(';') };
 }
 async function check(name, run) { await run(); checks.push(name); }
 let a, b;
@@ -24,6 +25,13 @@ try {
     assert.equal((await request('/api/public/notices?status=DRAFT')).status, 400);
     assert.equal((await request('/api/member-tools/inbox')).status, 401);
     assert.equal((await request('/api/member-tools/bookmarks')).status, 401);
+  });
+  await check('professor keyword and department search use fictional live directory records', async () => {
+    const result = await request('/api/professors?q=Learning&department=AI');
+    assert.equal(result.status, 200);
+    assert.equal(result.data.meta.total, 1);
+    assert.equal(result.data.data[0].name, 'Fictional Learning Professor (Demo)');
+    assert.equal((await request('/api/professors?q=Learning&department=BSC')).data.meta.total, 0);
   });
   await check('real cookie login and current identity, invalid login denied', async () => {
     assert.equal((await request('/api/auth/login', { method: 'POST', body: { email: fixture.readerEmail, password: 'WrongPassword123' } })).status, 401);
@@ -83,10 +91,35 @@ try {
     assert.equal((await request(bookmarkPath, { cookie: a.cookie })).data.data.saved, false);
     assert.equal((await request('/api/public/lost-found/items')).status, 404);
   });
-  await check('logout invalidates this browser cookie', async () => {
+  await check('logout clears the browser session cookie; cleared-cookie requests are unauthenticated', async () => {
     const logout = await request('/api/auth/logout', { cookie: b.cookie, method: 'POST', body: {} });
     assert.equal(logout.status, 200);
-    assert.equal((await request('/api/auth/me')).status, 401);
+    const cleared = logout.setCookies.find((value) => value.startsWith('uids_token='));
+    assert.ok(cleared, 'Logout must send the session cookie');
+    assert.match(cleared, /^uids_token=;/);
+    assert.match(cleared, /Expires=Thu, 01 Jan 1970/i);
+    assert.match(cleared, /HttpOnly/i);
+    assert.equal((await request('/api/auth/me', { cookie: logout.cookie })).status, 401);
+    assert.equal((await request('/api/auth/me', { cookie: b.cookie })).status, 401, 'Copied JWT must be revoked');
+    assert.equal((await request('/api/member-tools/bookmarks', { cookie: b.cookie })).status, 401);
+    assert.equal((await request('/api/auth/me', { cookie: a.cookie })).status, 200, 'Other session must remain valid');
+  });
+  await check('MFA challenge is not member identity; verified session supports member tools and logout revokes copied token', async () => {
+    const login = await request('/api/auth/login', { method: 'POST', body: { email: fixture.mfaEmail, password: fixture.password } });
+    assert.deepEqual(login.data.data, { mfaRequired: true });
+    assert.equal((await request('/api/member-tools/inbox', { cookie: login.cookie })).status, 401);
+    const code = fixture.mfaRecoveryCodes.shift();
+    assert.ok(code, 'Restart disposable preview to replenish synthetic MFA recovery codes');
+    await fs.writeFile(new URL('../../node_modules/.cache/member4-e2e-fixtures.json', import.meta.url), JSON.stringify(fixture, null, 2), { mode: 0o600 });
+    const verified = await request('/api/security/mfa/verify', { cookie: login.cookie, method: 'POST', body: { code } });
+    assert.equal(verified.status, 200);
+    assert.equal((await request('/api/member-tools/preferences', { cookie: verified.cookie })).status, 200);
+    assert.equal((await request('/api/member-tools/bookmarks/' + fixture.publicNoticeId, { cookie: verified.cookie, method: 'PUT', body: {} })).status, 200);
+    assert.equal((await request('/api/member-tools/bookmarks', { cookie: verified.cookie })).data.meta.total, 1);
+    assert.equal((await request('/api/member-tools/inbox', { cookie: verified.cookie })).data.meta.total, 0);
+    assert.equal((await request('/api/auth/logout', { cookie: verified.cookie, method: 'POST', body: {} })).status, 200);
+    assert.equal((await request('/api/member-tools/bookmarks', { cookie: verified.cookie })).status, 401);
+    assert.equal((await request('/api/security/mfa/verify', { cookie: login.cookie, method: 'POST', body: { code } })).status, 400, 'Recovery code/challenge replay must fail');
   });
   await fs.writeFile(new URL('../../node_modules/.cache/member4-e2e-api-results.json', import.meta.url), JSON.stringify({ passed: checks.length, checks, scope: 'disposable local replica set; not production' }, null, 2));
   console.log(JSON.stringify({ passed: checks.length, checks }, null, 2));

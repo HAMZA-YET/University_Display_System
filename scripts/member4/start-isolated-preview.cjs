@@ -5,8 +5,9 @@ const crypto = require('node:crypto');
 const fs = require('node:fs/promises');
 const os = require('node:os');
 const root = path.resolve(__dirname, '../..');
-for (const key of ['MONGO_URI', 'MONGODB_URI', 'MONGO_TEST_URI', 'JWT_SECRET', 'BOOTSTRAP_TOKEN', 'BLOB_READ_WRITE_TOKEN', 'BLOB_STORE_ID', 'VERCEL']) delete process.env[key];
+for (const key of ['MONGO_URI', 'MONGODB_URI', 'MONGO_TEST_URI', 'JWT_SECRET', 'BOOTSTRAP_TOKEN', 'BLOB_READ_WRITE_TOKEN', 'BLOB_STORE_ID', 'VERCEL', 'MFA_ENCRYPTION_KEY', 'BACKUP_ENCRYPTION_KEY', 'ACCOUNT_DELIVERY', 'REQUIRE_PRIVILEGED_MFA']) delete process.env[key];
 Object.assign(process.env, { NODE_ENV: 'test', JWT_SECRET: crypto.randomBytes(48).toString('hex'), JWT_EXPIRES_IN: '1h', BCRYPT_ROUNDS: '4', CLIENT_ORIGIN: 'http://127.0.0.1:5186', ENABLE_STATUS_SYNC: 'false', AUTH_LOGIN_RATE_LIMIT: '1000', AUTH_RATE_LIMIT: '10000', ATTACHMENT_STORAGE: 'disabled', MONGOMS_DOWNLOAD_DIR: path.join(root, 'node_modules/.cache/mongodb-binaries'), MONGOMS_RESUME_DOWNLOAD: 'true', UPLOAD_DIR: path.join(os.tmpdir(), 'uids-member4-test-only') });
+process.env.MFA_ENCRYPTION_KEY = crypto.randomBytes(32).toString('hex');
 const { MongoMemoryReplSet } = require('mongodb-memory-server');
 const mongoose = require('mongoose');
 let repl, server;
@@ -28,6 +29,20 @@ async function main() {
   await F.createUserAndLogin(app, 'READER', { email: 'member4.other@kdu-uids.test', name: 'Fictional Other Member' });
   const author = await F.createUserAndLogin(app, 'AUTHOR');
   const reviewer = await F.createUserAndLogin(app, 'REVIEWER');
+  const admin = await F.createUserAndLogin(app, 'ADMIN');
+  const professor = await admin.agent.post('/api/professors').send({
+    name: 'Fictional Learning Professor (Demo)', titlePrefix: 'Dr.', department: 'AI',
+    position: 'ASSISTANT_PROFESSOR', officeRoom: 'TEST', officeBuilding: 'Fictional test building',
+    email: 'fictional.professor@kdu-uids.test', subjects: ['Fictional Machine Learning'], counsellingHours: [],
+  });
+  if (professor.status !== 201) throw Error('Synthetic professor fixture creation failed');
+  const mfaReader = await F.createUserAndLogin(app, 'READER', { email: 'member4.mfa@kdu-uids.test', name: 'Fictional MFA Member' });
+  const enrollment = await mfaReader.agent.post('/api/security/mfa/enroll').send({ password: F.PASSWORD });
+  if (enrollment.status !== 200) throw Error('Synthetic MFA enrollment failed');
+  const OTPAuth = require('otpauth');
+  const code = new OTPAuth.TOTP({ secret: OTPAuth.Secret.fromBase32(enrollment.body.data.secret), period: 30, digits: 6 }).generate({ timestamp: clock.now().getTime() });
+  const confirmed = await mfaReader.agent.post('/api/security/mfa/confirm').send({ code });
+  if (confirmed.status !== 200) throw Error('Synthetic MFA confirmation failed');
   await reader.agent.post('/api/member-tools/follows').send({ kind: 'category', target: 'EXAM' });
   clock.advance(1000);
   const common = { summary: 'Fictional integration test record. Not real university information.', body: 'This is fictional local test content. No university event or requirement is established.' };
@@ -36,9 +51,9 @@ async function main() {
   const withdrawn = await F.createApproved(author.agent, reviewer.agent, { ...common, title: '[Sample] Withdrawn integration' });
   await require('../../backend/src/modules/notices/notice.model').updateOne({ _id: withdrawn.id }, { $set: { status: 'WITHDRAWN' } });
   const draft = await author.agent.post('/api/notices').send(F.completeNotice({ ...common, title: '[Sample] Private draft sentinel' }));
-  const fixture = { baseURL: 'http://127.0.0.1:5000', publicNoticeId: publicNotice.id, campusNoticeId: campusNotice.id, withdrawnId: withdrawn.id, draftId: draft.body.data.id, readerEmail: 'member4.reader@kdu-uids.test', otherEmail: 'member4.other@kdu-uids.test', password: F.PASSWORD, fictional: true };
+  const fixture = { baseURL: 'http://127.0.0.1:5000', publicNoticeId: publicNotice.id, campusNoticeId: campusNotice.id, withdrawnId: withdrawn.id, draftId: draft.body.data.id, readerEmail: 'member4.reader@kdu-uids.test', otherEmail: 'member4.other@kdu-uids.test', mfaEmail: 'member4.mfa@kdu-uids.test', mfaRecoveryCodes: confirmed.body.data.recoveryCodes, password: F.PASSWORD, fictional: true };
   const output = path.join(root, 'node_modules/.cache/member4-e2e-fixtures.json');
-  await fs.writeFile(output, JSON.stringify(fixture, null, 2));
+  await fs.writeFile(output, JSON.stringify(fixture, null, 2), { mode: 0o600 });
   server = await new Promise((resolve, reject) => { const listener = app.listen(5000, '127.0.0.1', () => resolve(listener)); listener.on('error', reject); });
   console.log('ISOLATED_TEST_PREVIEW_READY ' + output);
 }

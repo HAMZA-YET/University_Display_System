@@ -1,23 +1,28 @@
-# Feature-by-feature status
+# Feature status and D01–D06 mapping — 2026-11-22
 
-'Works' below means the local code is wired and the stated isolated tests ran. It does not mean team approval, production deployment or real university data verification.
+Evidence below is local synthetic verification on main a53db54 plus the final-review changes. No production certification is implied. The original plans/prototypes remain historical records, not statements about today's live routes.
 
-| Feature | API/data boundary | Verified local status | Remaining limitation / approval |
+| Assignment | Current implementation and boundary | Actual verification | Remaining limit |
 |---|---|---|---|
-| D01 journeys, inventory, wireframes | Original docs/d01; no API | Preserved and backed up; architecture mapped in these reports | Official task division and updated UX sign-off pending |
-| D02 shared layout/nav/forms/states | frontend/src/components/layout and ui | Full frontend suite; built page/mobile menu and loading/empty states exercised | Legacy member4/components are overlapping disconnected prototype code; no duplicate shell mounted; full accessibility conformance not claimed |
-| D03 home / notice list / details | /api/public/home, /api/public/notices, /:id | Real HTTP, browser home/detail and backend publication/revision suites pass | Synthetic sample data only in the local preview; no production content verification |
-| D03 approved visibility / attachments | backend notices/visibility.js, public serializers and attachment gateway | DB-backed PUBLIC/CAMPUS/draft/withdrawn/security and attachment tests pass; guest campus-detail browser denial observed | Actual university audienceGroups and production media deployment require A/B review |
-| D04 notice keyword, category, department, date/sort | member4/search/liveSearch.js -> public notice API | Real filtered HTTP and rendered browser results; date payload validated by backend schema; KST inclusive bounds; newest/default sort | Scalar category/department only. Backend text-search semantics differ from prototype all-word matching; no draft/status public filter |
-| D04 professor search | /api/professors | Existing live-search contract tests and professor backend suite pass | Browser preview directory has no professor fixtures; no all-source ranking API |
-| D04 counts/pagination/URL/reset | backend metadata + React Router query state | HTTP disjoint pagination; frontend reset/URL tests; browser Back restored keyword/category/sort | Explicit detail Back-to-results/focus link is pending shared-page approval |
-| D05 public items / detail / approved photos | No mounted item endpoint on baseline main | /items unavailable state and missing API 404 verified; never falls back to mock records | C PR2 wiring/routes/privacy/photo service pending; old item/media mocks are isolated tests only |
-| D05 notice bookmarks | /api/member-tools/bookmarks[/noticeId] | Real cookie save/remove, duplicate prevention, owner separation and withdrawn eligibility tests pass; browser saved list verified | Item bookmarks unsupported; not inventing a type/id contract |
-| D05 categories/departments follows | /api/member-tools/follows | Real persistence, duplicates, owner tests; browser category follow verified | No C item topic/event contract; prototype compact/resolved display preferences are not production APIs |
-| D06 preferences | /api/member-tools/preferences | inApp/notices controls, owner isolation and browser save confirmation pass | Affects future notice/linked-event deliveries; no email/push or item backend |
-| D06 inbox/read/unread/count/all | /api/member-tools/inbox, PATCH /:id, POST /read-all | Backend 118-test suite includes delivery/read/isolation/idempotency; real HTTP and browser unread transition pass | Refresh-based inbox; no speculative realtime system |
-| D06 eligible event matching/dedup | Authentic DomainEvents -> owner/eventId unique Delivery index | Concurrent/retry/follow-time/schedule/withdrawal tests pass | C events not wired; production event retention/operations need review |
-| D06 safe navigation | /inbox/:id/open -> allowlisted notice path | Server eligibility/owner recheck, client URL rejection, real HTTP and browser opening verified | Explicit return-to-inbox link still pending shared NoticeDetails change |
-| Auth/authz/session | /api/auth cookie identity; protected server routes | Full auth/security suites, HTTP 401/403/cross-owner checks, browser login/logout/CAMPUS denial | Does not certify production identity configuration, real accounts or all screen-reader flows |
-| Samples and mocks | Mock directory disconnected; sample badges/footer | Build sentinel scan and browser fictional labels verified | Any future institution data import needs authoritative validation |
-| Tooling / bundle | Local test runner; dev dependencies; lazy routes | Zero audit findings; full suites; restart smoke; no >500 kB chunk warning | Shared changes need team review before publication; no remote CI result for these local edits |
+| D01 journeys, architecture and requirements | Existing plans preserved; this matrix maps current functionality | Read-only architecture/document review | Official task-division document unavailable; alignment pending |
+| D02 reusable layout/forms/cards/states | Live pages reuse frontend/src/components/layout and ui; no duplicate Member 4 shell mounted | Full frontend suite; Chrome mobile menu/skip link, error and empty UI | Full screen-reader/contrast audit not performed |
+| D03 public notices/details | Team public home/notices APIs and approved revision projection | Publication/time-revision/security suites; HTTP PUBLIC/CAMPUS/draft/withdrawal; browser detail/Back | Team B owns publishing; no production-data verification |
+| D04 notice keyword/category/department/date/sort | member4/search/liveSearch.js -> /api/public/notices; scalar filters, inclusive KST date endpoints, default/newest sort | Backend schema contracts, URL UI tests, live HTTP filters, browser filtered result | No multi-select OR, unified ranking, oldest/title sorts or public workflow-status filter |
+| D04 professor search | /api/professors; name/subject keyword, department, alphabetical backend order | Professor backend suite; live HTTP AI/BSC filter; Chrome fictional professor card | Not unified with notices; no notice dates/category/sort for professors |
+| D04 pagination/count/URL/reset | Server metadata and Router query parameters | Live HTTP disjoint pages; frontend Next/Back/restored filters/reset; browser detail/Back | Explicit return-to-search link/focus restoration on shared detail page pending |
+| D05 public items/photos | /items is an unavailable state; C API not mounted | HTTP missing route 404; browser unavailable page | BLOCKED by C/L; staged implementation must be adapted and verified |
+| D05 notice bookmarks | /api/member-tools/bookmarks | Cookie-auth add/remove/idempotency, owner isolation and withdrawn projection; browser save/list | Item bookmarks unsupported |
+| D05 topic follows | /api/member-tools/follows | Duplicate prevention, category/department matching, unfollow/history/account regressions | No item topic contract |
+| D06 preferences | Existing member-tools preferences; inApp/notices only | API/frontend preference changes and account isolation; Chrome confirmation | No email/push or prototype compact/resolved settings |
+| D06 inbox/read/count | /api/member-tools/inbox; read/unread/read-all | Backend, HTTP and browser suites; cross-owner denial, unread transitions | Refresh-based, not realtime; opening does not implicitly mark read |
+| D06 event delivery | syncInbox reads authentic publishing DomainEvents; unique owner/eventId delivery | Concurrent reads, retries, follow timing, scheduled start and disabled intervals | C CaseEvents are separate and not consumed |
+| Member 1 compatibility (D05/D06 dependency) | Existing MFA and copied-token logout revocation; no D auth implementation | TOTP/backend compatibility, recovery-code HTTP/Chrome sign-in, 401 while challenged, owner isolation, copied-cookie 401 after logout | Windows-specific permission/symlink tests skipped; production security acceptance not claimed |
+| D06 safe source navigation/privacy | Server eligibility recheck, client noticeDestination allowlist | Withdrawn/restricted title suppression, zero unavailable unread contribution, opening denied; URL contract tests | Explicit return-to-inbox UX pending; no C detail destination |
+
+## Search semantics
+
+Different scalar filters narrow results together. Notice queries of three or more characters use MongoDB text-search semantics; shorter queries use escaped contains matching. This is not the prototype all-words/OR-multiselect search. Professor queries use escaped name/subject contains matching. Backend results/counts/sort remain authoritative. Unknown legacy URL keys such as demo/status/account are not forwarded; invalid supported values or duplicate supported keys are rejected before requests. Alphabetic but unknown department codes may be rejected by the backend.
+
+## Notification semantics
+
+Deliveries are generated when the inbox is fetched/refreshed. Scheduled publication becomes eligible at its start time, without claiming a background worker has run. Disabling preferences gates future delivery; re-enabling does not replay the disabled interval. Follows do not replay earlier publications. Existing unavailable history remains generic, without title/summary/destination; unread counts exclude ineligible sources. Identity, account separation and visibility checks occur on the server; local tests are not production security approval.
