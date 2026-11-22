@@ -104,7 +104,7 @@ router.patch(
   '/:id/status',
   validate({ params: idParams, body: statusBody }),
   asyncHandler(async (req, res) => {
-    const user = await changeUser(req, { isActive: req.body.isActive }, (before, after) => ({
+    const user = await changeUser(req, { isActive: req.body.isActive, activationPending: false }, (before, after) => ({
       action: 'USER_STATUS_CHANGED',
       entityType: 'USER',
       entityId: after._id,
@@ -115,4 +115,13 @@ router.patch(
   })
 );
 
+router.patch('/:id/department', validate({ params: idParams, body: z.object({ department: z.string().regex(/^[A-Z]{2,10}$/).nullable() }).strict() }),
+  asyncHandler(async (req, res) => {
+    if (req.body.department && !(await require('../departments/department.model').exists({ code: req.body.department }))) throw AppError.badRequest('Unknown department.');
+    const user = await changeUser(req, { department: req.body.department }, (before, after) => ({
+      action: 'USER_DEPARTMENT_CHANGED', entityType: 'USER', entityId: after._id,
+      fromStatus: before.department, toStatus: after.department,
+    }));
+    res.json({ data: toUserView(user) });
+  }));
 module.exports = router;

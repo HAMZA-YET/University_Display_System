@@ -31,6 +31,7 @@ const envSchema = z.object({
     .default('false')
     .transform((v) => v === 'true'),
   BCRYPT_ROUNDS: z.coerce.number().int().min(4).max(15).default(12),
+  REQUIRE_PRIVILEGED_MFA: z.enum(['true', 'false']).default('false').transform(value => value === 'true'),
   AUTH_LOGIN_RATE_LIMIT: z.coerce.number().int().min(1).default(5),
   AUTH_RATE_LIMIT: z.coerce.number().int().min(1).default(100),
 });

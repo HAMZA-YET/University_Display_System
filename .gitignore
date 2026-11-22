@@ -29,3 +29,43 @@ member2/kdu-uids/
 *.njsproj
 *.sln
 *.sw?
+
+# Generated secrets and credential exports (keep examples and source visible)
+*.key
+*.pem
+*.p12
+*.pfx
+*.keystore
+*.jks
+id_rsa
+id_ed25519
+seed-credentials-*.json
+credentials-export-*.json
+credentials-export-*.csv
+recovery-codes-*.txt
+
+# Local database and backup artifacts; do not ignore all JSON/ZIP/source files
+/backups/
+/backend/backups/
+/database/dumps/
+/backend/database/dumps/
+*.uids-backup
+*.bson
+*.bson.gz
+*.mongodump
+*.mongodump.gz
+*.sqlite
+*.sqlite3
+*.db
+*.wt
+WiredTiger*
+mongod.lock
+*.backup.zip
+*.backup.tar
+*.backup.tar.gz
+
+# Explicitly named examples remain reviewable
+!*.key.example
+!*.pem.example
+!seed-credentials-*.example.json
+!credentials-export-*.example.json

@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import * as authApi from '../api/auth';
+import { securityRequest } from '../api/security';
 import { onUnauthorized } from '../api/client';
 import { createAdministrator } from '../api/setup';
 
@@ -29,9 +30,16 @@ export function AuthProvider({ children, initialUser }) {
 
   const login = useCallback(async (email, password) => {
     const u = await authApi.login(email, password);
+    setUser(u.mfaRequired ? null : u);
+    return u;
+  }, []);
+
+  const verifyMfa = useCallback(async (code) => {
+    const u = await securityRequest('mfa/verify', { code });
     setUser(u);
     return u;
   }, []);
+  const refreshProfile = useCallback(async () => { const u = await authApi.me(); setUser(u); }, []);
 
   const register = useCallback(async (name, email, password) => {
     const u = await authApi.register(name, email, password);
@@ -52,6 +60,6 @@ export function AuthProvider({ children, initialUser }) {
 
   const hasRole = useCallback((...roles) => Boolean(user && roles.includes(user.role)), [user]);
 
-  const value = useMemo(() => ({ user, loading, login, register, logout, completeSetup, hasRole }), [user, loading, login, register, logout, completeSetup, hasRole]);
+  const value = useMemo(() => ({ user, loading, login, register, logout, completeSetup, hasRole, verifyMfa, refreshProfile }), [user, loading, login, register, logout, completeSetup, hasRole, verifyMfa, refreshProfile]);
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

@@ -12,6 +12,8 @@ import NotFound from './pages/NotFound';
 import Forbidden from './pages/Forbidden';
 
 // Keep common public/login screens eager; load optional workflows on demand.
+const AccountSecurity = lazy(() => import('./pages/AccountSecurity'));
+const AccountRecovery = lazy(() => import('./pages/AccountRecovery'));
 const Events = lazy(() => import('./pages/Events'));
 const Professors = lazy(() => import('./pages/Professors'));
 const Register = lazy(() => import('./pages/Register'));
@@ -48,6 +50,8 @@ export default function App() {
             <Route path="/events" element={<Events />} />
             <Route path="/professors" element={<Professors />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/account-recovery" element={<AccountRecovery />} />
+            <Route element={<ProtectedRoute roles={['ADMIN', 'AUTHOR', 'REVIEWER', 'READER']} />}><Route path="/account-security" element={<AccountSecurity />} /></Route>
             <Route path="/register" element={<Register />} />
             <Route path="/setup" element={<Setup token={setupToken} onTokenChange={setSetupToken} />} />
             <Route path="/forbidden" element={<Forbidden />} />
