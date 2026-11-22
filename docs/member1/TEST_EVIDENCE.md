@@ -50,3 +50,11 @@ The root application suite covers the currently integrated team features. `membe
 The changed-file secret scan checks high-risk filename patterns, private-key headers, GitHub token patterns, credential-bearing MongoDB URIs and literal encryption-key assignments. It prints filenames/rule numbers only, never matched contents. It is a limited scan, not a full-history or binary archive audit. Final staged-index review is recorded in PROGRESS.
 
 Final review added explicit foreign-origin checks on new mutation routes, standard rate-limit errors and JWT-expiry tests. The final full suite passed 219 tests after these additions.
+
+## Shared integration review — 22 November 2026
+
+The original submission above was reviewed against shared main at 529f459. Review fixes preserve exact same-origin production requests without trusting forwarded host headers, make invitation account/token creation atomic, validate invitation departments, and preserve a valid session after an incorrect MFA-enrollment password. MFA login now preserves the requested destination, prevents simultaneous submissions, and bounds secret/code presentation on narrow screens. The setup utility restricts existing configuration permissions before writing keys and rejects symlink destinations.
+
+Fresh verification on macOS / Node 26.3.0 passed: backend Jest **171**, operator CLI **6**, security CLI/setup **4**, frontend Vitest **36**, and Member 4 runner **11**. The six standalone readiness checks, frontend lint and production build also passed. Readiness coverage and the Member 4 runner's internal grouped assertions are not counted again.
+
+The first review run exposed a temporary-directory alias on macOS in the restore test. Fixtures now use a canonical temporary root; the actual encrypted restore test remains enabled and an explicit symlink-target rejection regression was added. Runtime restore safeguards were not relaxed. All test databases and restore destinations were disposable; no production data, credentials, enrollment policy or delivery provider was changed. These automated checks do not replace the remaining domain-owner acceptance or a manual browser/deployment review.

@@ -6,6 +6,7 @@ const { ActionToken, SecurityFactor } = require('./models');
 const { digest, randomToken, encrypt, decrypt } = require('./crypto');
 const User = require('../users/user.model');
 const { hashPassword } = require('../auth/auth.service');
+const { assertDepartment } = require('../departments/department.service');
 const delivery = require('./delivery');
 const AppError = require('../../utils/AppError');
 const clock = require('../../utils/clock');
@@ -14,10 +15,10 @@ const otp = secret => new OTPAuth.TOTP({ issuer: 'UIDS', label: 'Account', algor
 async function requireTransactions() {
   if (!(await require('../../utils/transaction').supportsTransactions())) throw new AppError(503, 'SECURITY_TRANSACTIONS_REQUIRED', 'Account security requires a MongoDB replica set.');
 }
-async function issue(user, purpose, minutes) {
+async function issue(user, purpose, minutes, session) {
   const token = randomToken();
-  await ActionToken.create({ digest: digest(token), userId: user._id, purpose, version: user.tokenVersion,
-    expiresAt: new Date(clock.now().getTime() + minutes * 60000) });
+  await ActionToken.create([{ digest: digest(token), userId: user._id, purpose, version: user.tokenVersion,
+    expiresAt: new Date(clock.now().getTime() + minutes * 60000) }], session ? { session } : undefined);
   return token;
 }
 async function requestRecovery(email) {
@@ -45,17 +46,32 @@ async function consumePassword(token, purpose, password) {
 async function invite({ name, email, department }) {
   await requireTransactions();
   delivery.available();
-  const user = await User.create({ name, email, department: department || null, role: 'READER', isActive: false,
-    activationPending: true, passwordHash: await hashPassword(randomToken()) });
-  const token = await issue(user, 'activation', 24 * 60);
+  await assertDepartment(department);
+  const passwordHash = await hashPassword(randomToken());
+  let user;
+  let token;
+  await mongoose.connection.transaction(async session => {
+    [user] = await User.create([{ name, email, department: department || null, role: 'READER', isActive: false,
+      activationPending: true, passwordHash }], { session });
+    token = await issue(user, 'activation', 24 * 60, session);
+  });
   try { await delivery.deliver({ email, purpose: 'activation', token }); }
-  catch { await ActionToken.deleteOne({ digest: digest(token) }); await User.deleteOne({ _id: user._id, activationPending: true }); throw new AppError(503, 'DELIVERY_UNAVAILABLE', 'Invitation delivery failed.'); }
+  catch {
+    await mongoose.connection.transaction(async session => {
+      await ActionToken.deleteOne({ digest: digest(token) }, { session });
+      await User.deleteOne({ _id: user._id, activationPending: true }, { session });
+    });
+    throw new AppError(503, 'DELIVERY_UNAVAILABLE', 'Invitation delivery failed.');
+  }
   return user;
 }
 async function beginEnrollment(user, password) {
   await requireTransactions();
   const current = await User.findOne({ _id: user._id, isActive: true }).select('+passwordHash').lean();
-  if (!current || !(await bcrypt.compare(password, current.passwordHash))) throw AppError.unauthenticated('Password is incorrect.');
+  if (!current) throw AppError.unauthenticated();
+  if (!(await bcrypt.compare(password, current.passwordHash))) {
+    throw new AppError(403, 'CURRENT_PASSWORD_INCORRECT', 'Current password is incorrect.');
+  }
   if (current.mfaEnabled) throw new AppError(409, 'MFA_ALREADY_ENABLED', 'MFA is already enabled.');
   const secret = new OTPAuth.Secret({ size: 20 });
   const encryptedSecret = encrypt(secret.base32);

@@ -36,7 +36,8 @@ for (const purpose of ['activation', 'recovery']) {
   }));
 }
 router.post('/invitations', authenticate, authorize('ADMIN'), validate({ body: z.object({
-  name: z.string().trim().min(2).max(80), email, department: z.string().trim().min(1).max(80).optional(),
+  name: z.string().trim().min(2).max(80), email,
+  department: z.string().trim().toUpperCase().regex(/^[A-Z]{2,10}$/).optional(),
 }).strict() }), asyncHandler(async (req, res) => {
   const user = await service.invite(req.body);
   await audit.recordSafe(audit.contextFromRequest(req), { action: 'ACCOUNT_INVITED', entityType: 'USER', entityId: user._id });

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -20,6 +20,8 @@ export default function Login() {
   const { login, verifyMfa } = useAuth();
   const [mfaRequired, setMfaRequired] = useState(false);
   const [code, setCode] = useState('');
+  const [verifying, setVerifying] = useState(false);
+  const verificationPending = useRef(false);
   const navigate = useNavigate();
   const location = useLocation();
   const [error, setError] = useState(null);
@@ -29,29 +31,45 @@ export default function Login() {
     formState: { errors, isSubmitting },
   } = useForm({ resolver: zodResolver(schema), defaultValues: { email: '', password: '' } });
 
+  function finishLogin(user) {
+    navigate(location.state?.from || HOME_BY_ROLE[user.role] || '/', { replace: true });
+  }
+
   async function onSubmit(values) {
     setError(null);
     try {
       const user = await login(values.email, values.password);
       if (user.mfaRequired) { setMfaRequired(true); return; }
-      const from = location.state && location.state.from;
-      navigate(from || HOME_BY_ROLE[user.role] || '/', { replace: true });
+      finishLogin(user);
     } catch (err) {
       setError(err.message);
     }
   }
 
   async function submitMfa(event) {
-    event.preventDefault(); setError(null);
-    try { const user = await verifyMfa(code); setCode(''); navigate(HOME_BY_ROLE[user.role] || '/', { replace: true }); }
-    catch (err) { setCode(''); setError(err.message); }
+    event.preventDefault();
+    if (verificationPending.current) return;
+    verificationPending.current = true;
+    setVerifying(true);
+    setError(null);
+    try {
+      const user = await verifyMfa(code);
+      setCode('');
+      finishLogin(user);
+    } catch (err) {
+      setCode('');
+      setError(err.message);
+    } finally {
+      verificationPending.current = false;
+      setVerifying(false);
+    }
   }
   if (mfaRequired) return <div style={{ maxWidth: 480, margin: '0 auto' }}>
     <PageHeader title="Verify your sign-in" description="Enter your authenticator code or a one-use recovery code." />
     <form className="panel stack" onSubmit={submitMfa}>
-      <Input label="Authentication code" value={code} onChange={e => setCode(e.target.value)} autoComplete="one-time-code" required />
-      {error && <Alert type="error">{error}</Alert>}<Button type="submit">Verify</Button>
-      <Button type="button" onClick={() => { setMfaRequired(false); setCode(''); }}>Restart login</Button>
+      <Input label="Authentication code" value={code} onChange={e => setCode(e.target.value)} autoComplete="one-time-code" required disabled={verifying} />
+      {error && <Alert type="error">{error}</Alert>}<Button type="submit" busy={verifying}>Verify</Button>
+      <Button type="button" disabled={verifying} onClick={() => { setMfaRequired(false); setCode(''); }}>Restart login</Button>
     </form></div>;
 
   return (

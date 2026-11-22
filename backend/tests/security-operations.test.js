@@ -13,13 +13,17 @@ const { issue } = require('../src/modules/security/service');
 const { Evidence, root } = require('../src/modules/security/evidence');
 const clock = require('../src/utils/clock');
 const ctx = useTestApp();
-let temp, restored, evidenceId;
-beforeEach(async () => { temp = await fs.mkdtemp(path.join(os.tmpdir(), 'uids-security-')); process.env.BACKUP_ENCRYPTION_KEY = crypto.randomBytes(32).toString('hex'); });
+let tempRoot, temp, restored, evidenceId;
+beforeEach(async () => {
+  tempRoot = await fs.realpath(os.tmpdir());
+  temp = await fs.mkdtemp(path.join(tempRoot, 'uids-security-'));
+  process.env.BACKUP_ENCRYPTION_KEY = crypto.randomBytes(32).toString('hex');
+});
 afterEach(async () => {
   delete process.env.BACKUP_ENCRYPTION_KEY;
   if (restored) { await restored.dropDatabase(); await restored.close(); restored = null; }
   if (evidenceId) { await fs.unlink(path.join(root, evidenceId)).catch(() => {}); evidenceId = null; }
-  if (temp.startsWith(path.join(os.tmpdir(), 'uids-security-'))) await fs.rm(temp, { recursive: true, force: true });
+  if (temp && path.dirname(temp) === tempRoot && path.basename(temp).startsWith('uids-security-')) await fs.rm(temp, { recursive: true, force: true });
 });
 test('operations diagnostics require administrator and do not expose keys or database URI', async () => {
   expect((await request(ctx.app).get('/api/operations/status')).status).toBe(401);
@@ -65,4 +69,19 @@ test('encrypted backup restores real documents and private bytes into a locked s
   await expect(ops.restore(file, url.toString(), target)).rejects.toThrow('empty');
   const corrupted = await fs.readFile(file); corrupted[corrupted.length - 1] ^= 1; await fs.writeFile(path.join(temp, 'bad.uids-backup'), corrupted);
   await expect(ops.restore(path.join(temp, 'bad.uids-backup'), url.toString(), target)).rejects.toThrow();
+});
+(process.platform === 'win32' ? test.skip : test)('restore rejects a symbolic-link target before restoring documents or files', async () => {
+  const user = await createUser('READER');
+  const file = path.join(temp, 'symlink-check.uids-backup');
+  await ops.exclusive('BACKUP', () => ops.backup(file));
+  const directory = path.join(temp, 'real-target');
+  const link = path.join(temp, 'linked-target');
+  await fs.mkdir(directory);
+  await fs.symlink(directory, link, 'dir');
+  const url = new URL(process.env.MONGO_TEST_URI); url.pathname = '/uids_restore_' + crypto.randomBytes(8).toString('hex');
+  restored = await mongoose.createConnection(url.toString()).asPromise();
+  await expect(ops.restore(file, url.toString(), link)).rejects.toThrow('Unsafe restore directory');
+  expect(await restored.db.listCollections().toArray()).toHaveLength(0);
+  expect(await fs.readdir(directory)).toHaveLength(0);
+  expect((await mongoose.connection.db.collection('users').findOne({ _id: user._id })).tokenVersion).toBe(user.tokenVersion);
 });

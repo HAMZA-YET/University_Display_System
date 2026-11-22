@@ -39,11 +39,11 @@ export default function AccountSecurity() {
       {enabled === false && !secret && <form className="stack" onSubmit={e => submit(e, 'mfa/enroll')}>
         <Input label="Current password" type="password" name="password" autoComplete="current-password" required />
         <Button type="submit" busy={busy}>Start enrollment</Button></form>}
-      {secret && <><p>Enter this setup key in your authenticator. Keep it private:</p><code>{secret}</code>
+      {secret && <><p>Enter this setup key in your authenticator. Keep it private:</p><code className="mono" style={{ display: 'block', overflowWrap: 'anywhere' }}>{secret}</code>
         <form className="stack" onSubmit={e => submit(e, 'mfa/confirm')}><Input label="Authenticator code" name="code" autoComplete="one-time-code" required />
         <Button type="submit" busy={busy}>Confirm enrollment</Button></form></>}
       {codes.length > 0 && <><p>Store these recovery codes privately now. Each works once; they are not shown again.</p>
-        <pre>{codes.join('\n')}</pre><Button onClick={() => setCodes([])}>I saved my codes</Button></>}
+        <pre className="mono" style={{ maxWidth: '100%', whiteSpace: 'pre-wrap', overflowWrap: 'anywhere' }}>{codes.join('\n')}</pre><Button onClick={() => setCodes([])}>I saved my codes</Button></>}
     </section>
     {user?.role === 'ADMIN' && <form className="panel stack" onSubmit={e => submit(e, 'invitations')}><h2>Invite a reader</h2>
       <Input label="Name" name="name" required /><Input label="Email" name="email" type="email" required />

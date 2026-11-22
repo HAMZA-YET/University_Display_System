@@ -48,6 +48,48 @@ test('invitation activation is one-use, expiring, and does not affect existing r
   const user = await User.findById(invited.body.data.id).lean();
   expect(user.activationPending).toBe(false);
 });
+test('a failed invitation token write rolls back the pending user and permits a retry', async () => {
+  const admin = await createUser('ADMIN'); const agent = await loginAs(ctx.app, admin);
+  const body = { name: 'Invited Student', email: 'retry-invite@example.edu' };
+  const tokenWrite = jest.spyOn(ActionToken, 'create').mockRejectedValueOnce(new Error('Token write failed'));
+  expect((await agent.post('/api/security/invitations').send(body)).status).toBe(500);
+  expect(await User.exists({ email: body.email })).toBeNull();
+  expect(await ActionToken.countDocuments()).toBe(0);
+  expect(messages).toHaveLength(0);
+  tokenWrite.mockRestore();
+  expect((await agent.post('/api/security/invitations').send(body)).status).toBe(201);
+  expect(messages).toHaveLength(1);
+  expect((await request(ctx.app).post('/api/security/activation/complete').send({
+    token: messages[0].token, password: 'NewPassword123',
+  })).status).toBe(200);
+});
+test('failed invitation delivery removes both pending user and token before retry', async () => {
+  const admin = await createUser('ADMIN'); const agent = await loginAs(ctx.app, admin);
+  const body = { name: 'Invited Student', email: 'delivery-retry@example.edu' };
+  delivery.deliver.mockRejectedValueOnce(new Error('Private delivery failed'));
+  const failed = await agent.post('/api/security/invitations').send(body);
+  expect(failed.status).toBe(503);
+  expect(failed.body.error.code).toBe('DELIVERY_UNAVAILABLE');
+  expect(await User.exists({ email: body.email })).toBeNull();
+  expect(await ActionToken.countDocuments()).toBe(0);
+  expect((await agent.post('/api/security/invitations').send(body)).status).toBe(201);
+  expect(messages).toHaveLength(1);
+});
+test('invitations reject malformed or unknown departments and save canonical existing codes', async () => {
+  const admin = await createUser('ADMIN'); const agent = await loginAs(ctx.app, admin);
+  for (const department of ['invalid-department', 'NOPE']) {
+    const body = { name: 'Invited Student', email: 'department-invite@example.edu', department };
+    const rejected = await agent.post('/api/security/invitations').send(body);
+    expect(rejected.status).toBe(400);
+    expect(await User.exists({ email: body.email })).toBeNull();
+  }
+  expect(messages).toHaveLength(0);
+  const accepted = await agent.post('/api/security/invitations').send({
+    name: 'Invited Student', email: 'department-invite@example.edu', department: ' bsc ',
+  });
+  expect(accepted.status).toBe(201);
+  expect(accepted.body.data.department).toBe('BSC');
+});
 test.each(['expired', 'wrong-purpose', 'suspended'])('recovery denies %s tokens without changing a password', async kind => {
   const user = await createUser('READER');
   const token = await service.issue(user, kind === 'wrong-purpose' ? 'activation' : 'recovery', 30);
@@ -77,7 +119,11 @@ test('delivery failures do not leak a usable token through HTTP', async () => {
 });
 test('MFA requires password and confirmation, encrypts secrets, gates protected routes and rejects replay', async () => {
   const user = await createUser('ADMIN'); const old = await loginAs(ctx.app, user);
-  expect((await old.post('/api/security/mfa/enroll').send({ password: 'WrongPassword' })).status).toBe(401);
+  const wrongPassword = await old.post('/api/security/mfa/enroll').send({ password: 'WrongPassword' });
+  expect(wrongPassword.status).toBe(403);
+  expect(wrongPassword.body.error.code).toBe('CURRENT_PASSWORD_INCORRECT');
+  expect((await old.get('/api/auth/me')).status).toBe(200);
+  expect(await SecurityFactor.countDocuments()).toBe(0);
   const factor = await enroll(user);
   const stored = await SecurityFactor.findOne().select('+encryptedSecret +recoveryHashes').lean();
   expect(stored.encryptedSecret).not.toContain(factor.secret);
@@ -178,6 +224,35 @@ test('new account mutations reject foreign browser origins but accept configured
   expect((await agent.patch('/api/security/profile').set('Origin', 'https://untrusted.example').send({ name: 'Changed Name' })).status).toBe(403);
   expect((await agent.patch('/api/security/profile').set('Origin', 'http://127.0.0.1:5173').send({ name: 'Changed Name' })).status).toBe(200);
   expect((await agent.patch('/api/security/profile').set('Origin', 'http://localhost:9999').send({ name: 'Changed Again' })).status).toBe(403);
+});
+test('deployed same-origin account mutations work without a frontend origin setting and ignore forwarded hosts', async () => {
+  const user = await createUser('READER');
+  const signedIn = await request(ctx.app).post('/api/auth/login').send({ email: user.email, password: PASSWORD });
+  const cookie = signedIn.headers['set-cookie'][0].split(';')[0];
+  const keys = ['NODE_ENV', 'BCRYPT_ROUNDS', 'CLIENT_ORIGIN', 'VERCEL'];
+  const previous = Object.fromEntries(keys.map(key => [key, process.env[key]]));
+  const { resetEnvCache } = require('../src/config/env');
+  try {
+    process.env.NODE_ENV = 'production';
+    process.env.BCRYPT_ROUNDS = '12';
+    process.env.VERCEL = '1';
+    delete process.env.CLIENT_ORIGIN;
+    resetEnvCache();
+    const deployed = require('../src/app').createApp();
+    const update = () => request(deployed).patch('/api/security/profile')
+      .set('Cookie', cookie).set('Host', 'university-display-system.vercel.app').set('X-Forwarded-Proto', 'https');
+    expect((await update().set('Origin', 'https://university-display-system.vercel.app').send({ name: 'Same Origin' })).status).toBe(200);
+    expect((await update().set('Origin', 'http://university-display-system.vercel.app').send({ name: 'Wrong Scheme' })).status).toBe(403);
+    expect((await update().set('Origin', 'https://foreign.example').send({ name: 'Foreign Origin' })).status).toBe(403);
+    expect((await update().set('Origin', 'https://foreign.example').set('X-Forwarded-Host', 'foreign.example').send({ name: 'Spoofed Host' })).status).toBe(403);
+    expect((await update().set('Origin', 'https://university-display-system.vercel.app/path').send({ name: 'Origin With Path' })).status).toBe(403);
+  } finally {
+    for (const key of keys) {
+      if (previous[key] === undefined) delete process.env[key];
+      else process.env[key] = previous[key];
+    }
+    resetEnvCache();
+  }
 });
 
 test('expired JWTs are rejected before resolving a protected account', async () => {

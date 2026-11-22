@@ -9,7 +9,14 @@ module.exports = function trustedOrigin(req, res, next) {
   let allowed = false;
   try {
     const incoming = new URL(req.get('Origin')); const configured = new URL(env.CLIENT_ORIGIN);
-    allowed = req.get('Origin') === incoming.origin && incoming.origin === configured.origin;
+    const normalized = req.get('Origin') === incoming.origin && ['http:', 'https:'].includes(incoming.protocol);
+    // Same-origin deployments need no separate frontend origin setting. Use the
+    // actual Host header, never X-Forwarded-Host; req.protocol uses the app's
+    // explicit trusted-proxy configuration.
+    const host = req.get('host');
+    const sameOrigin = typeof host === 'string' && !/[\\/?#@\s]/.test(host)
+      && incoming.origin === new URL(`${req.protocol}://${host}`).origin;
+    allowed = normalized && (incoming.origin === configured.origin || sameOrigin);
     if (!allowed && env.NODE_ENV !== 'production') {
       const loopback = host => ['localhost', '127.0.0.1'].includes(host);
       allowed = req.get('Origin') === incoming.origin && loopback(incoming.hostname) && loopback(configured.hostname)

@@ -18,7 +18,7 @@ Use the root README's existing npm ci, MongoDB, seed and npm run dev commands. D
 
 1. Use a MongoDB replica set and an explicit application database in backend/.env. The team seed remains the source of synthetic role fixtures; this integration does not reset passwords.
 2. Copy backend/.env.example only if no backend/.env exists. Preserve current private configuration.
-3. Run: node backend/scripts/security-setup.js
+3. Run: node backend/scripts/security-setup.js. It restricts the existing configuration file to owner read/write permissions before adding keys, rejects symbolic-link destinations, and preserves existing keys.
 4. Set ACCOUNT_DELIVERY=local for synthetic local development. Messages are written only to ignored backend/.local/messages. Open these files privately and paste the token into /account-recovery. No token is returned by the recovery request endpoint. Production delivery is disabled until an approved provider is integrated.
 5. Enroll staff through /account-security and save recovery codes privately. REQUIRE_PRIVILEGED_MFA defaults to false for compatibility. Set it to true after coordinating rollout: staff role-authorized routes then deny unenrolled staff while allowing enrollment. Enrolled users always require MFA, regardless of this flag.
 6. Run npm test and npm run build. The first Mongo test run downloads a binary; MONGOMS_SYSTEM_BINARY may point to an existing mongod executable. Test databases are disposable.
@@ -27,7 +27,7 @@ Environment names: MFA_ENCRYPTION_KEY and BACKUP_ENCRYPTION_KEY are independent 
 
 ## Added API contract
 
-All routes use existing data/error envelopes. JSON bodies reject unknown fields. New security and private-evidence mutations check the browser Origin against CLIENT_ORIGIN (same-port loopback aliases only in development); requests without Origin remain available to non-browser API clients. Security routes use no-store and a local per-process/IP limiter of 30 requests per 15 minutes. Existing auth limits remain.
+All routes use existing data/error envelopes. JSON bodies reject unknown fields. New security and private-evidence mutations accept the configured CLIENT_ORIGIN or the exact same origin derived from the request's Host and trusted protocol. X-Forwarded-Host never grants access; same-port loopback aliases are allowed only in development. Requests without Origin remain available to non-browser API clients. Security routes use no-store and a local per-process/IP limiter of 30 requests per 15 minutes. Existing auth limits remain.
 
 | Method and path | Body / authorization | Result |
 |---|---|---|
