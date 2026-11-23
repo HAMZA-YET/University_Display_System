@@ -41,8 +41,10 @@ function singlePhoto(req, res, next) {
   });
 }
 
-// ------------------------------------------------------------ public (Member 4 can consume these)
-// Mounted at /api/public/lost-found
+// ------------------------------------------------------------ campus listing (Member 4 can consume these)
+// Mounted at /api/public/lost-found. The path is kept for compatibility, but
+// item listings, details and photos are for signed-in university members only:
+// visitors who are not logged in get 401. Only /capabilities stays open.
 const publicRouter = express.Router();
 
 publicRouter.get('/capabilities', asyncHandler(async (req, res) => {
@@ -50,6 +52,8 @@ publicRouter.get('/capabilities', asyncHandler(async (req, res) => {
   res.setHeader('Cache-Control', 'no-store');
   res.json({ data: { maxPhotoBytes: maxPhotoBytes(), maxPhotos: MAX_PHOTOS, photosAvailable: status.features.attachments } });
 }));
+
+publicRouter.use('/items', authenticate);
 
 publicRouter.get(
   '/items',

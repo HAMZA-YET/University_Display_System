@@ -70,11 +70,21 @@ describe('FE-LF Lost and found', () => {
     expect(screen.getByText(/share personal details/i)).toBeInTheDocument();
   });
 
-  test('FE-LF-3 anonymous visitors see a login prompt, not the claim form', async () => {
-    renderItem(null);
-    expect(await screen.findByText('Navy folding umbrella')).toBeInTheDocument();
-    expect(screen.queryByRole('button', { name: 'Claim' })).not.toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'Log in' })).toBeInTheDocument();
+  test('FE-LF-3 visitors who are not logged in are sent to the login page', () => {
+    render(
+      <AuthProvider initialUser={null}>
+        <MemoryRouter initialEntries={['/items']}>
+          <Routes>
+            <Route element={<ProtectedRoute />}>
+              <Route path="/items" element={<h1>Lost and found list</h1>} />
+            </Route>
+            <Route path="/login" element={<h1>Login page</h1>} />
+          </Routes>
+        </MemoryRouter>
+      </AuthProvider>
+    );
+    expect(screen.getByText('Login page')).toBeInTheDocument();
+    expect(screen.queryByText('Lost and found list')).not.toBeInTheDocument();
   });
 
   test('FE-LF-4 students can claim an open found item', async () => {

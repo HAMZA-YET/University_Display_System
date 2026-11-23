@@ -35,8 +35,8 @@ The shared files changed only where they had to be:
 
 | URL | Who | What |
 |---|---|---|
-| `/items` | everyone | Browse and search reports (Found / Lost, categories) |
-| `/items/:id` | everyone; claim needs login | Item details; claim form for FOUND items (hidden from the reporter) |
+| `/items` | signed in | Browse and search reports (Found / Lost, categories) |
+| `/items/:id` | signed in | Item details; claim form for FOUND items (hidden from the reporter) |
 | `/items/report` | signed in | Report a lost or found item (up to 3 photos) |
 | `/items/my-cases` | signed in | My reports and my claims |
 | `/items/my-reports/:id`, `/items/my-reports/:id/edit` | owner | Manage or edit a report |
@@ -47,7 +47,7 @@ The shared files changed only where they had to be:
 
 ## 3. API
 
-**Public** (`/api/public/lost-found`):
+**Campus listing, signed-in members only** (`/api/public/lost-found`, path kept for compatibility; `/capabilities` stays open, everything under `/items` returns 401 without a login):
 
 - `GET /items`: search with `q`, `type`, `category`, `page`
 - `GET /capabilities`: current photo byte/count limits and storage availability
@@ -90,18 +90,19 @@ The shared files changed only where they had to be:
 
 ## 4. Rules that matter
 
-- **Reporting:** a report is public as soon as it is posted. Members can post at most 10 reports in a rolling 24 hours; administrator reports are exempt. A per-member counter serializes concurrent quota checks. Multi-record changes require a MongoDB replica set and return 503 when transactions are unavailable.
+- **Members only:** listings, item details and photos are visible only to signed-in university members. Visitors who are not logged in are sent to the login page, and the API answers 401 (test LF-REPORT-0, FE-LF-3).
+- **Reporting:** a report is listed for members as soon as it is posted. Members can post at most 10 reports in a rolling 24 hours; administrator reports are exempt. A per-member counter serializes concurrent quota checks. Multi-record changes require a MongoDB replica set and return 503 when transactions are unavailable.
 - **Claims:** only FOUND items can be claimed. The reporter cannot claim their own item. Each claim has private evidence text, and each user can have one live claim per item.
 - **Concurrent approval:** approval is an atomic conditional update (`OPEN → COLLECTION_APPROVED`), backed by the partial unique index `lf_one_collector_per_item`. If two admins approve different claims at the same moment, exactly one succeeds. The other gets 409, and the remaining pending claims are rejected automatically.
 - **Physical handover:** the ADMIN must tick "identity checked" and enter the recipient's name. The item moves to `RETURNED`, and every step is written to the case history and audit log.
-- **Photo access:** photos of public items are public. Every image response is `private, no-store`, so later requests recheck current access. Photos of deleted items, or of items that are no longer public, are visible only to the owner and an authorized ADMIN; the configured privileged-MFA rule also applies.
+- **Photo access:** photos of listed items are visible to signed-in members. Every image response is `private, no-store`, so later requests recheck current access. Photos of deleted items, or of items that are no longer public, are visible only to the owner and an authorized ADMIN; the configured privileged-MFA rule also applies.
 - **Private evidence:** claim evidence text is never in public responses. Only the claimant and the ADMIN see it.
 
 ## 5. Contracts with other members
 
 ### Member 4 — search, attachments, notifications
 
-- **Search:** `GET /api/public/lost-found/items` returns only public, non-deleted items and never contact or evidence fields, so it is safe to index. Member 4's `/items` placeholder (`Member4Routes` / ItemsApp) is no longer routed. Member 4 can delete it or keep it as reference; its tests still pass.
+- **Search:** `GET /api/public/lost-found/items` (signed-in members only) returns only listed, non-deleted items and never contact or evidence fields. A future unified search must send the member's session cookie and must not show items to signed-out visitors. Member 4's `/items` placeholder (`Member4Routes` / ItemsApp) is no longer routed. Member 4 can delete it or keep it as reference; its tests still pass.
 - **Attachments:**
   - Photos use the team attachment gateway (`getGateway()`): local disk in development, Vercel Blob in production.
   - Rules: JPG or PNG only, at most 3 per report; 4 MiB each on Vercel/Blob, 5 MiB with local storage. The UI reads `/capabilities`. Actual image decoding validates extension/MIME agreement, one frame and a 16-megapixel bound. This is not malware scanning.
@@ -149,7 +150,7 @@ npm run lf:cleanup -w backend -- --apply --confirm-stopped
 
 These two differ from the original proposal (T07). Please confirm or change them:
 
-1. **Immediate publication.** Reports go public as soon as they are posted, with no moderation step.
+1. **Immediate publication.** Reports are listed for signed-in members as soon as they are posted, with no moderation step. (Since the members-only change, people who are not logged in cannot see them at all.)
    - Why: lost items are time-sensitive, and the rate limit, the ADMIN delete action and the photo warnings limit abuse.
    - Alternative: a `PENDING_REVIEW` status before reports go public.
 2. **ADMIN-only verification.** Only the `ADMIN` role approves claims and records handovers (`VERIFIER_ROLES = ['ADMIN']`).
@@ -158,7 +159,7 @@ These two differ from the original proposal (T07). Please confirm or change them
 ## 9. Demonstration
 
 1. For a disposable local database only, run `ALLOW_DEVELOPMENT_SEED=true npm run seed:development -w backend`, then `npm run dev`.
-2. Open `/items` signed out. Browse, search for "umbrella", and filter by Found.
+2. Open `/items` signed out: you are sent to the login page. Log in, then browse, search for "umbrella", and filter by Found.
 3. Log in as `student1@kdu-uids.test` / `Student@12345`.
    - Report a found item with a photo. It appears in `/items` immediately.
    - Open it: "This is your report" appears, and there is no claim form.

@@ -90,7 +90,7 @@ test('public and private photo responses cannot be cached and removal immediatel
   expect(uploaded.status).toBe(201);
   const photoId = uploaded.body.data.photoIds[0];
   const publicUrl = `/api/public/lost-found/items/${owner.item.id}/photos/${photoId}`;
-  const publicRead = await request(ctx.app).get(publicUrl);
+  const publicRead = await owner.agent.get(publicUrl);
   expect(publicRead.status).toBe(200);
   expect(publicRead.headers['cache-control']).toBe('private, no-store');
   expect(publicRead.body.equals(png)).toBe(true);
@@ -98,7 +98,7 @@ test('public and private photo responses cannot be cached and removal immediatel
   expect(privateRead.status).toBe(200);
   expect(privateRead.headers['cache-control']).toBe('private, no-store');
   expect((await owner.agent.delete(`${owner.uploadUrl}/${photoId}`)).status).toBe(200);
-  expect((await request(ctx.app).get(publicUrl)).status).toBe(404);
+  expect((await owner.agent.get(publicUrl)).status).toBe(404);
 });
 
 test('a report that closes during photo storage cannot acquire the uploaded photo', async () => {

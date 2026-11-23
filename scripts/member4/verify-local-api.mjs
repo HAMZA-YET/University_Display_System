@@ -90,7 +90,8 @@ try {
   await check('bookmark removal and connected lost-and-found API use live data', async () => {
     assert.equal((await request(bookmarkPath, { method: 'DELETE', cookie: a.cookie })).status, 200);
     assert.equal((await request(bookmarkPath, { cookie: a.cookie })).data.data.saved, false);
-    const items = await request('/api/public/lost-found/items');
+    assert.equal((await request('/api/public/lost-found/items')).status, 401);
+    const items = await request('/api/public/lost-found/items', { cookie: a.cookie });
     assert.equal(items.status, 200);
     assert.ok(Array.isArray(items.data.data));
     assert.ok(items.data.meta);

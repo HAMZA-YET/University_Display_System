@@ -159,14 +159,6 @@ export default function LostFoundItem() {
                   The admin has approved a claim for this item. New claims are paused.
                 </Alert>
               )}
-              {item.type === 'FOUND' && item.status === 'OPEN' && !user && (
-                <Alert type="info" title="Is this yours?">
-                  <Link to="/login" state={{ from: `/items/${item.id}` }}>
-                    Log in
-                  </Link>{' '}
-                  to claim it.
-                </Alert>
-              )}
                            {mine && (
                 <Alert type="info" title="This is your report">
                   You can&apos;t claim an item you reported. Manage it from <Link to={`/items/my-reports/${item.id}`}>My Reports</Link>.

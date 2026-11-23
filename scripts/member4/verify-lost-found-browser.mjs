@@ -39,7 +39,7 @@ const title = '[Local test] Found navy backpack ' + Date.now().toString(36);
 const proof = 'Fictional ownership proof: the inside pocket has a green star patch.';
 const contact = 'fictional.owner@example.test';
 try {
-  const anonymous = await session(), reporter = await session(), claimant = await session(), admin = await session();
+  const anonymous = await session(), viewer = await session(), reporter = await session(), claimant = await session(), admin = await session();
   await check('existing desktop/mobile header and footer match the previous built design', async () => {
     const old = await session();
     for (const width of [1280, 390]) {
@@ -56,15 +56,18 @@ try {
     }
     await old.context.close();
   });
-  await check('public browse replaces the unavailable screen and remains usable on small screens', async () => {
-    await visit(anonymous.page, '/items');
-    await anonymous.page.getByRole('heading', { name: 'Lost something? Found something?' }).waitFor();
-    assert.equal(await anonymous.page.getByText('Service not connected', { exact: true }).count(), 0);
+  await check('members-only browse sends visitors to login and remains usable on small screens', async () => {
+    await anonymous.page.goto(base + '/items');
+    await anonymous.page.waitForURL(/\/login$/);
+    await login(viewer.page, fixture.otherEmail);
+    await visit(viewer.page, '/items');
+    await viewer.page.getByRole('heading', { name: 'Lost something? Found something?' }).waitFor();
+    assert.equal(await viewer.page.getByText('Service not connected', { exact: true }).count(), 0);
     for (const width of [320, 390, 1280]) {
-      await anonymous.page.setViewportSize({ width, height: 900 });
-      assert.equal(await anonymous.page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true, `Lost/found overflow at ${width}px`);
+      await viewer.page.setViewportSize({ width, height: 900 });
+      assert.equal(await viewer.page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true, `Lost/found overflow at ${width}px`);
     }
-    await image(anonymous.page, 'lost-found-desktop.png');
+    await image(viewer.page, 'lost-found-desktop.png');
   });
   await check('protected reporting returns through login and saves a report with a real image', async () => {
     await visit(reporter.page, '/items/report');
@@ -90,22 +93,23 @@ try {
     const record = (await own.json()).data;
     assert.equal(record.photoIds.length, 1);
     photoId = record.photoIds[0];
-    const photo = await anonymous.context.request.get(base + `/api/public/lost-found/items/${itemId}/photos/${photoId}`);
+    assert.equal((await anonymous.context.request.get(base + `/api/public/lost-found/items/${itemId}`)).status(), 401);
+    const photo = await viewer.context.request.get(base + `/api/public/lost-found/items/${itemId}/photos/${photoId}`);
     assert.equal(photo.status(), 200);
     assert.equal(photo.headers()['cache-control'], 'private, no-store');
     assert.equal((await photo.body()).equals(png), true);
   });
   await check('search/detail hide private contact and prevent reporter self-claims', async () => {
-    await visit(anonymous.page, '/items?type=FOUND&q=navy%20backpack');
-    await anonymous.page.getByRole('link', { name: title, exact: true }).waitFor();
-    await anonymous.page.getByRole('link', { name: title, exact: true }).click();
-    await anonymous.page.getByRole('heading', { name: title, exact: true }).waitFor();
-    assert.equal(await anonymous.page.getByText(contact, { exact: true }).count(), 0);
+    await visit(viewer.page, '/items?type=FOUND&q=navy%20backpack');
+    await viewer.page.getByRole('link', { name: title, exact: true }).waitFor();
+    await viewer.page.getByRole('link', { name: title, exact: true }).click();
+    await viewer.page.getByRole('heading', { name: title, exact: true }).waitFor();
+    assert.equal(await viewer.page.getByText(contact, { exact: true }).count(), 0);
     await visit(reporter.page, '/items/' + itemId);
     await reporter.page.getByText('This is your report', { exact: true }).waitFor();
     assert.equal(await reporter.page.getByRole('button', { name: 'Claim', exact: true }).count(), 0);
-    await anonymous.page.setViewportSize({ width: 390, height: 844 });
-    await image(anonymous.page, 'lost-found-mobile.png');
+    await viewer.page.setViewportSize({ width: 390, height: 844 });
+    await image(viewer.page, 'lost-found-mobile.png');
   });
   await check('another member submits a private ownership claim with owner isolation', async () => {
     await login(claimant.page, fixture.otherEmail);
@@ -126,7 +130,7 @@ try {
     await admin.page.getByRole('button', { name: 'Approve', exact: true }).click();
     await admin.page.getByRole('dialog', { name: 'Approve this claim?' }).getByRole('button', { name: 'Approve', exact: true }).click();
     await admin.page.getByRole('button', { name: 'Record handover', exact: true }).waitFor();
-    const listed = await anonymous.context.request.get(base + '/api/public/lost-found/items/' + itemId);
+    const listed = await viewer.context.request.get(base + '/api/public/lost-found/items/' + itemId);
     assert.equal(listed.status(), 200, 'Approval must not imply physical return');
     await claimant.page.reload();
     const collection = claimant.page.getByText('Where to collect:', { exact: true });
@@ -140,8 +144,8 @@ try {
     await dialog.getByRole('checkbox', { name: /I checked the collector/ }).check();
     await dialog.getByRole('button', { name: 'Record handover', exact: true }).click();
     await admin.page.getByText('Handover recorded. The item is now returned to its owner.', { exact: true }).waitFor();
-    assert.equal((await anonymous.context.request.get(base + '/api/public/lost-found/items/' + itemId)).status(), 404);
-    assert.equal((await anonymous.context.request.get(base + `/api/public/lost-found/items/${itemId}/photos/${photoId}`)).status(), 404);
+    assert.equal((await viewer.context.request.get(base + '/api/public/lost-found/items/' + itemId)).status(), 404);
+    assert.equal((await viewer.context.request.get(base + `/api/public/lost-found/items/${itemId}/photos/${photoId}`)).status(), 404);
     assert.equal((await reporter.context.request.get(base + `/api/lost-found/items/${itemId}/photos/${photoId}`)).status(), 200);
     assert.equal((await claimant.context.request.get(base + `/api/lost-found/items/${itemId}/photos/${photoId}`)).status(), 404);
   });
