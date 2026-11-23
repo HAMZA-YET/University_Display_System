@@ -27,6 +27,8 @@ const attachments = require('./modules/attachments/attachment.routes');
 const adminRoutes = require('./modules/admin/admin.routes');
 const memberToolsRoutes = require('./modules/member-tools/memberTools.routes');
 const setupRoutes = require('./modules/setup/setup.routes');
+const lostFound = require('./modules/lostFound/lostFound.routes');
+const { authorizeEvidence: lostFoundEvidence } = require('./modules/lostFound/lostFound.evidence');
 
 /**
  * Builds the Express app without listening, so tests can use it directly.
@@ -78,7 +80,7 @@ function createApp(options = {}) {
       generalLimit: options.authRateLimit || env.AUTH_RATE_LIMIT,
     })
   );
-  app.use('/api/private-evidence', require('./modules/security/evidence').createEvidenceRouter(options.authorizeEvidence));
+  app.use('/api/private-evidence', require('./modules/security/evidence').createEvidenceRouter(options.authorizeEvidence || lostFoundEvidence));
   app.use('/api/security', require('./modules/security/routes')());
   app.use('/api/users', userRoutes);
   app.use('/api/departments', departmentRoutes);
@@ -95,6 +97,8 @@ function createApp(options = {}) {
   app.use('/api/admin', adminRoutes);
   app.use('/api/member-tools', memberToolsRoutes);
   app.use('/api/setup', setupRoutes);
+  app.use('/api/public/lost-found', lostFound.publicRouter);
+  app.use('/api/lost-found', lostFound.router);
 
   app.use('/api', notFound);
   app.use(notFound);

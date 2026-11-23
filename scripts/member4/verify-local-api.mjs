@@ -2,19 +2,21 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 const fixture = JSON.parse(await fs.readFile(new URL('../../node_modules/.cache/member4-e2e-fixtures.json', import.meta.url), 'utf8'));
 assert.equal(fixture.fictional, true);
-assert.equal(fixture.baseURL, 'http://127.0.0.1:5000');
+assert.equal(fixture.baseURL, 'http://127.0.0.1:5017');
 const checks = [];
 async function request(path, { cookie = '', method = 'GET', body } = {}) {
   assert.ok(path.startsWith('/api/'));
   const response = await fetch(fixture.baseURL + path, { method, headers: { ...(cookie ? { Cookie: cookie } : {}), ...(body !== undefined ? { 'Content-Type': 'application/json' } : {}) }, ...(body !== undefined ? { body: JSON.stringify(body) } : {}) });
-  return { status: response.status, data: await response.json(), cookie: response.headers.getSetCookie().map((value) => value.split(';')[0]).join(';') };
+  const setCookies = response.headers.getSetCookie();
+  return { status: response.status, data: await response.json(), setCookies, cookie: setCookies.map((value) => value.split(';')[0]).join(';') };
 }
 async function check(name, run) { await run(); checks.push(name); }
 let a, b;
 try {
   await check('ready health uses the disposable loopback database', async () => assert.equal((await request('/api/ready')).data.data.ready, true));
   await check('public notices exclude CAMPUS, drafts and withdrawn content', async () => {
-    const result = await request('/api/public/notices?q=Integration&category=EXAM&department=BSC&from=2026-11-19T00:00:00%2B09:00&to=2026-11-19T23:59:59.999%2B09:00&sort=newest');
+    const dates = new URLSearchParams({ from: fixture.publicationDate + 'T00:00:00+09:00', to: fixture.publicationDate + 'T23:59:59.999+09:00' });
+    const result = await request('/api/public/notices?q=Integration&category=EXAM&department=BSC&sort=newest&' + dates);
     assert.equal(result.status, 200); assert.deepEqual(result.data.data.map((row) => row.id), [fixture.publicNoticeId]);
     assert.equal((await request('/api/public/notices/' + fixture.campusNoticeId)).status, 404);
     assert.equal((await request('/api/public/notices/' + fixture.draftId)).status, 404);
@@ -24,6 +26,13 @@ try {
     assert.equal((await request('/api/public/notices?status=DRAFT')).status, 400);
     assert.equal((await request('/api/member-tools/inbox')).status, 401);
     assert.equal((await request('/api/member-tools/bookmarks')).status, 401);
+  });
+  await check('professor keyword and department search use fictional live directory records', async () => {
+    const result = await request('/api/professors?q=Learning&department=AI');
+    assert.equal(result.status, 200);
+    assert.equal(result.data.meta.total, 1);
+    assert.equal(result.data.data[0].name, 'Fictional Learning Professor (Demo)');
+    assert.equal((await request('/api/professors?q=Learning&department=BSC')).data.meta.total, 0);
   });
   await check('real cookie login and current identity, invalid login denied', async () => {
     assert.equal((await request('/api/auth/login', { method: 'POST', body: { email: fixture.readerEmail, password: 'WrongPassword123' } })).status, 401);
@@ -60,7 +69,7 @@ try {
   await check('inbox listing is owner-scoped and repeated synchronization deduplicates deliveries', async () => {
     const first = await request('/api/member-tools/inbox', { cookie: a.cookie });
     const second = await request('/api/member-tools/inbox', { cookie: a.cookie });
-    // Preference re-enabling starts now; the harness clock is unchanged, publication equality is eligible.
+    // Existing delivered history remains after preferences are re-enabled.
     assert.equal(first.status, 200); assert.equal(first.data.meta.total, 2); assert.deepEqual(second.data.data.map((row) => row.id), first.data.data.map((row) => row.id));
     assert.equal((await request('/api/member-tools/inbox', { cookie: b.cookie })).data.meta.total, 0);
   });
@@ -78,15 +87,46 @@ try {
     assert.equal((await request('/api/member-tools/inbox/read-all', { cookie: a.cookie, method: 'POST', body: {} })).data.data.unread, 0);
     await request(url, { cookie: a.cookie, method: 'PATCH', body: { read: false } });
   });
-  await check('bookmark removal and unavailable item endpoint are truthful', async () => {
+  await check('bookmark removal and connected lost-and-found API use live data', async () => {
     assert.equal((await request(bookmarkPath, { method: 'DELETE', cookie: a.cookie })).status, 200);
     assert.equal((await request(bookmarkPath, { cookie: a.cookie })).data.data.saved, false);
-    assert.equal((await request('/api/public/lost-found/items')).status, 404);
+    const items = await request('/api/public/lost-found/items');
+    assert.equal(items.status, 200);
+    assert.ok(Array.isArray(items.data.data));
+    assert.ok(items.data.meta);
+    const capabilities = await request('/api/public/lost-found/capabilities');
+    assert.equal(capabilities.status, 200);
+    assert.equal(capabilities.data.data.maxPhotos, 3);
   });
-  await check('logout invalidates this browser cookie', async () => {
+  await check('logout clears the browser session cookie; cleared-cookie requests are unauthenticated', async () => {
     const logout = await request('/api/auth/logout', { cookie: b.cookie, method: 'POST', body: {} });
     assert.equal(logout.status, 200);
-    assert.equal((await request('/api/auth/me')).status, 401);
+    const cleared = logout.setCookies.find((value) => value.startsWith('uids_token='));
+    assert.ok(cleared, 'Logout must send the session cookie');
+    assert.match(cleared, /^uids_token=;/);
+    assert.match(cleared, /Expires=Thu, 01 Jan 1970/i);
+    assert.match(cleared, /HttpOnly/i);
+    assert.equal((await request('/api/auth/me', { cookie: logout.cookie })).status, 401);
+    assert.equal((await request('/api/auth/me', { cookie: b.cookie })).status, 401, 'Copied JWT must be revoked');
+    assert.equal((await request('/api/member-tools/bookmarks', { cookie: b.cookie })).status, 401);
+    assert.equal((await request('/api/auth/me', { cookie: a.cookie })).status, 200, 'Other session must remain valid');
+  });
+  await check('MFA challenge is not member identity; verified session supports member tools and logout revokes copied token', async () => {
+    const login = await request('/api/auth/login', { method: 'POST', body: { email: fixture.mfaEmail, password: fixture.password } });
+    assert.deepEqual(login.data.data, { mfaRequired: true });
+    assert.equal((await request('/api/member-tools/inbox', { cookie: login.cookie })).status, 401);
+    const code = fixture.mfaRecoveryCodes.shift();
+    assert.ok(code, 'Restart disposable preview to replenish synthetic MFA recovery codes');
+    await fs.writeFile(new URL('../../node_modules/.cache/member4-e2e-fixtures.json', import.meta.url), JSON.stringify(fixture, null, 2), { mode: 0o600 });
+    const verified = await request('/api/security/mfa/verify', { cookie: login.cookie, method: 'POST', body: { code } });
+    assert.equal(verified.status, 200);
+    assert.equal((await request('/api/member-tools/preferences', { cookie: verified.cookie })).status, 200);
+    assert.equal((await request('/api/member-tools/bookmarks/' + fixture.publicNoticeId, { cookie: verified.cookie, method: 'PUT', body: {} })).status, 200);
+    assert.equal((await request('/api/member-tools/bookmarks', { cookie: verified.cookie })).data.meta.total, 1);
+    assert.equal((await request('/api/member-tools/inbox', { cookie: verified.cookie })).data.meta.total, 0);
+    assert.equal((await request('/api/auth/logout', { cookie: verified.cookie, method: 'POST', body: {} })).status, 200);
+    assert.equal((await request('/api/member-tools/bookmarks', { cookie: verified.cookie })).status, 401);
+    assert.equal((await request('/api/security/mfa/verify', { cookie: login.cookie, method: 'POST', body: { code } })).status, 400, 'Recovery code/challenge replay must fail');
   });
   await fs.writeFile(new URL('../../node_modules/.cache/member4-e2e-api-results.json', import.meta.url), JSON.stringify({ passed: checks.length, checks, scope: 'disposable local replica set; not production' }, null, 2));
   console.log(JSON.stringify({ passed: checks.length, checks }, null, 2));

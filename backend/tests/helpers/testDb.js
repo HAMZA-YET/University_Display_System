@@ -13,6 +13,11 @@ require('../../src/modules/professors/professor.model');
 require('../../src/modules/domainEvents/domainEvent.model');
 require('../../src/modules/audit/audit.model');
 require('../../src/modules/attachments/storedFile.model');
+require('../../src/modules/lostFound/item.model');
+require('../../src/modules/lostFound/claim.model');
+require('../../src/modules/lostFound/caseEvent.model');
+require('../../src/modules/lostFound/counter.model');
+require('../../src/modules/lostFound/notice.model');
 
 const { ensureDefaultDepartments } = require('../../src/modules/departments/department.service');
 const { resetTransactionCache } = require('../../src/utils/transaction');
