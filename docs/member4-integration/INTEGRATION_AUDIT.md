@@ -1,26 +1,37 @@
-# UIDS Member 4 integration audit — continuation, 2026-11-19
+# Member 4 integration audit — final verification, 2026-11-22
 
-Workspace: the isolated repository checkout
-Baseline: main 0d67f079e6732ac5caf8265e477511a8a9860669. Existing local changes were retained; implementation preserved the existing checkout; review preparation creates a local commit only, with no push, merge or deployment. Original Member4 source/documents and the old integration checkout remain separate.
+Branch: `feature/member4-final-review`. Baseline: latest fetched `main`, `a53db54fa24f0237ef42bcad2f9a2eb33a4add45`. This is an independent Member 4 verification; not production certification or team approval.
 
-## What is connected
+## Current integration
 
-Root npm workspaces frontend/backend and the root lockfile define the application. React/Vite/React Router uses the shared AuthProvider and cookie Axios client; Express/Mongoose supplies real public and protected endpoints. D03 home/notices/details already use the team APIs. D04 uses /api/public/notices and /api/professors, now with the verified category/date/sort fields. D05 notice bookmarks/follows and D06 preferences/inbox use /api/member-tools with database-derived req.user. No production Member4 route imports the old mocks.
+PR #3 (Member 4, commit 490abfc) and PR #2 (Member 3, commit 3e640f6) were merged on 2026-11-20. A merged package is not necessarily mounted functionality. The root workspaces remain `frontend` and `backend`; Member 3 remains staged under `member3-lost-found/client` and `server`.
 
-Connected APIs are real code, not proof that their current database contains real university information. All data created for this work is fictional in a disposable loopback replica set. Original sample content is marked [Sample]/[Demo], public notice cards/details show sample badges, and the footer identifies sample records as fictional. The built JavaScript was scanned and contains none of the legacy synthetic account/item/media sentinels. No fictional fallback is returned when live APIs fail.
+The shared app mounts `/search`, `/saved-interests`, `/notifications`, notice pages and the professor directory. Search uses `/api/public/notices` and `/api/professors`. Saved interests and inbox use authenticated `/api/member-tools` endpoints with server-derived identity. Live routes do not import the legacy mock adapters. Requests that fail show errors; they do not substitute fictional records.
 
-## Prior test-environment failure resolved
+`/items` explicitly says the service is not connected. `backend/src/app.js` mounts neither Member 3 router; `frontend/src/App.jsx` registers none of its pages. The isolated API check confirms `/api/public/lost-found/items` returns 404. Member 3 tests are outside the current workspace test roots. No Member 3 files, routes, claims, handovers, photos or events were changed by this review.
 
-The earlier backend test failure was EPERM at the default MongoDB cache, followed by an interrupted 599.7 MB binary download. The remaining archive was resumed with MONGOMS_RESUME_DOWNLOAD=true in node_modules/.cache/mongodb-binaries. Official mongodb-memory-server download/extraction completed, and full DB-backed tests now pass. scripts/member4/test-backend.cjs makes the cache/resume settings repeatable and removes inherited production DB/signing/blob variables before Jest; the existing global setup creates a fresh test replica set and random databases. No production database or account was used.
+## Verified boundaries
 
-## Dependency and performance review
+Disposable replica sets, random per-suite databases, generated test signing keys and synthetic accounts were used. The manual preview binds only to 127.0.0.1:5000, disables attachments and discards production DB/signing/blob settings. No production credentials, database, seed/bootstrap command or real account was used.
 
-The four moderate npm findings shared minimatch advisory GHSA-g3hv-75wg-m249 (development tooling). Compatible ESLint 10.15.0/config-array 0.23.6 resolve minimatch 11.0.9. Latest nodemon 3.1.14 still depended on affected minimatch 10, so backend devDependency is pinned to compatible 3.1.11 using minimatch 3.1.5. Original ^3.1.7 allowed this release. No production dependency versions changed. Final npm audit reports zero findings; this is a point-in-time audit, not a guarantee against future advisories. No force/major upgrade or major transitive override was used.
+The full applicable backend/frontend suites, Member 4 Node regressions, readiness checks, lint, build, 13 live HTTP groups and six Chrome groups passed. Counts and corrected test-authoring failures are in TEST_RESULTS.md. Screenshots and raw results stay outside the proposed Git diff; reproduction is documented there.
 
-Optional page imports in frontend/src/App.jsx now use React.lazy/Suspense. Paths, role guards, AuthProvider, API behavior and publishing workflows are unchanged. Login stays eager because an existing setup-to-login regression requires immediate form availability. Final entry JS 406,934 bytes; entry plus preloaded JS 518,022 bytes, down from about 614,450 bytes. All individual chunks are below the existing 500 kB warning threshold; the warning was not suppressed. See TEST_RESULTS for actual checks and earlier corrected failures.
+Notice samples use [Sample] titles, explicit fictional summaries and existing sample badges. The added professor fixture ends in (Demo), triggering the existing fictional-profile badge. The footer states that sample records are fictional. Connected APIs do not prove institution verification of their contents.
 
-## Member 3 and shared boundaries
+## Changes and findings
 
-PR #2 was rechecked read-only: open, unmerged, head 3e640f655e2f7c6a4918a5d906b44fd02aada732, base 0d67f079e6732ac5caf8265e477511a8a9860669. Its 45 files are staged under member3-lost-found/client and server with shared.diff. main uses frontend/backend. /api/public/lost-found/items returns 404, and /items visibly reports service not connected. No C code or speculative routes were added. Review/mounting, /items vs /lost-found, photo eligibility, item bookmarks and item events remain C/L decisions.
+No production application defect was established requiring an application-source change. The Member 4 logout verifier had a coverage defect: an unauthenticated request after logout did not prove cookie clearing. It now checks the expired HttpOnly uids_token response and sends the cleared cookie. On updated main, Member 1 records revocation of the copied JWT; the HTTP/backend/browser checks now explicitly verify that behavior as well as cookie clearing.
 
-The continuation explicitly authorized compatible dependency fixes and safe bundle optimization in this isolated copy. Shared-file changes are limited to App.jsx (loading boundaries), backend/package.json (dev watcher pin) and package-lock.json. No backend production source, notice lifecycle/schema, shared notice components, root README, CI or Vercel configuration changed. Explicit detail return-context links remain pending approval. Official Member4 task-division alignment remains unverified because the document is unavailable locally.
+New regressions cover unfollow isolation/history, scheduled retry deduplication and withdrawn scheduled-source privacy; frontend tests cover loading/error/keyboard retry, invalid URLs, pagination/history and professor filters. A manual browser verifier and a synthetic professor fixture make the evidence reproducible.
+
+Known inherited issues remain: optional lazy routes have Suspense loading fallback but no active error boundary for rejected chunk downloads; explicit detail return/focus controls need shared-page approval; full accessibility, multi-browser and production authorization acceptance are unverified. Official task-division alignment remains pending because its document is unavailable locally.
+
+No contribution commit, push, PR creation, merge, deployment, production configuration edit or Member 4 edit to shared authentication/user models was performed. Incoming Member 1 changes were preserved exactly.
+
+## Safe update from the prior baseline
+
+Before integrating Member 1 PR #4, 14 working files were copied and hash-verified, a complete repository bundle verified and a recovery stash retained outside the proposed contribution. There were no local branch commits or overlapping incoming/local paths. Updating the review branch to a53db54 required no commit replay or conflict resolution; restored file contents matched the backup allowing only CRLF/LF normalization. No existing history was rewritten. The optional PR draft was preserved outside the checkout, leaving the approved 13-file scope.
+
+Latest-main MFA enrollment/challenge verification, token revocation, guards, user model, security operations, dependencies and production configuration are unchanged in the proposed diff. Updated root tests include Member 1's security suites and security CLI. Exact results: 16 backend suites, 173 passed/one skipped; operator six passed; security CLI two passed/two skipped; frontend 40; Member 4 runner 11; HTTP 13 groups and Chrome six groups. Windows skips remain explicit.
+
+The manual browser helper now uses Node fileURLToPath, with a Windows space-containing path round-trip check. The preview uses a generated local MFA encryption key and synthetic enrolled reader; no institution account or external delivery is involved. No test secret/cookie/recovery code is included in logs/screenshots/proposed files. Prior 529f459 evidence is historical and is superseded by the updated-main results in TEST_RESULTS.md.

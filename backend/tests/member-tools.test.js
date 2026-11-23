@@ -26,6 +26,77 @@ async function publish({ author, reviewer }, overrides) {
 }
 
 describe('Account-linked member tools', () => {
+  test('MFA challenge cannot access member tools; verified sessions work and copied logout tokens are revoked', async () => {
+    const previousKey = process.env.MFA_ENCRYPTION_KEY;
+    process.env.MFA_ENCRYPTION_KEY = require('crypto').randomBytes(32).toString('hex');
+    try {
+      const OTPAuth = require('otpauth');
+      const u = await actors();
+      await subscribe(u.a.agent);
+      const n = await publish(u);
+      const enrolled = await u.a.agent.post('/api/security/mfa/enroll').send({ password: F.PASSWORD });
+      expect(enrolled.status).toBe(200);
+      const code = () => new OTPAuth.TOTP({ secret: OTPAuth.Secret.fromBase32(enrolled.body.data.secret), period: 30, digits: 6 }).generate({ timestamp: clock.now().getTime() });
+      expect((await u.a.agent.post('/api/security/mfa/confirm').send({ code: code() })).status).toBe(200);
+      const agent = request.agent(ctx.app);
+      const login = await agent.post('/api/auth/login').send({ email: u.a.user.email, password: F.PASSWORD });
+      expect(login.body.data).toEqual({ mfaRequired: true });
+      for (const path of ['bookmarks', 'follows', 'preferences', 'inbox']) {
+        expect((await agent.get(`${base}/${path}`)).status).toBe(401);
+      }
+      clock.advance(31000);
+      const verified = await agent.post('/api/security/mfa/verify').send({ code: code() });
+      expect(verified.status).toBe(200);
+      const copiedCookie = verified.headers['set-cookie'].find((value) => value.startsWith('uids_token=')).split(';')[0];
+      expect((await agent.put(`${base}/bookmarks/${n.id}`).send({})).status).toBe(200);
+      expect((await agent.get(`${base}/bookmarks`)).body.meta.total).toBe(1);
+      expect((await agent.get(`${base}/inbox`)).body.meta.total).toBe(1);
+      expect((await u.b.agent.get(`${base}/bookmarks`)).body.meta.total).toBe(0);
+      expect((await agent.post('/api/auth/logout')).status).toBe(200);
+      for (const path of ['bookmarks', 'follows', 'preferences', 'inbox']) {
+        expect((await request(ctx.app).get(`${base}/${path}`).set('Cookie', copiedCookie)).status).toBe(401);
+      }
+      expect((await u.b.agent.get(`${base}/preferences`)).status).toBe(200);
+    } finally {
+      if (previousKey === undefined) delete process.env.MFA_ENCRYPTION_KEY;
+      else process.env.MFA_ENCRYPTION_KEY = previousKey;
+    }
+  });
+
+  test('unfollow stops future deliveries without deleting history or another account follow', async () => {
+    const u = await actors();
+    const follows = await subscribe(u.a.agent);
+    await subscribe(u.b.agent);
+    await publish(u);
+    expect((await u.a.agent.get(`${base}/inbox`)).body.meta.total).toBe(1);
+    expect((await u.a.agent.delete(`${base}/follows/${follows[0].id}`)).status).toBe(200);
+    expect((await u.a.agent.get(`${base}/follows`)).body.data).toEqual([]);
+    expect((await u.b.agent.get(`${base}/follows`)).body.data).toHaveLength(1);
+    await publish(u, { title: '[Sample] Publication after unfollow' });
+    expect((await u.a.agent.get(`${base}/inbox`)).body.meta.total).toBe(1);
+    expect((await u.b.agent.get(`${base}/inbox`)).body.meta.total).toBe(2);
+  });
+
+  test('scheduled delivery retries deduplicate and withdrawal hides the scheduled source everywhere', async () => {
+    const u = await actors();
+    await subscribe(u.a.agent);
+    const starts = F.inMs(F.HOUR);
+    const n = await F.createApproved(u.author.agent, u.reviewer.agent, {}, { mode: 'SCHEDULE', publicationStart: starts.toISOString() });
+    expect((await u.a.agent.get(`${base}/inbox`)).body.meta.total).toBe(0);
+    clock.set(starts);
+    const first = (await u.a.agent.get(`${base}/inbox`)).body;
+    expect(first.meta.unread).toBe(1);
+    expect((await u.a.agent.get(`${base}/inbox`)).body.data.map((row) => row.id)).toEqual(first.data.map((row) => row.id));
+    await u.a.agent.put(`${base}/bookmarks/${n.id}`).send({});
+    await Notice.updateOne({ _id: n.id }, { $set: { status: 'WITHDRAWN', 'publicSearch.title': 'PRIVATE-SCHEDULED-SENTINEL' } });
+    const inbox = (await u.a.agent.get(`${base}/inbox`)).body;
+    expect(inbox.meta.unread).toBe(0);
+    expect(inbox.data[0].notice).toBeNull();
+    expect(JSON.stringify(inbox)).not.toContain('PRIVATE-SCHEDULED-SENTINEL');
+    expect((await u.a.agent.get(`${base}/bookmarks`)).body.data[0].notice).toBeNull();
+    expect((await u.a.agent.get(`${base}/inbox/${first.data[0].id}/open`)).status).toBe(404);
+  });
+
   test('cookie authentication, strict identity inputs and bookmark isolation/idempotency', async () => {
     const u = await actors();
     const n = await publish(u);
