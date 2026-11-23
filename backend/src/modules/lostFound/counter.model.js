@@ -2,7 +2,7 @@
 
 const mongoose = require('mongoose');
 
-/** Per-year sequence for item references (LF-2026-00001). */
+/** Per-year references and per-reporter transaction serialization counters. */
 const counterSchema = new mongoose.Schema(
   { _id: { type: String, required: true }, seq: { type: Number, default: 0 } },
   { versionKey: false }

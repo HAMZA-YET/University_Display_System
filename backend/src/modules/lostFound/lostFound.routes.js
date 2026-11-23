@@ -10,7 +10,7 @@ const asyncHandler = require('../../utils/asyncHandler');
 const AppError = require('../../utils/AppError');
 const audit = require('../audit/audit.service');
 const { requireExpectedVersion } = require('../../utils/ifMatch');
-const { VERIFIER_ROLES, PHOTO_MAX_BYTES } = require('./lostFound.constants');
+const { VERIFIER_ROLES, MAX_PHOTOS, maxPhotoBytes } = require('./lostFound.constants');
 const s = require('./lostFound.schemas');
 const S = require('./lostFound.serializers');
 const service = require('./lostFound.service');
@@ -29,12 +29,13 @@ const claimLimiter = rateLimit({
   handler: (req, res, next) => next(new AppError(429, 'RATE_LIMITED', 'Too many claims. Please wait before trying again.')),
 });
 
-const photoUpload = multer({ storage: multer.memoryStorage(), limits: { fileSize: PHOTO_MAX_BYTES, files: 1 } });
-
 function singlePhoto(req, res, next) {
+  const maxBytes = maxPhotoBytes();
+  const photoUpload = multer({ storage: multer.memoryStorage(), limits: { fileSize: maxBytes, files: 1, fields: 0, parts: 1 } });
   photoUpload.single('photo')(req, res, (err) => {
     if (err && err.code === 'LIMIT_FILE_SIZE') {
-      return next(AppError.badRequest('The photo is larger than 5 MB.', [{ location: 'body', field: 'photo', message: 'Maximum 5 MB' }]));
+      const limit = `${maxBytes / 1024 / 1024} MB`;
+      return next(AppError.badRequest(`The photo is larger than ${limit}.`, [{ location: 'body', field: 'photo', message: `Maximum ${limit}` }]));
     }
     return next(err);
   });
@@ -43,6 +44,12 @@ function singlePhoto(req, res, next) {
 // ------------------------------------------------------------ public (Member 4 can consume these)
 // Mounted at /api/public/lost-found
 const publicRouter = express.Router();
+
+publicRouter.get('/capabilities', asyncHandler(async (req, res) => {
+  const status = await require('../../config/readiness').readiness();
+  res.setHeader('Cache-Control', 'no-store');
+  res.json({ data: { maxPhotoBytes: maxPhotoBytes(), maxPhotos: MAX_PHOTOS, photosAvailable: status.features.attachments } });
+}));
 
 publicRouter.get(
   '/items',
@@ -67,7 +74,7 @@ publicRouter.get(
 // ------------------------------------------------------------ signed-in members
 // Mounted at /api/lost-found
 const router = express.Router();
-router.use(authenticate);
+router.use(require('../security/origin'), authenticate);
 
 // Reports
 router.post(

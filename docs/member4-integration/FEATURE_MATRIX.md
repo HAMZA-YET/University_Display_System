@@ -1,5 +1,7 @@
 # Feature status and D01–D06 mapping — 2026-11-22
 
+> November 23 integration update: Member 3 now mounts the lost-and-found pages and APIs under `/items` in the combined integration build. References below to unmounted/unavailable items describe the dated November 22 baseline, not the new routing. Item bookmarks, unified cross-type search and consumption of LF CaseEvents by the shared inbox remain pending. Historical test results are retained as historical evidence.
+
 Evidence below is local synthetic verification on main a53db54 plus the final-review changes. No production certification is implied. The original plans/prototypes remain historical records, not statements about today's live routes.
 
 | Assignment | Current implementation and boundary | Actual verification | Remaining limit |
@@ -10,7 +12,7 @@ Evidence below is local synthetic verification on main a53db54 plus the final-re
 | D04 notice keyword/category/department/date/sort | member4/search/liveSearch.js -> /api/public/notices; scalar filters, inclusive KST date endpoints, default/newest sort | Backend schema contracts, URL UI tests, live HTTP filters, browser filtered result | No multi-select OR, unified ranking, oldest/title sorts or public workflow-status filter |
 | D04 professor search | /api/professors; name/subject keyword, department, alphabetical backend order | Professor backend suite; live HTTP AI/BSC filter; Chrome fictional professor card | Not unified with notices; no notice dates/category/sort for professors |
 | D04 pagination/count/URL/reset | Server metadata and Router query parameters | Live HTTP disjoint pages; frontend Next/Back/restored filters/reset; browser detail/Back | Explicit return-to-search link/focus restoration on shared detail page pending |
-| D05 public items/photos | /items is an unavailable state; C API not mounted | HTTP missing route 404; browser unavailable page | BLOCKED by C/L; staged implementation must be adapted and verified |
+| D05 public items/photos | Member 3 now mounts /items and /api/public/lost-found in the integration build; photos use the shared controlled gateway | Shared Member 3 backend/frontend regressions and real HTTP checks | Item bookmarks and unified cross-type search remain separate follow-up work |
 | D05 notice bookmarks | /api/member-tools/bookmarks | Cookie-auth add/remove/idempotency, owner isolation and withdrawn projection; browser save/list | Item bookmarks unsupported |
 | D05 topic follows | /api/member-tools/follows | Duplicate prevention, category/department matching, unfollow/history/account regressions | No item topic contract |
 | D06 preferences | Existing member-tools preferences; inApp/notices only | API/frontend preference changes and account isolation; Chrome confirmation | No email/push or prototype compact/resolved settings |

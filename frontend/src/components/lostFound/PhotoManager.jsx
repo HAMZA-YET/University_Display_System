@@ -2,13 +2,14 @@ import { useId, useState } from 'react';
 import Alert from '../ui/Alert';
 import Icon from '../ui/Icon';
 import { uploadPhoto, removePhoto, privatePhotoUrl } from '../../api/lostFound';
-import { MAX_PHOTOS, PHOTO_ACCEPT, PHOTO_HINT, checkPhoto } from '../../lib/lostFoundPhotos';
+import { PHOTO_ACCEPT, photoHint, checkPhoto, usePhotoCapabilities } from '../../lib/lostFoundPhotos';
 
 /** Reporter's photo editor on an existing report. */
 export default function PhotoManager({ item, onChange }) {
   const inputId = useId();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState(null);
+  const capabilities = usePhotoCapabilities();
   const editable = ['OPEN', 'COLLECTION_APPROVED'].includes(item.status);
   const photoIds = item.photoIds || [];
 
@@ -16,7 +17,8 @@ export default function PhotoManager({ item, onChange }) {
     const file = e.target.files && e.target.files[0];
     e.target.value = '';
     if (!file) return;
-    const problem = checkPhoto(file);
+    if (!capabilities.photosAvailable) return;
+    const problem = checkPhoto(file, capabilities);
     if (problem) {
       setError(problem);
       return;
@@ -63,7 +65,7 @@ export default function PhotoManager({ item, onChange }) {
             )}
           </div>
         ))}
-        {editable && photoIds.length < MAX_PHOTOS && (
+        {editable && capabilities.photosAvailable && photoIds.length < capabilities.maxPhotos && (
           <label className="lf-photo-add" htmlFor={inputId}>
             <input id={inputId} type="file" accept={PHOTO_ACCEPT} onChange={add} disabled={busy} />
             <span>{busy ? 'Uploading...' : '+ Add photo'}</span>
@@ -73,7 +75,7 @@ export default function PhotoManager({ item, onChange }) {
       {photoIds.length === 0 && !editable && <p className="muted small">No photos.</p>}
       {editable && (
         <p className="small muted" style={{ margin: 0 }}>
-          {PHOTO_HINT}
+          {photoHint(capabilities)}
         </p>
       )}
       {error && <Alert type="error">{error}</Alert>}

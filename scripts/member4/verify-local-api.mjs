@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs/promises';
 const fixture = JSON.parse(await fs.readFile(new URL('../../node_modules/.cache/member4-e2e-fixtures.json', import.meta.url), 'utf8'));
 assert.equal(fixture.fictional, true);
-assert.equal(fixture.baseURL, 'http://127.0.0.1:5000');
+assert.equal(fixture.baseURL, 'http://127.0.0.1:5017');
 const checks = [];
 async function request(path, { cookie = '', method = 'GET', body } = {}) {
   assert.ok(path.startsWith('/api/'));
@@ -15,7 +15,8 @@ let a, b;
 try {
   await check('ready health uses the disposable loopback database', async () => assert.equal((await request('/api/ready')).data.data.ready, true));
   await check('public notices exclude CAMPUS, drafts and withdrawn content', async () => {
-    const result = await request('/api/public/notices?q=Integration&category=EXAM&department=BSC&from=2026-11-19T00:00:00%2B09:00&to=2026-11-19T23:59:59.999%2B09:00&sort=newest');
+    const dates = new URLSearchParams({ from: fixture.publicationDate + 'T00:00:00+09:00', to: fixture.publicationDate + 'T23:59:59.999+09:00' });
+    const result = await request('/api/public/notices?q=Integration&category=EXAM&department=BSC&sort=newest&' + dates);
     assert.equal(result.status, 200); assert.deepEqual(result.data.data.map((row) => row.id), [fixture.publicNoticeId]);
     assert.equal((await request('/api/public/notices/' + fixture.campusNoticeId)).status, 404);
     assert.equal((await request('/api/public/notices/' + fixture.draftId)).status, 404);
@@ -68,7 +69,7 @@ try {
   await check('inbox listing is owner-scoped and repeated synchronization deduplicates deliveries', async () => {
     const first = await request('/api/member-tools/inbox', { cookie: a.cookie });
     const second = await request('/api/member-tools/inbox', { cookie: a.cookie });
-    // Preference re-enabling starts now; the harness clock is unchanged, publication equality is eligible.
+    // Existing delivered history remains after preferences are re-enabled.
     assert.equal(first.status, 200); assert.equal(first.data.meta.total, 2); assert.deepEqual(second.data.data.map((row) => row.id), first.data.data.map((row) => row.id));
     assert.equal((await request('/api/member-tools/inbox', { cookie: b.cookie })).data.meta.total, 0);
   });
@@ -86,10 +87,16 @@ try {
     assert.equal((await request('/api/member-tools/inbox/read-all', { cookie: a.cookie, method: 'POST', body: {} })).data.data.unread, 0);
     await request(url, { cookie: a.cookie, method: 'PATCH', body: { read: false } });
   });
-  await check('bookmark removal and unavailable item endpoint are truthful', async () => {
+  await check('bookmark removal and connected lost-and-found API use live data', async () => {
     assert.equal((await request(bookmarkPath, { method: 'DELETE', cookie: a.cookie })).status, 200);
     assert.equal((await request(bookmarkPath, { cookie: a.cookie })).data.data.saved, false);
-    assert.equal((await request('/api/public/lost-found/items')).status, 404);
+    const items = await request('/api/public/lost-found/items');
+    assert.equal(items.status, 200);
+    assert.ok(Array.isArray(items.data.data));
+    assert.ok(items.data.meta);
+    const capabilities = await request('/api/public/lost-found/capabilities');
+    assert.equal(capabilities.status, 200);
+    assert.equal(capabilities.data.data.maxPhotos, 3);
   });
   await check('logout clears the browser session cookie; cleared-cookie requests are unauthenticated', async () => {
     const logout = await request('/api/auth/logout', { cookie: b.cookie, method: 'POST', body: {} });

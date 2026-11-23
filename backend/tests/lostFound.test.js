@@ -1,6 +1,7 @@
 'use strict';
 
 const request = require('supertest');
+const sharp = require('sharp');
 const { useTestApp } = require('./helpers/testApp');
 const F = require('./helpers/fixtures');
 const Item = require('../src/modules/lostFound/item.model');
@@ -321,7 +322,10 @@ describe('LF-ADMIN Admin dashboard and lists', () => {
 
 // ---------------------------------------------------------------- photos and retention
 
-const PNG = Buffer.concat([Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]), Buffer.alloc(64, 1)]);
+let PNG;
+beforeAll(async () => {
+  PNG = await sharp({ create: { width: 2, height: 2, channels: 3, background: 'blue' } }).png().toBuffer();
+});
 
 describe('LF-PHOTO Item photos', () => {
   test('LF-PHOTO-1 photos are public while the item is listed; private route for reporter and admin only', async () => {

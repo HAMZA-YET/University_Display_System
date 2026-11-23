@@ -10,7 +10,7 @@ const caseEvents = require('./caseEvent.service');
 const audit = require('../audit/audit.service');
 const AppError = require('../../utils/AppError');
 const clock = require('../../utils/clock');
-const { withTransaction } = require('../../utils/transaction');
+const transactions = require('../../utils/transaction');
 const { getPaging, buildMeta } = require('../../utils/pagination');
 const { containsRegex } = require('../../utils/regex');
 
@@ -26,6 +26,26 @@ const blankToNull = (v) => (v === '' || v === undefined ? null : v);
 const opts = (session, extra = {}) => ({ ...extra, session: session || undefined });
 const isAdmin = (user) => Boolean(user && C.VERIFIER_ROLES.includes(user.role));
 
+async function requireTransactions() {
+  if (!(await transactions.supportsTransactions())) {
+    throw new AppError(503, 'LOST_FOUND_TRANSACTIONS_REQUIRED', 'Lost and found changes require a MongoDB replica set.');
+  }
+}
+
+async function withTransaction(work) {
+  await requireTransactions();
+  return transactions.withTransaction(work);
+}
+
+async function ensureCounter(id) {
+  try {
+    await Counter.updateOne({ _id: id }, { $setOnInsert: { seq: 0 } }, { upsert: true });
+  } catch (error) {
+    // A concurrent first request may have created the same counter already.
+    if (error.code !== 11000) throw error;
+  }
+}
+
 function entry(ctx, action, note) {
   return { at: clock.now(), actor: ctx.user ? ctx.user._id : null, actorRole: ctx.user ? ctx.user.role : null, action, note: note || null };
 }
@@ -35,9 +55,8 @@ function seoulYear(date) {
 }
 
 /** Unique, readable reference: LF-2026-00042. The unique index is the final guard. */
-async function nextReference(session) {
-  const year = seoulYear(clock.now());
-  const counter = await Counter.findOneAndUpdate({ _id: `LF-${year}` }, { $inc: { seq: 1 } }, opts(session, { new: true, upsert: true }));
+async function nextReference(session, year) {
+  const counter = await Counter.findOneAndUpdate({ _id: `LF-${year}` }, { $inc: { seq: 1 } }, opts(session, { new: true }));
   return `LF-${year}-${String(counter.seq).padStart(5, '0')}`;
 }
 
@@ -57,7 +76,9 @@ function normalizeItemBody(body, type) {
 /** On-screen notice (5-second popup) for one member. */
 function notify(userId, kind, text, link, session) {
   if (!userId) return null;
-  return Notice.create([{ user: userId._id || userId, kind, text, link: link || null }], opts(session));
+  // The complete decision remains on the claim; a popup is only its summary.
+  const summary = text.length > 300 ? `${text.slice(0, 299)}…` : text;
+  return Notice.create([{ user: userId._id || userId, kind, text: summary, link: link || null }], opts(session));
 }
 
 function itemEvent(type, item, ctx, session, recipients) {
@@ -153,14 +174,22 @@ async function getPublicItem(id) {
 
 /** Reports are published immediately (no admin review), with a daily limit against spam. */
 async function createItem(ctx, body) {
-  if (!isAdmin(ctx.user)) {
-    const recent = await Item.countDocuments({ reporter: ctx.user._id, createdAt: { $gte: new Date(clock.now().getTime() - DAY_MS) } });
-    if (recent >= C.DAILY_REPORT_LIMIT) {
-      throw new AppError(429, 'DAILY_LIMIT', `You can post at most ${C.DAILY_REPORT_LIMIT} reports in 24 hours. Please try again later.`);
-    }
-  }
+  await requireTransactions();
+  const year = seoulYear(clock.now());
+  const quotaKey = isAdmin(ctx.user) ? null : `REPORTER-${ctx.user._id}`;
+  await ensureCounter(`LF-${year}`);
+  if (quotaKey) await ensureCounter(quotaKey);
   return withTransaction(async (session) => {
-    const reference = await nextReference(session);
+    if (quotaKey) {
+      // Every report by this member writes the same document before counting.
+      // A concurrent request must retry its transaction and see committed posts.
+      await Counter.updateOne({ _id: quotaKey }, { $inc: { seq: 1 } }, opts(session));
+      const recent = await Item.countDocuments({ reporter: ctx.user._id, createdAt: { $gte: new Date(clock.now().getTime() - DAY_MS) } }).session(session);
+      if (recent >= C.DAILY_REPORT_LIMIT) {
+        throw new AppError(429, 'DAILY_LIMIT', `You can post at most ${C.DAILY_REPORT_LIMIT} reports in 24 hours. Please try again later.`);
+      }
+    }
+    const reference = await nextReference(session, year);
     const [item] = await Item.create(
       [
         {
@@ -251,13 +280,15 @@ async function resolveMyItem(ctx, id) {
  */
 async function deleteItem(ctx, item) {
   return withTransaction(async (session) => {
+    const current = await Item.findOne({ _id: item._id, deletedAt: null }).session(session).lean();
+    if (!current) throw AppError.notFound();
     const updated = await Item.findOneAndUpdate(
-      { _id: item._id, deletedAt: null },
+      { _id: current._id, deletedAt: null, version: current.version },
       {
         $set: {
           deletedAt: clock.now(),
           deletedBy: ctx.user._id,
-          activeClaim: item.status === 'COLLECTION_APPROVED' ? null : item.activeClaim,
+          activeClaim: current.status === 'COLLECTION_APPROVED' ? null : current.activeClaim,
         },
         $inc: { version: 1 },
         $push: { history: entry(ctx, 'DELETED') },
@@ -279,14 +310,21 @@ async function deleteMyItem(ctx, id) {
 // ---------------------------------------------------------------- claims: members
 
 async function submitClaim(ctx, itemId, body) {
-  const item = await Item.findOne({ _id: itemId, ...publicFilter() }).lean();
-  if (!item) throw AppError.notFound('This item is not available.');
-  if (item.type !== 'FOUND') throw AppError.invalidTransition('Only found items can be claimed.');
-  if (item.status !== 'OPEN') throw conflict('NOT_CLAIMABLE', 'A collection is already in progress for this item.');
-  if (isAdmin(ctx.user)) throw AppError.forbidden('Administrators verify claims and cannot make them.');
-  if (sameId(item.reporter, ctx.user._id)) throw AppError.forbidden('You cannot claim an item you reported.');
-
   return withTransaction(async (session) => {
+    const current = await Item.findOne({ _id: itemId, ...publicFilter() }).session(session).lean();
+    if (!current) throw AppError.notFound('This item is not available.');
+    if (current.type !== 'FOUND') throw AppError.invalidTransition('Only found items can be claimed.');
+    if (current.status !== 'OPEN') throw conflict('NOT_CLAIMABLE', 'A collection is already in progress for this item.');
+    if (isAdmin(ctx.user)) throw AppError.forbidden('Administrators verify claims and cannot make them.');
+    if (sameId(current.reporter, ctx.user._id)) throw AppError.forbidden('You cannot claim an item you reported.');
+    // A write, rather than a snapshot read alone, serializes intake with
+    // approval, deletion and handover on the same item.
+    const item = await Item.findOneAndUpdate(
+      { _id: current._id, status: 'OPEN', deletedAt: null, version: current.version },
+      { $inc: { version: 1 } },
+      opts(session, { new: true })
+    ).lean();
+    if (!item) throw conflict('ITEM_CHANGED', 'This item is no longer available for a claim.');
     let claim;
     try {
       [claim] = await Claim.create(
@@ -344,27 +382,32 @@ async function getMyClaim(ctx, id) {
  */
 async function deleteClaim(ctx, claim) {
   return withTransaction(async (session) => {
-    const live = C.ACTIVE_CLAIM_STATUSES.includes(claim.status) && !claim.handover;
+    const current = await Claim.findOne({ _id: claim._id, deletedAt: null })
+      .session(session)
+      .populate({ path: 'item', options: { session } })
+      .lean();
+    if (!current || !current.item || (!isAdmin(ctx.user) && !sameId(current.claimant, ctx.user._id))) throw AppError.notFound();
+    const live = C.ACTIVE_CLAIM_STATUSES.includes(current.status) && !current.handover;
     const set = { deletedAt: clock.now(), deletedBy: ctx.user._id };
     if (live) set.status = 'WITHDRAWN';
     const updated = await Claim.findOneAndUpdate(
-      { _id: claim._id, deletedAt: null, status: claim.status },
+      { _id: current._id, deletedAt: null, status: current.status, version: current.version },
       { $set: set, $inc: { version: 1 }, $push: { history: entry(ctx, 'DELETED') } },
       opts(session, { new: true })
     ).lean();
     if (!updated) throw conflict('CLAIM_CHANGED', 'This claim changed. Reload and try again.');
-    let item = claim.item;
-    if (live && claim.status === 'APPROVED') {
-      item =
-        (await Item.findOneAndUpdate(
-          { _id: claim.item._id, activeClaim: claim._id, status: 'COLLECTION_APPROVED' },
-          { $set: { status: 'OPEN', activeClaim: null }, $inc: { version: 1 }, $push: { history: entry(ctx, 'COLLECTION_CANCELLED') } },
-          opts(session, { new: true })
-        ).lean()) || item;
+    let item = current.item;
+    if (live && current.status === 'APPROVED') {
+      item = await Item.findOneAndUpdate(
+        { _id: current.item._id, activeClaim: current._id, status: 'COLLECTION_APPROVED', deletedAt: null },
+        { $set: { status: 'OPEN', activeClaim: null }, $inc: { version: 1 }, $push: { history: entry(ctx, 'COLLECTION_CANCELLED') } },
+        opts(session, { new: true })
+      ).lean();
+      if (!item) throw conflict('ITEM_CHANGED', 'This item is no longer waiting for collection.');
     }
     await audit.record(
       ctx,
-      { action: 'LF_CLAIM_DELETED', entityType: 'LF_CLAIM', entityId: claim._id, fromStatus: claim.status, toStatus: updated.status },
+      { action: 'LF_CLAIM_DELETED', entityType: 'LF_CLAIM', entityId: current._id, fromStatus: current.status, toStatus: updated.status },
       session
     );
     if (live) await claimEvent('LF_CLAIM_WITHDRAWN', updated, item, ctx, session, []);
@@ -380,8 +423,16 @@ async function deleteMyClaim(ctx, id) {
 
 /** Returns unseen notices for the member and marks them seen, so each shows once. */
 async function takeMyNotices(ctx) {
-  const notices = await Notice.find({ user: ctx.user._id, seenAt: null }).sort({ createdAt: 1 }).limit(10).lean();
-  if (notices.length) await Notice.updateMany({ _id: { $in: notices.map((n) => n._id) }, seenAt: null }, { $set: { seenAt: clock.now() } });
+  const notices = [];
+  for (let i = 0; i < 10; i += 1) {
+    const notice = await Notice.findOneAndUpdate(
+      { user: ctx.user._id, seenAt: null },
+      { $set: { seenAt: clock.now() } },
+      { new: true, sort: { createdAt: 1, _id: 1 } }
+    ).lean();
+    if (!notice) break;
+    notices.push(notice);
+  }
   return notices.map((n) => ({ id: String(n._id), kind: n.kind, text: n.text, link: n.link, createdAt: n.createdAt }));
 }
 

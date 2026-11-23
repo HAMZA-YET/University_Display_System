@@ -6,7 +6,7 @@ const { chromium } = await import(process.env.UIDS_PLAYWRIGHT_MODULE || 'playwri
 const base = 'http://127.0.0.1:5187';
 const fixture = JSON.parse(await fs.readFile(new URL('../../node_modules/.cache/member4-e2e-fixtures.json', import.meta.url)));
 assert.equal(fixture.fictional, true);
-assert.equal(fixture.baseURL, 'http://127.0.0.1:5000');
+assert.equal(fixture.baseURL, 'http://127.0.0.1:5017');
 const output = new URL('../../node_modules/.cache/member4-final-review/', import.meta.url);
 await fs.mkdir(output, { recursive: true });
 const browser = await chromium.launch({ channel: 'chrome', headless: true });

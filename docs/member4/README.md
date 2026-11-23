@@ -1,5 +1,7 @@
 # Member 4 — Discovery and member tools (D01–D06)
 
+> November 23 integration update: Member 3 now mounts the lost-and-found pages and APIs under `/items` in the combined integration build. References below to unmounted/unavailable items describe the dated November 22 baseline, not the new routing. Item bookmarks, unified cross-type search and consumption of LF CaseEvents by the shared inbox remain pending. Historical test results are retained as historical evidence.
+
 Current status (2026-11-22), verified on main a53db54fa24f0237ef42bcad2f9a2eb33a4add45: Member 4 PR #3 and Member 1 security PR #4 are merged. The shared React/Vite app mounts live search, saved interests and notifications, using the shared cookie session and real backend APIs. Legacy mock adapters remain isolated historical test tools; current pages are not mock-only and require no new mounting.
 
 See [current D01–D06 feature mapping](../member4-integration/FEATURE_MATRIX.md), [actual final verification](../member4-integration/TEST_RESULTS.md), and [remaining dependencies](../member4-integration/TEAM_DEPENDENCIES.md).

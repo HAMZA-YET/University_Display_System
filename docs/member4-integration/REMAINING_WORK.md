@@ -1,11 +1,13 @@
 # Remaining work and commands — updated main, 2026-11-22
 
+> November 23 integration update: Member 3 now mounts the lost-and-found pages and APIs under `/items` in the combined integration build. References below to unmounted/unavailable items describe the dated November 22 baseline, not the new routing. Item bookmarks, unified cross-type search and consumption of LF CaseEvents by the shared inbox remain pending. Historical test results are retained as historical evidence.
+
 Independent Member 4 verification now targets main a53db54fa24f0237ef42bcad2f9a2eb33a4add45, including Member 1 security integration. Exact results/skips are in TEST_RESULTS.md. No team approval, upload, merge or deployment is implied.
 
 ## Remaining blockers
 
-1. C/L: PR #2 is merged but staged under member3-lost-found/client/server. Adapt imports/paths into frontend/backend, mount routers/pages, register models/tests and verify report/claim/photo/handover/privacy behavior. /items remains truthfully unavailable; the public API returns 404.
-2. C/L/D: agree canonical /items versus /lost-found destinations, eligible public item/media projection, item bookmark support and delivery of LF CaseEvents into the publishing-DomainEvent inbox. D does not implement ownership decisions.
+1. C/L: the November 23 integration build mounts Member 3's models, APIs, pages and tests. /items is the canonical route. Remaining operational work includes reviewed retention scheduling and physical evidence purge; no production seed is run.
+2. C/L/D: item bookmark support, unified cross-type search and delivery of LF CaseEvents into the publishing-DomainEvent inbox remain follow-up work. The lost/found module has its own owner-scoped decision popups.
 3. B/L: explicit return-to-search/inbox and focus restoration require approved shared-page changes; native browser Back preserves search URL state.
 4. L/B/C: unified ranking, multiple selections and additional sort/status behavior require real API contracts. Current scalar notice/professor semantics remain authoritative.
 5. A/L: real audience groups, production identity/media/delivery configuration, retention/operations and deployment acceptance remain outside this local verification. Member 1 MFA/revocation code and tests were preserved and compatibility-tested, not redesigned.
@@ -43,16 +45,18 @@ node scripts/member4/start-isolated-preview.cjs
 # Root, terminal 2
 $env:NODE_ENV = 'production'
 npm run build
-cd frontend
-node ../node_modules/vite/bin/vite.js preview --host 127.0.0.1 --port 5187 --strictPort
+node scripts/member4/start-isolated-frontend.mjs
 # Root, terminal 3; sequentially
 node scripts/member4/verify-local-api.mjs
 node scripts/member4/verify-browser.mjs
+# With the preserved previous build served on 5188 for design comparison:
+node scripts/member4/start-isolated-frontend.mjs --baseline
+node scripts/member4/verify-lost-found-browser.mjs
 ```
 
-Playwright and Chrome are optional local browser-test tools; no new package dependency is added. If supplied outside the project, UIDS_PLAYWRIGHT_MODULE accepts the module's file URL. fileURLToPath handles screenshot paths with spaces. Browser traffic is restricted to http://127.0.0.1:5187 and its loopback API proxy at port 5000.
+Playwright and Chrome are optional local browser-test tools; no new package dependency is added. If supplied outside the project, UIDS_PLAYWRIGHT_MODULE accepts the module's file URL. fileURLToPath handles screenshot paths with spaces. Browser traffic is restricted to http://127.0.0.1:5187 (and optional baseline 5188), with a loopback API proxy at port 5017. Normal development ports remain unchanged.
 
-The preview discards production DB/signing/blob/MFA/backup/delivery/rollout variables, generates random test signing/encryption keys and creates only synthetic users/notices/professor records in a fresh replica set. It fixes domain time to 2026-11-19 for deterministic date filters. The synthetic MFA user enrolls through existing Member 1 routes. Its one-use recovery codes are stored only in ignored local fixtures, consumed by sequential HTTP/browser runs and never printed. Restart the preview if codes are depleted; do not share that fixture. Ctrl+C stops owned processes and the disposable database. No permanent test endpoint or auth bypass is added.
+The preview discards production DB/signing/blob/MFA/backup/delivery/rollout variables, generates random test signing/encryption keys and creates only synthetic users/notices/professor records in a fresh replica set. It uses current time so MongoDB TTL indexes agree with MFA expiry, and records the publication date for date-filter checks. Local uploads use a new private temporary directory removed on shutdown. Its one-use recovery codes stay in ignored private fixtures and are consumed by sequential HTTP/browser runs without printing. Restart the preview if codes are depleted. Ctrl+C stops owned processes and the disposable database. No permanent test endpoint or auth bypass is added.
 
 ## Review boundary
 

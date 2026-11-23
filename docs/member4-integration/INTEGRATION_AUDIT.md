@@ -1,5 +1,7 @@
 # Member 4 integration audit — final verification, 2026-11-22
 
+> November 23 integration update: Member 3 now mounts the lost-and-found pages and APIs under `/items` in the combined integration build. References below to unmounted/unavailable items describe the dated November 22 baseline, not the new routing. Item bookmarks, unified cross-type search and consumption of LF CaseEvents by the shared inbox remain pending. Historical test results are retained as historical evidence.
+
 Branch: `feature/member4-final-review`. Baseline: latest fetched `main`, `a53db54fa24f0237ef42bcad2f9a2eb33a4add45`. This is an independent Member 4 verification; not production certification or team approval.
 
 ## Current integration

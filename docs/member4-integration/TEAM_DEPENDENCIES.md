@@ -1,5 +1,7 @@
 # Team dependencies — final review, 2026-11-22
 
+> November 23 integration update: Member 3 now mounts the lost-and-found pages and APIs under `/items` in the combined integration build. References below to unmounted/unavailable items describe the dated November 22 baseline, not the new routing. Item bookmarks, unified cross-type search and consumption of LF CaseEvents by the shared inbox remain pending. Historical test results are retained as historical evidence.
+
 | Owner | Available boundary | Approval or work still needed |
 |---|---|---|
 | A: identity/media | Member 1 PR #4 MFA, active-user/tokenVersion checks, copied-token logout revocation and security suites; Member 4 compatibility tests pass | Production audience groups, identity/media setup and C photograph eligibility/revocation. No auth/user-model changes authorized here |

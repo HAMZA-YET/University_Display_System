@@ -50,6 +50,7 @@ The shared files changed only where they had to be:
 **Public** (`/api/public/lost-found`):
 
 - `GET /items`: search with `q`, `type`, `category`, `page`
+- `GET /capabilities`: current photo byte/count limits and storage availability
 - `GET /items/:id`
 - `GET /items/:id/photos/:photoId`
 
@@ -57,7 +58,7 @@ The shared files changed only where they had to be:
 
 | Method and path | Purpose |
 |---|---|
-| `POST /items` | Report an item (multipart, `photos[]`) |
+| `POST /items` | Report an item with JSON; optional photos upload separately, one request per photo |
 | `GET /me/items` | My reports |
 | `GET /me/items/:id` | One of my reports |
 | `PATCH /me/items/:id` | Edit my report |
@@ -89,11 +90,11 @@ The shared files changed only where they had to be:
 
 ## 4. Rules that matter
 
-- **Reporting:** a report is public as soon as it is posted. Each user can post at most 10 reports in 24 hours.
+- **Reporting:** a report is public as soon as it is posted. Members can post at most 10 reports in a rolling 24 hours; administrator reports are exempt. A per-member counter serializes concurrent quota checks. Multi-record changes require a MongoDB replica set and return 503 when transactions are unavailable.
 - **Claims:** only FOUND items can be claimed. The reporter cannot claim their own item. Each claim has private evidence text, and each user can have one live claim per item.
 - **Concurrent approval:** approval is an atomic conditional update (`OPEN → COLLECTION_APPROVED`), backed by the partial unique index `lf_one_collector_per_item`. If two admins approve different claims at the same moment, exactly one succeeds. The other gets 409, and the remaining pending claims are rejected automatically.
 - **Physical handover:** the ADMIN must tick "identity checked" and enter the recipient's name. The item moves to `RETURNED`, and every step is written to the case history and audit log.
-- **Photo access:** photos of public items are public. Photos of deleted items, or of items that are no longer public, are visible only to the owner and the ADMIN.
+- **Photo access:** photos of public items are public. Every image response is `private, no-store`, so later requests recheck current access. Photos of deleted items, or of items that are no longer public, are visible only to the owner and an authorized ADMIN; the configured privileged-MFA rule also applies.
 - **Private evidence:** claim evidence text is never in public responses. Only the claimant and the ADMIN see it.
 
 ## 5. Contracts with other members
@@ -103,7 +104,7 @@ The shared files changed only where they had to be:
 - **Search:** `GET /api/public/lost-found/items` returns only public, non-deleted items and never contact or evidence fields, so it is safe to index. Member 4's `/items` placeholder (`Member4Routes` / ItemsApp) is no longer routed. Member 4 can delete it or keep it as reference; its tests still pass.
 - **Attachments:**
   - Photos use the team attachment gateway (`getGateway()`): local disk in development, Vercel Blob in production.
-  - Rules: JPG or PNG only, 5 MB each, at most 3 per report.
+  - Rules: JPG or PNG only, at most 3 per report; 4 MiB each on Vercel/Blob, 5 MiB with local storage. The UI reads `/capabilities`. Actual image decoding validates extension/MIME agreement, one frame and a 16-megapixel bound. This is not malware scanning.
 - **Notifications:**
   - Every state change writes a `LostFoundCaseEvent` document (collection `lostfoundcaseevents`). ADMINs can read them through `GET /api/lost-found/admin/case-events`. Member 4 can consume these for email or push.
   - Each event carries `eventId`, `idempotencyKey`, `type`, `entityType` (`LF_ITEM`/`LF_CLAIM`), `entityId`, `entityVersion`, `actor`, `recipients`, `timestamp`, `payload` and `deliveryStatus` (`PENDING` → `DELIVERED`).
@@ -116,8 +117,8 @@ The shared files changed only where they had to be:
   | Action | Allowed for |
   |---|---|
   | `upload` | the claimant, while the claim is PENDING and the item is public |
-  | `download` | the claimant or an ADMIN |
-  | `delete` | an ADMIN, or the claimant while the claim is PENDING |
+  | `download` | the claimant or an ADMIN satisfying the configured MFA rollout |
+  | `delete` | an ADMIN satisfying that rollout, or the claimant while the claim is PENDING |
 
   Anything else, including unknown or deleted claims and the finder of the item, is refused.
 - No claim-photo upload button is shown in the UI. The team decided proof photos are not required, because owners rarely have photos of their belongings. The backend link is in place if the team wants a button later.
@@ -126,18 +127,21 @@ The shared files changed only where they had to be:
 
 ```
 npm run lf:cleanup -w backend
+# Apply only after stopping all application writers:
+npm run lf:cleanup -w backend -- --apply --confirm-stopped
 ```
 
-- For cases finished (returned, resolved or deleted) more than `LF_EVIDENCE_RETENTION_DAYS` ago (default 90), it redacts the private claim evidence text.
-- Marks the linked Member 1 `Evidence` records `DELETED`. Physical removal of the stored files is handled by Member 1's evidence operations tooling.
-- Prints `{ items, claims, evidenceFiles, cutoff }`.
+- The command defaults to a dry-run report. Applying changes requires both flags above and uses the shared maintenance lock. It does not drain existing requests: stop all writers first.
+- For cases finished (returned, resolved or deleted) more than `LF_EVIDENCE_RETENTION_DAYS` ago (default 90, validated integer 1–3650), applying cleanup redacts private claim evidence text and marks linked Member 1 `Evidence` records `DELETED`.
+- Physical file purge remains deferred; neither this command nor Member 1's current operations tooling removes accepted evidence bytes.
+- Prints `{ dryRun, items, claims, evidenceFiles, cutoff }`. Invalid retention settings fail before data is modified.
 
 ## 7. Production setup still required
 
-1. **Scheduled cleanup:** run `lf:cleanup` daily. Use a Vercel Cron job or a GitHub Actions schedule with `MONGO_URI` as a secret. Nothing is scheduled yet.
-2. **Photos on Vercel:** `BLOB_READ_WRITE_TOKEN` must be set (the same storage as the team attachments).
+1. **Cleanup operations:** no unattended cleanup has been scheduled. Review the retention policy and offline-writer requirement before arranging an operator-controlled application run.
+2. **Photos on Vercel:** reuse the existing private team Blob store with `ATTACHMENT_STORAGE=vercel-blob` and either `BLOB_STORE_ID` plus Vercel OIDC or `BLOB_READ_WRITE_TOKEN`.
 3. **Private evidence:** Member 1's evidence storage is unavailable on Vercel, so `/api/private-evidence` returns its "unavailable" response there. This does not affect lost & found, because claims do not need evidence files.
-4. **Seed:** the local demo data needs `ALLOW_DEVELOPMENT_SEED=true npm run seed -w backend`.
+4. **Seed:** only for a disposable local database, use `ALLOW_DEVELOPMENT_SEED=true npm run seed:development -w backend`. This clears the selected development database. Production seeding is blocked and is not part of deployment.
 5. **MFA:** if `REQUIRE_PRIVILEGED_MFA=true`, ADMIN lost & found pages require the ADMIN to have MFA set up (Member 1's guard).
 6. **Optional:** `UNIVERSITY_TZ` (default `Asia/Seoul`) for date labels in notices.
 
@@ -153,7 +157,7 @@ These two differ from the original proposal (T07). Please confirm or change them
 
 ## 9. Demonstration
 
-1. Run `ALLOW_DEVELOPMENT_SEED=true npm run seed -w backend`, then `npm run dev`.
+1. For a disposable local database only, run `ALLOW_DEVELOPMENT_SEED=true npm run seed:development -w backend`, then `npm run dev`.
 2. Open `/items` signed out. Browse, search for "umbrella", and filter by Found.
 3. Log in as `student1@kdu-uids.test` / `Student@12345`.
    - Report a found item with a photo. It appears in `/items` immediately.
@@ -192,3 +196,15 @@ Backend lost & found test groups:
 - The claim-photo upload UI is deliberately left out. The backend support exists.
 - `member3-lost-found/` and the empty legacy `backend/controller|router|schema` lost/found files can be deleted once the team agrees.
 - Member 4's unused ItemsApp placeholder.
+
+## 12. Combined integration verification — 23 November 2026
+
+PR #6's connected module was reviewed together with PR #5's Member 4 verification updates. The existing NavBar, Footer, global/portal styles, public artwork and authentication design were preserved. Review fixes corrected administrator detail links, isolated decision popups by account, bounded notification summaries without truncating stored decisions, serialized report quotas and claim lifecycle changes, and added deployed photo capabilities and strict image validation. Cleanup defaults to a dry run and applying changes requires an explicit offline-writer confirmation and maintenance lock.
+
+Fresh macOS / Node 26.3.0 results: **225 backend Jest cases**, **6 operator CLI**, **4 security CLI**, **4 retention CLI**, **55 frontend Vitest cases**, and **11 Member 4 runner entries** passed. Lint and the frontend production build passed. Readiness cases are already included in the backend count.
+
+Against a disposable local MongoDB replica set, **13 real HTTP groups**, **6 existing Chrome regression groups** and **7 lost-and-found Chrome groups** passed. The latter cover protected reporting and login return, a decoded real PNG upload/download, public search, reporter self-claim prevention, private proof/owner isolation, actual admin-list navigation, approval versus handover, and public item/photo denial after collection. No page exceptions were observed. Header and footer element screenshots matched the preserved previous build byte-for-byte at 1280px and 390px. The lost-and-found page also passed horizontal-overflow checks at 320px, 390px and 1280px.
+
+Reproduction uses `scripts/member4/start-isolated-preview.cjs`, `start-isolated-frontend.mjs`, `verify-local-api.mjs`, `verify-browser.mjs` and `verify-lost-found-browser.mjs`. The API is loopback-only on 5017 and the built frontend on 5187; normal development configuration is unchanged. Browser comparison optionally serves the previous built frontend on 5188. Fixtures, screenshots and raw results stay in ignored `node_modules/.cache` directories. No production database, account, credential, file or sample-data installer was used for these checks.
+
+The current module uses immediate publication and ADMIN verification as delivered. Cross-type search, item bookmarks and consolidation of LF CaseEvents into the publishing inbox are not added by this integration. Private evidence-file storage on Vercel, physical evidence purge and unattended cleanup scheduling remain deferred; written ownership claims and persistent item photos use their documented paths.

@@ -51,7 +51,7 @@ export default function AdminLfClaims() {
                   </div>
                   <div className="lf-claim-group-body">
                     <h3>
-                      <Link to={`/admin/items/${g.item.id}#claims`}>{g.item.title}</Link>
+                      <Link to={`/admin/lost-found/items/${g.item.id}#claims`}>{g.item.title}</Link>
                     </h3>
                     <div className="small muted">
                       <span className="mono">{g.item.reference}</span> - {g.item.location} - posted {postedDate(g.item.postedAt)}
@@ -69,7 +69,7 @@ export default function AdminLfClaims() {
                       )}
                     </div>
                   </div>
-                  <Button size="sm" to={`/admin/items/${g.item.id}#claims`}>
+                  <Button size="sm" to={`/admin/lost-found/items/${g.item.id}#claims`}>
                     Review claims
                   </Button>
                 </article>

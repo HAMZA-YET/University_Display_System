@@ -58,6 +58,12 @@ const DAILY_REPORT_LIMIT = 10;
 const MAX_PHOTOS = 3;
 const PHOTO_MAX_BYTES = 5 * 1024 * 1024;
 const PHOTO_EXTENSIONS = ['jpg', 'jpeg', 'png'];
+function maxPhotoBytes() {
+  const { maxUploadBytes, VERCEL_MAX_BYTES } = require('../attachments/attachment.validation');
+  const { loadEnv } = require('../../config/env');
+  const storageLimit = loadEnv().ATTACHMENT_STORAGE === 'vercel-blob' ? VERCEL_MAX_BYTES : PHOTO_MAX_BYTES;
+  return Math.min(PHOTO_MAX_BYTES, maxUploadBytes(), storageLimit);
+}
 
 const CASE_EVENT_TYPES = [
   'LF_ITEM_POSTED',
@@ -84,6 +90,7 @@ module.exports = {
   DAILY_REPORT_LIMIT,
   MAX_PHOTOS,
   PHOTO_MAX_BYTES,
+  maxPhotoBytes,
   PHOTO_EXTENSIONS,
   CASE_EVENT_TYPES,
 };

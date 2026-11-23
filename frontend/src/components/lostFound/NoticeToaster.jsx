@@ -14,18 +14,49 @@ const POLL_MS = 30000;
  */
 export default function NoticeToaster() {
   const { user } = useAuth();
+  const ownerId = user && (user.id || user._id);
+  return ownerId ? <AccountNotices key={ownerId} /> : null;
+}
+
+function AccountNotices() {
   const location = useLocation();
   const [toasts, setToasts] = useState([]);
   const busy = useRef(false);
+  const active = useRef(false);
+  const dismissals = useRef(new Map());
+
+  useEffect(() => {
+    active.current = true;
+    const timers = dismissals.current;
+    return () => {
+      active.current = false;
+      timers.forEach(clearTimeout);
+      timers.clear();
+    };
+  }, []);
+
+  function dismiss(id) {
+    clearTimeout(dismissals.current.get(id));
+    dismissals.current.delete(id);
+    setToasts((list) => list.filter((toast) => toast.id !== id));
+  }
 
   const check = useCallback(async () => {
-    if (busy.current) return;
+    if (!active.current || busy.current) return;
     busy.current = true;
     try {
       const notices = await takeMyNotices();
+      if (!active.current) return;
       if (notices.length) {
-        setToasts((list) => [...list, ...notices]);
-        notices.forEach((n) => setTimeout(() => setToasts((list) => list.filter((t) => t.id !== n.id)), SHOW_MS));
+        setToasts((list) => [...list, ...notices.filter((notice) => !list.some((toast) => toast.id === notice.id))]);
+        notices.forEach((notice) => {
+          clearTimeout(dismissals.current.get(notice.id));
+          const timer = setTimeout(() => {
+            dismissals.current.delete(notice.id);
+            if (active.current) setToasts((list) => list.filter((toast) => toast.id !== notice.id));
+          }, SHOW_MS);
+          dismissals.current.set(notice.id, timer);
+        });
       }
     } catch {
       // Notices are a convenience; ignore failures (for example when logged out).
@@ -35,7 +66,6 @@ export default function NoticeToaster() {
   }, []);
 
   useEffect(() => {
-    if (!user) return undefined;
     // First check right after the page changes, then every 30 seconds.
     const first = setTimeout(check, 0);
     const timer = setInterval(check, POLL_MS);
@@ -43,9 +73,9 @@ export default function NoticeToaster() {
       clearTimeout(first);
       clearInterval(timer);
     };
-  }, [user, location.pathname, check]);
+  }, [location.pathname, check]);
 
-  if (!user || !toasts.length) return null;
+  if (!toasts.length) return null;
   return (
     <div className="lf-toasts" role="status" aria-live="polite">
       {toasts.map((t) => (
@@ -65,7 +95,7 @@ export default function NoticeToaster() {
             type="button"
             className="lf-toast-close"
             aria-label="Dismiss"
-            onClick={() => setToasts((list) => list.filter((x) => x.id !== t.id))}
+            onClick={() => dismiss(t.id)}
           >
             ×
           </button>

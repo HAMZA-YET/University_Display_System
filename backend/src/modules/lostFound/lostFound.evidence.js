@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const Claim = require('./claim.model');
 const Item = require('./item.model');
 const C = require('./lostFound.constants');
+const { loadEnv } = require('../../config/env');
 
 /**
  * Member 3 (C) answer to Member 1's private-evidence callback
@@ -32,7 +33,8 @@ async function authorizeEvidence({ actor, caseId, action }) {
     if (!item) return false;
 
     const isClaimant = String(claim.claimant) === String(actor._id);
-    const isAdmin = C.VERIFIER_ROLES.includes(actor.role);
+    const isAdmin = C.VERIFIER_ROLES.includes(actor.role)
+      && (!loadEnv().REQUIRE_PRIVILEGED_MFA || actor.mfaEnabled === true);
     const pending = claim.status === 'PENDING';
 
     if (action === 'upload') return isClaimant && pending && C.PUBLIC_STATUSES.includes(item.status);

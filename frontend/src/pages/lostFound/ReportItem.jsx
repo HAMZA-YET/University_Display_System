@@ -25,7 +25,9 @@ function NewReport() {
               failed += 1;
             }
           }
-          const photoNote = failed ? ` ${failed} photo(s) could not be uploaded; you can add them from the report page.` : '';
+          const photoNote = files.length
+            ? ` ${files.length - failed} photo(s) uploaded.${failed ? ` ${failed} photo(s) could not be uploaded; you can try again from the report page.` : ''}`
+            : '';
           navigate(`/items/my-reports/${item.id}`, {
             state: { flash: `Report ${item.reference} posted and listed.${photoNote}` },
           });

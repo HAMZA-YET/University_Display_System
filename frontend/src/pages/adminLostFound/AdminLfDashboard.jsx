@@ -36,7 +36,7 @@ function HeldList({ title, items, empty }) {
                 listed
               </span>
               <div className="row" style={{ gap: 'var(--space-2)' }}>
-                <Link to={`/admin/items/${i.id}`}>{i.title}</Link>
+                <Link to={`/admin/lost-found/items/${i.id}`}>{i.title}</Link>
                 <span className="mono small">{i.reference}</span>
               </div>
             </li>

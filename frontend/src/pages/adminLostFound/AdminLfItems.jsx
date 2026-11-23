@@ -43,7 +43,7 @@ export default function AdminLfItems() {
       header: 'Item',
       render: (r) => (
         <span className="row">
-          <TypeTag type={r.type} /> <Link to={`/admin/items/${r.id}`}>{r.title}</Link>
+          <TypeTag type={r.type} /> <Link to={`/admin/lost-found/items/${r.id}`}>{r.title}</Link>
           {r.status !== 'OPEN' && <ItemStatusBadge status={r.status} />}
         </span>
       ),
@@ -68,7 +68,7 @@ export default function AdminLfItems() {
       header: 'Actions',
       render: (r) => (
         <div className="actions">
-          <Button size="sm" variant="secondary" to={`/admin/items/${r.id}`}>
+          <Button size="sm" variant="secondary" to={`/admin/lost-found/items/${r.id}`}>
             Open
           </Button>
           <DeleteButton what="report" name={r.title} onDelete={() => adminDeleteItem(r.id).then(result.reload)} />

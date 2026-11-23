@@ -18,14 +18,17 @@ const REDACTED = '[removed by retention policy]';
  * `days` days, the private evidence on its finished claims is removed. The
  * history (who did what and when) is kept. Safe to run repeatedly.
  */
-async function redactExpiredEvidence({ days = Number(process.env.LF_EVIDENCE_RETENTION_DAYS) || 90 } = {}) {
+async function runCleanup({ days: configuredDays, dryRun = false } = {}) {
+  const days = Number(configuredDays === undefined ? (process.env.LF_EVIDENCE_RETENTION_DAYS ?? 90) : configuredDays);
+  if (!Number.isSafeInteger(days) || days < 1 || days > 3650) throw new Error('Evidence retention days must be an integer between 1 and 3650.');
+  if (typeof dryRun !== 'boolean') throw new Error('Evidence retention dryRun must be a boolean.');
   const cutoff = new Date(clock.now().getTime() - days * 24 * 3600 * 1000);
   const items = await Item.find({
     $or: [{ returnedAt: { $lte: cutoff } }, { resolvedAt: { $lte: cutoff } }, { deletedAt: { $lte: cutoff } }],
   })
     .select('_id')
     .lean();
-  if (!items.length) return { items: 0, claims: 0, evidenceFiles: 0, cutoff };
+  if (!items.length) return { dryRun, items: 0, claims: 0, evidenceFiles: 0, cutoff };
 
   const claims = await Claim.find({
     item: { $in: items.map((i) => i._id) },
@@ -35,10 +38,13 @@ async function redactExpiredEvidence({ days = Number(process.env.LF_EVIDENCE_RET
 
   let evidenceFiles = 0;
   for (const c of claims) {
-    // Any private evidence files on this claim are logically deleted (reads are
-    // denied at once). Physical file removal stays with Member 1's operations
-    // cleanup, which this policy now approves for these files.
-    const res = await evidenceModel().updateMany({ caseId: String(c._id), state: { $ne: 'DELETED' } }, { $set: { state: 'DELETED' } });
+    const evidenceFilter = { caseId: String(c._id), state: { $ne: 'DELETED' } };
+    if (dryRun) {
+      evidenceFiles += await evidenceModel().countDocuments(evidenceFilter);
+      continue;
+    }
+    // This policy authorizes logical deletion only. Physical purge is deferred.
+    const res = await evidenceModel().updateMany(evidenceFilter, { $set: { state: 'DELETED' } });
     evidenceFiles += res.modifiedCount || 0;
     await Claim.updateOne(
       { _id: c._id, evidenceRedactedAt: null },
@@ -48,7 +54,7 @@ async function redactExpiredEvidence({ days = Number(process.env.LF_EVIDENCE_RET
       }
     );
   }
-  return { items: items.length, claims: claims.length, evidenceFiles, cutoff };
+  return { dryRun, items: items.length, claims: claims.length, evidenceFiles, cutoff };
 }
 
-module.exports = { redactExpiredEvidence, REDACTED };
+module.exports = { runCleanup, redactExpiredEvidence: runCleanup, REDACTED };

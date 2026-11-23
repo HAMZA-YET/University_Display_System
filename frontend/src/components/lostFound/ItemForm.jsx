@@ -9,7 +9,7 @@ import Button from '../ui/Button';
 import Alert from '../ui/Alert';
 import Icon from '../ui/Icon';
 import { LF_CATEGORIES, lfLabel } from '../../lib/lostFoundLabels';
-import { MAX_PHOTOS, PHOTO_ACCEPT, PHOTO_HINT, checkPhoto } from '../../lib/lostFoundPhotos';
+import { PHOTO_ACCEPT, photoHint, checkPhoto, usePhotoCapabilities } from '../../lib/lostFoundPhotos';
 
 /** Same limits as server/src/modules/lostFound/lostFound.schemas.js. The date is set by the server. */
 const schema = z.object({
@@ -72,6 +72,7 @@ function formToBody(v) {
 function PhotoPicker({ files, setFiles }) {
   const inputId = useId();
   const [error, setError] = useState(null);
+  const capabilities = usePhotoCapabilities();
   // Preview URLs are created per file list and released when it changes.
   const previews = useMemo(() => files.map((f) => URL.createObjectURL(f)), [files]);
   useEffect(() => () => previews.forEach((u) => URL.revokeObjectURL(u)), [previews]);
@@ -79,9 +80,10 @@ function PhotoPicker({ files, setFiles }) {
   function add(e) {
     const picked = Array.from(e.target.files || []);
     e.target.value = '';
-    const problems = picked.map(checkPhoto).filter(Boolean);
-    setError(problems[0] || (files.length + picked.length > MAX_PHOTOS ? `You can add at most ${MAX_PHOTOS} photos.` : null));
-    setFiles([...files, ...picked.filter((f) => !checkPhoto(f))].slice(0, MAX_PHOTOS));
+    if (!capabilities.photosAvailable) return;
+    const problems = picked.map((file) => checkPhoto(file, capabilities)).filter(Boolean);
+    setError(problems[0] || (files.length + picked.length > capabilities.maxPhotos ? `You can add at most ${capabilities.maxPhotos} photos.` : null));
+    setFiles([...files, ...picked.filter((file) => !checkPhoto(file, capabilities))].slice(0, capabilities.maxPhotos));
   }
 
   return (
@@ -101,7 +103,7 @@ function PhotoPicker({ files, setFiles }) {
             </button>
           </div>
         ))}
-        {files.length < MAX_PHOTOS && (
+        {capabilities.photosAvailable && files.length < capabilities.maxPhotos && (
           <label className="lf-photo-add" htmlFor={inputId}>
             <input id={inputId} type="file" accept={PHOTO_ACCEPT} multiple onChange={add} />
             <span>+ Add photo</span>
@@ -109,7 +111,7 @@ function PhotoPicker({ files, setFiles }) {
         )}
       </div>
       <p className="small muted" style={{ margin: 'var(--space-2) 0 0' }}>
-        {PHOTO_HINT}
+        {photoHint(capabilities)}
       </p>
       {error && (
         <p className="small" role="alert" style={{ color: 'var(--color-danger)', fontWeight: 600, margin: 0 }}>
