@@ -11,7 +11,7 @@ import BookmarkControl from '../member4/items/BookmarkControl';
 export default function NoticeDetails() {
   const { id } = useParams();
   const { state } = useLocation();
-  const returnTo = typeof state?.returnTo === 'string' && /^\/(?:search|notifications)(?:\?[^#]*)?$/.test(state.returnTo) ? state.returnTo : null;
+  const returnTo = typeof state?.returnTo === 'string' && /^\/(?:notices|search|notifications)(?:\?[^#]*)?$/.test(state.returnTo) ? state.returnTo : null;
   const { byCode } = useDepartments();
   const { data, error, loading, reload } = useApi(() => getPublicNotice(id), [id]);
 
@@ -23,13 +23,15 @@ export default function NoticeDetails() {
   if (error && (error.status === 404 || error.status === 400)) return <NotFound />;
   if (error) return <ErrorState error={error} onRetry={reload} />;
   return (
-    <div className="stack">
+    <div className="stack notice-reading-page">
       <div className="breadcrumb">
-        <Link to="/notices">Notices</Link> / {data.title}
+        <Link to={returnTo?.startsWith('/notices') ? returnTo : '/notices'} state={{ focusReturn: true }}>Notices</Link> / {data.title}
       </div>
       <NoticeView notice={data} departments={byCode} />
-      <BookmarkControl noticeId={data.id} />
-      {returnTo && <Link to={returnTo} state={{ focusReturn: true }}>{returnTo.startsWith('/notifications') ? 'Back to notifications' : 'Back to search'}</Link>}
+      <div className="notice-detail-actions">
+        <BookmarkControl noticeId={data.id} />
+        <Link to={returnTo || '/notices'} state={{ focusReturn: true }}>{returnTo?.startsWith('/notifications') ? 'Back to notifications' : returnTo?.startsWith('/search') ? 'Back to search' : 'Back to notices'}</Link>
+      </div>
     </div>
   );
 }
