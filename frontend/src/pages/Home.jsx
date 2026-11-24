@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import NoticeCard from '../components/notices/NoticeCard';
 import EventCard from '../components/events/EventCard';
 import ProfessorCard from '../components/professors/ProfessorCard';
+import UniversityGallery from '../components/home/UniversityGallery';
 import Button from '../components/ui/Button';
 import Icon from '../components/ui/Icon';
 import { DataState } from '../components/ui/States';
@@ -37,12 +38,13 @@ export default function Home() {
 
   return (
     <div className="home-page">
-      <div className="home-intro"><span><span className="status-dot" />Welcome to your campus hub</span><time dateTime={new Date().toISOString()}>{formatDate(new Date())} · KST</time></div>
-      <section className="home-hero" aria-labelledby="home-title">
+      <div className="home-intro"><span><span className="status-dot" />YOUR KDU CAMPUS HUB</span><time dateTime={new Date().toISOString()}>{formatDate(new Date())} · KST</time></div>
+      <section className="home-hero kdu-hero" aria-labelledby="home-title">
+        <img className="kdu-hero-photo" src="/assets/kdu/originals/hero-06.jpg" alt="Students celebrating together in traditional clothing at a university cultural event, from the official KDU website" width="1920" height="860" fetchPriority="high" decoding="async" />
         <div className="hero-copy">
-          <p className="eyebrow">KDU GLOBAL · CAMPUS LIFE</p>
+          <p className="eyebrow">KYUNGDONG UNIVERSITY · GLOBAL</p>
           <h1 id="home-title">Your campus.<br /><span>In one place.</span></h1>
-          <p className="hero-description">From the next big opportunity to the everyday details. Stay informed, find your people, and make the most of life at KDU.</p>
+          <p className="hero-description">The people, opportunities and everyday moments that make university life yours. Stay connected to it all.</p>
           <form className="hero-search" role="search" aria-label="Search campus information" onSubmit={(event) => {
             event.preventDefault();
             const params = new URLSearchParams({ source: 'all' });
@@ -56,11 +58,11 @@ export default function Home() {
           </form>
           <div className="hero-popular"><span>Explore</span><Link to="/notices?category=SCHOLARSHIP">Scholarships</Link><Link to="/events">Campus events</Link><Link to="/professors">Find a professor</Link></div>
         </div>
-        <figure className="hero-media"><img src="/assets/campus-hero.webp" srcSet="/assets/campus-hero-small.webp 800w, /assets/campus-hero.webp 1600w" sizes="(max-width: 700px) 100vw, 55vw" alt="Illustrative university campus with academic buildings and open green spaces" fetchPriority="high" /><figcaption>Illustrative campus image</figcaption><div className="hero-image-note"><span className="hero-note-icon"><Icon name="building" size={22} /></span><div><strong>A world of possibilities.</strong><span>One connected campus community.</span></div></div></figure>
+        <div className="kdu-hero-caption"><span>ONE COMMUNITY. MANY POSSIBILITIES.</span><a href="#kdu-discover-title">Explore university life<Icon name="arrowRight" size={16} /></a></div>
       </section>
 
       <nav className="quick-links" aria-label="Campus shortcuts">
-        {QUICK_LINKS.map((item) => <Link key={item.to} to={item.to} className="quick-link"><span className="quick-link-icon"><Icon name={item.icon} size={22} /></span><span><strong>{item.title}</strong><small>{item.text}</small></span><Icon name="arrowRight" size={17} /></Link>)}
+        {QUICK_LINKS.map((item, index) => <Link key={item.to} to={item.to} className="quick-link"><span className="kdu-shortcut-number" aria-hidden="true">0{index + 1}</span><span className="quick-link-icon"><Icon name={item.icon} size={22} /></span><span><strong>{item.title}</strong><small>{item.text}</small></span><Icon name="arrowRight" size={17} /></Link>)}
       </nav>
 
       <div className="home-content-grid">
@@ -86,7 +88,7 @@ export default function Home() {
             </DataState>
           </section>
           <section className="directory-promo" aria-label="Explore departments">
-            <img src="/assets/campus-detail.svg" alt="" loading="lazy" width="300" height="160" />
+            <img src="/assets/kdu/originals/hero-04.jpg" alt="Students and staff in discussion, from the official KDU website" loading="lazy" decoding="async" width="1920" height="860" />
             <p className="eyebrow">HERE TO HELP YOU GROW</p><h2>Find your faculty.</h2><p>Discover the people, subjects, and office hours behind your department.</p>
             <DataState {...depts} onRetry={depts.reload} isEmpty={(data) => !data.length} emptyTitle="Directory coming together" emptyText="Departments will appear as profiles are added.">
               {(data) => <div className="department-links">{data.map((department) => <Link key={department.code} to={`/professors?department=${encodeURIComponent(department.code)}`} title={department.name}>{department.code}<span>{department.count}</span></Link>)}</div>}
@@ -101,6 +103,7 @@ export default function Home() {
           {(data) => <div className="grid grid-3">{data.data.slice(0, 3).map((professor) => <ProfessorCard key={professor.id} professor={professor} departmentName={byCode[professor.department]} />)}</div>}
         </DataState>
       </section>
+      <UniversityGallery />
       <div className="campus-help-banner"><div><Icon name="info" size={24} /><span><strong>A little help goes a long way.</strong><small>Looking for something? Search notices or connect with your professor.</small></span></div><Link to="/search?source=all">Find campus information<Icon name="arrowRight" size={18} /></Link></div>
     </div>
   );

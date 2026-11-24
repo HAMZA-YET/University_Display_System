@@ -1,0 +1,208 @@
+/* Official university photography, with a consistent portal presentation. */
+:root {
+  --color-primary: #0b315b;
+  --color-primary-hover: #174b80;
+  --color-accent: #b52e41;
+  --color-page: #f7f9fc;
+}
+
+.utility-bar > .container { min-height: 32px; font-size: 11px; }
+.utility-right { gap: 18px !important; }
+.utility-bar a { color: #e5edf7; text-decoration: none; }
+.utility-bar a:hover { color: #fff; text-decoration: underline; }
+.topbar-inner { min-height: 88px; }
+.nav-links a { font-size: 13px; padding-inline: 13px; }
+.brand-logo.official-university-logo { height: 56px; }
+.nav-login { min-height: 44px; padding-inline: 18px; }
+.home-page .home-intro { margin-block: 2px 18px; font-size: 10px; letter-spacing: .09em; font-weight: 650; }
+.home-intro time { letter-spacing: 0; font-size: 11px; font-weight: 400; }
+.home-page .status-dot { width: 5px; height: 5px; background: var(--color-accent); }
+
+.home-page .kdu-hero {
+  display: flex;
+  align-items: center;
+  min-height: 530px;
+  isolation: isolate;
+  border-radius: 12px;
+  background: #102e4e;
+  box-shadow: none;
+}
+.kdu-hero-photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 65% center;
+  z-index: -2;
+}
+.kdu-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(90deg, rgb(4 25 49 / 95%) 0%, rgb(4 25 49 / 84%) 28%, rgb(4 25 49 / 35%) 62%, rgb(4 25 49 / 10%) 100%);
+}
+.kdu-hero .hero-copy { padding: 54px 54px 70px; width: min(100%, 690px); }
+.kdu-hero .hero-copy > .eyebrow { font-size: 11px !important; color: #dae8f8; letter-spacing: .17em !important; margin-bottom: 22px !important; }
+.kdu-hero .hero-copy h1 { font-size: clamp(48px, 5.2vw, 72px); line-height: 1.06; letter-spacing: -.05em; font-weight: 650; margin-bottom: 23px; max-width: none; }
+.kdu-hero .hero-copy h1 span { color: #fff; }
+.kdu-hero .hero-description { font-size: 15px; line-height: 1.75; color: #dce5f0; max-width: 420px; margin-bottom: 28px; }
+.kdu-hero .hero-search { border-radius: 7px; max-width: 530px; min-height: 56px; gap: 12px; padding: 6px 6px 6px 16px; box-shadow: 0 8px 25px #0002; }
+.kdu-hero .hero-search > svg { display: block; }
+.kdu-hero .hero-search input { font-size: 13px; min-height: 44px; }
+.kdu-hero .hero-search .btn { font-size: 13px; min-height: 44px; padding-inline: 18px; }
+.kdu-hero .hero-search .btn svg { display: block; }
+.kdu-hero .hero-popular { font-size: 11px; gap: 12px; margin-top: 18px; }
+.kdu-hero .hero-popular > span { color: #b7c9dd; }
+.kdu-hero .hero-popular a { color: #eef4fc; border-bottom-color: #7f9bb8; }
+.kdu-hero-caption { position: absolute; bottom: 25px; right: 30px; color: #fff; display: flex; flex-direction: column; align-items: flex-end; gap: 7px; }
+.kdu-hero-caption > span { font-size: 9px; letter-spacing: .15em; font-weight: 650; }
+.kdu-hero-caption a { display: flex; align-items: center; gap: 8px; color: #fff; font-size: 11px; text-decoration: none; }
+.kdu-hero-caption a:hover { text-decoration: underline; }
+.kdu-hero-caption a:focus-visible { outline-color: #fff; }
+
+.home-page .quick-links { gap: 0; margin: 18px 0 48px; background: #fff; border: 1px solid var(--color-border); border-radius: 10px; overflow: hidden; }
+.home-page .quick-link { position: relative; border: 0; border-right: 1px solid var(--color-border); border-radius: 0; background: transparent; padding: 31px 20px; min-height: 126px; gap: 13px; box-shadow: none; transition: background-color .15s ease; }
+.home-page .quick-link:last-child { border-right: 0; }
+.home-page .quick-link:hover { transform: none; background: #edf3fa; box-shadow: none; }
+.home-page .quick-link:focus-visible { outline-offset: -4px; }
+.home-page .quick-link-icon { flex-shrink: 0; width: 38px; height: 38px; background: transparent; color: var(--color-primary); }
+.home-page .quick-link strong { font-size: 13px; font-weight: 700; }
+.home-page .quick-link small { display: block; font-size: 10px; line-height: 1.6; margin-top: 5px; color: #65768a; }
+.home-page .quick-link > svg { display: none; }
+.kdu-shortcut-number { position: absolute; top: 12px; right: 16px; color: #7c8da1; font-size: 10px; letter-spacing: .06em; }
+.home-page .content-section { margin-bottom: 44px; }
+.home-page .section-heading { margin-bottom: 23px; }
+.home-page .section-heading h2 { font-size: 28px; letter-spacing: -.04em; }
+.home-page .eyebrow { color: #687b91; }
+.home-page .section-link { font-size: 12px; }
+.home-page .home-content-grid { gap: 32px; }
+.home-page .sidebar-panel { border-top: 3px solid var(--color-primary); border-radius: 8px; padding: 25px; }
+.home-page .directory-promo { border: 0; border-radius: 8px; background: #e9eff7; padding: 25px; }
+.home-page .directory-promo > img { object-fit: cover; width: calc(100% + 50px); max-width: none; height: 165px; margin: -25px -25px 24px; }
+.home-page .notice-card { box-shadow: 0 3px 12px #102d5005; }
+.home-page .notice-card h3 { font-size: 18px; }
+.home-page .notice-card-summary { font-size: 13px; }
+.home-page .faculty-section { padding-top: 8px; }
+
+.kdu-discover { padding-top: 5px; }
+.kdu-discover-grid { display: grid; grid-template-columns: minmax(0, 1.8fr) minmax(0, 1fr); gap: 26px; }
+.kdu-gallery { margin: 0; background: #fff; border: 1px solid var(--color-border); border-radius: 9px; overflow: hidden; min-width: 0; display: flex; flex-direction: column; }
+.kdu-gallery > img { width: 100%; height: auto; aspect-ratio: 1920 / 1000; object-fit: cover; display: block; flex: 1; min-height: 0; }
+.kdu-gallery figcaption { display: flex; align-items: center; justify-content: space-between; gap: 15px; padding: 22px 25px; }
+.kdu-photo-credit { display: block; font-size: 9px; letter-spacing: .14em; color: #667a90; margin-bottom: 7px; }
+.kdu-gallery figcaption strong { display: block; font-size: 18px; line-height: 1.4; color: var(--color-primary); letter-spacing: -.025em; font-weight: 650; }
+.kdu-gallery-controls { display: flex; align-items: center; gap: 7px; flex-shrink: 0; }
+.kdu-gallery-controls > span { color: #25486c; font-size: 12px; white-space: nowrap; margin-right: 9px; }
+.kdu-gallery-controls > span span { color: #7a8a9d; }
+.kdu-gallery-controls button { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border: 1px solid #d8e1eb; border-radius: 50%; color: var(--color-primary); background: #fff; cursor: pointer; }
+.kdu-gallery-controls button:hover { background: #edf3fa; border-color: #8ea8c3; }
+.kdu-video-card { background: #fff; border: 1px solid var(--color-border); border-radius: 9px; overflow: hidden; }
+.kdu-video-link { position: relative; display: block; width: 100%; padding: 0; border: 0; cursor: pointer; text-align: left; font: inherit; aspect-ratio: 1.9; overflow: hidden; background: var(--color-primary); color: #fff; }
+.kdu-video-link::after { content: ''; position: absolute; inset: 0; background: linear-gradient(0deg, #071e3ce6, #071e3c1a 75%); }
+.kdu-video-link > img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.kdu-play { position: absolute; inset: 0; z-index: 1; width: 54px; height: 54px; margin: auto; border: 1px solid #ffffffc0; background: #ffffff1a; color: #fff; border-radius: 50%; display: grid; place-items: center; transition: background-color .15s ease; }
+.kdu-video-link:hover .kdu-play { background: #ffffff45; }
+.kdu-play svg { margin-left: 3px; }
+.kdu-video-label { position: absolute; bottom: 18px; left: 23px; right: 23px; z-index: 1; display: flex; align-items: center; justify-content: space-between; gap: 12px; font-size: 10px; letter-spacing: .12em; font-weight: 650; }
+.kdu-video-copy { padding: 25px; }
+.kdu-video-copy h3 { font-size: 24px; letter-spacing: -.04em; }
+.kdu-video-copy > p:not(.eyebrow) { font-size: 13px; color: var(--color-text-muted); margin-bottom: 19px; }
+.kdu-film { display: block; width: 100%; max-height: 70vh; aspect-ratio: 16 / 9; background: #071c32; }
+.kdu-film-credit { margin: 15px 0 0; font-size: 12px; color: var(--color-text-muted); }
+.home-page .campus-help-banner { border: 1px solid #d7e2ef; border-left: 4px solid var(--color-accent); border-radius: 8px; background: #edf2f8; margin-top: 0; }
+.home-page .campus-help-banner strong { font-size: 17px; }
+.home-page .campus-help-banner small { font-size: 12px; margin-top: 4px; }
+.home-page .campus-help-banner > a { font-size: 12px; }
+.footer { background: #092747; }
+.footer h2 { font-size: 12px; }
+.footer-grid > div > a { font-size: 12px; }
+.footer-brand p, .footer-note, .footer-note strong { font-size: 12px; }
+.footer-note a { color: #d8e4f3; text-underline-offset: 3px; }
+.footer-bottom { font-size: 10px; line-height: 1.7; }
+.footer-bottom a { color: #c8d7e9; }
+
+@media (max-width: 1180px) {
+  .nav-links a { padding-inline: 10px; font-size: 12px; }
+  .brand-logo.official-university-logo { height: 48px; }
+  .home-page .quick-link { padding-inline: 15px; gap: 8px; }
+  .home-page .quick-link-icon { width: 30px; }
+  .home-page .quick-link strong { font-size: 12px; }
+  .home-page .quick-link small { font-size: 9px; }
+}
+@media (max-width: 1024px) {
+  .topbar-inner { min-height: 76px; }
+  .nav-links a { font-size: 13px; }
+  .home-page .kdu-hero { min-height: 490px; }
+  .kdu-hero .hero-copy { padding: 45px 38px 65px; width: 630px; }
+  .kdu-hero .hero-copy h1 { font-size: 62px; }
+  .home-page .quick-links { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .home-page .quick-link { flex-direction: column; align-items: flex-start; justify-content: center; gap: 8px; padding: 22px 18px; }
+  .home-page .quick-link small { font-size: 10px; }
+  .home-page .home-content-grid { grid-template-columns: 1fr; }
+  .kdu-gallery figcaption { padding: 20px; }
+  .kdu-gallery figcaption strong { font-size: 16px; }
+  .kdu-gallery-controls > span { display: none; }
+}
+@media (max-width: 700px) {
+  .utility-bar > .container { min-height: 28px; font-size: 9px; }
+  .topbar-inner { min-height: 72px; }
+  .brand-logo.official-university-logo { height: 44px; }
+  .nav-login { font-size: 11px; padding-inline: 12px; }
+  .home-page .home-intro { font-size: 9px; letter-spacing: .04em; margin-bottom: 15px; }
+  .home-intro time { font-size: 9px; }
+  .home-page .kdu-hero { min-height: 555px; align-items: flex-end; border-radius: 9px; }
+  .kdu-hero-photo { object-position: 70% center; }
+  .kdu-hero::before { background: linear-gradient(0deg, #041a33fa 0%, #041a33e6 34%, #041a3366 70%, #041a3326 100%); }
+  .kdu-hero .hero-copy { width: 100%; padding: 130px 26px 35px; }
+  .kdu-hero .hero-copy > .eyebrow { font-size: 9px !important; letter-spacing: .12em !important; margin-bottom: 17px !important; }
+  .kdu-hero .hero-copy h1 { font-size: 51px; line-height: 1.06; margin-bottom: 19px; }
+  .kdu-hero .hero-description { font-size: 13px; max-width: 350px; margin-bottom: 23px; }
+  .kdu-hero .hero-search { min-height: 54px; padding-left: 12px; gap: 8px; }
+  .kdu-hero .hero-search input { font-size: 16px; width: 0; }
+  .kdu-hero .hero-search .btn { font-size: 12px; padding-inline: 12px; }
+  .kdu-hero .hero-search > svg, .kdu-hero .hero-search .btn svg { display: none; }
+  .kdu-hero .hero-popular { font-size: 10px; gap: 9px; row-gap: 7px; margin-top: 16px; }
+  .kdu-hero-caption { display: none; }
+  .home-page .quick-links { grid-template-columns: repeat(2, minmax(0, 1fr)); margin-block: 15px 35px; border-radius: 8px; }
+  .home-page .quick-link { padding: 22px 16px; min-height: 132px; }
+  .home-page .quick-link:nth-child(2) { border-right: 0; }
+  .home-page .quick-link:nth-child(-n+2) { border-bottom: 1px solid var(--color-border); }
+  .home-page .quick-link-icon { width: 28px; height: 30px; }
+  .home-page .quick-link strong { font-size: 13px; }
+  .home-page .quick-link small { font-size: 10px; }
+  .home-page .section-heading h2 { font-size: 25px; }
+  .home-page .section-link { font-size: 11px; }
+  .home-page .content-section { margin-bottom: 34px; }
+  .home-page .sidebar-panel, .home-page .directory-promo { padding: 23px; }
+  .home-page .directory-promo > img { width: calc(100% + 46px); height: 180px; margin: -23px -23px 23px; }
+  .home-page .notice-card h3 { font-size: 17px; }
+  .kdu-discover-grid { grid-template-columns: 1fr; gap: 20px; }
+  .kdu-gallery > img { aspect-ratio: 1.55; flex: none; }
+  .kdu-gallery figcaption { padding: 19px; gap: 10px; }
+  .kdu-photo-credit { font-size: 8px; letter-spacing: .11em; }
+  .kdu-gallery-controls { gap: 5px; }
+  .kdu-gallery figcaption strong { font-size: 16px; }
+  .kdu-video-copy { padding: 23px; }
+  .home-page .campus-help-banner strong { font-size: 16px; }
+  .home-page .campus-help-banner small { font-size: 11px; }
+  .home-page .campus-help-banner > a { padding-left: 0; }
+  .footer-grid > div > a { font-size: 12px; }
+  .footer-bottom { font-size: 10px; }
+}
+@media (max-width: 380px) {
+  .brand-logo.official-university-logo { height: 37px; }
+  .nav-controls { gap: 8px; }
+  .nav-login { font-size: 10px; padding-inline: 10px; }
+  .home-page .kdu-hero { min-height: 530px; }
+  .kdu-hero .hero-copy { padding-inline: 21px; padding-bottom: 28px; }
+  .kdu-hero .hero-copy h1 { font-size: 43px; }
+  .kdu-hero .hero-popular { font-size: 9px; gap: 8px; }
+  .kdu-hero .hero-popular > span { display: none; }
+  .home-page .home-intro { font-size: 8px; gap: 7px; }
+  .home-intro time { font-size: 8px; }
+  .home-page .quick-link strong { font-size: 12px; }
+  .kdu-gallery figcaption { flex-wrap: wrap; }
+  .kdu-gallery-controls { margin-left: auto; }
+}
