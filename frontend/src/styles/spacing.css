@@ -7,6 +7,11 @@
   min-width: 0;
 }
 
+/* Contain hidden table captions within their horizontal scroll region. */
+.table-wrap {
+  position: relative;
+}
+
 /* These cards are flex containers: use their gap instead of stack margins too. */
 #main-content .card.stack {
   gap: 16px;
@@ -32,6 +37,23 @@
 /* Inline links need a box for the stack's vertical margin to take effect. */
 #main-content .stack > .panel + a:not(.btn) {
   display: inline-block;
+}
+
+.account-recovery-return {
+  display: inline-block;
+  margin-top: var(--space-4);
+}
+
+/* Long confirmation labels must wrap without squeezing their checkbox. */
+.checkbox input {
+  flex-shrink: 0;
+}
+
+/* The invisible keyboard guard must not add scrollable space to a dialog. */
+.modal [data-modal-focus-guard] {
+  position: fixed !important;
+  top: 0;
+  left: 0;
 }
 
 /* Keep action groups aligned without changing their order or destinations. */
@@ -126,6 +148,11 @@ section[aria-labelledby="notification-preferences-title"] fieldset > label > inp
 }
 
 @media (max-width: 700px) {
+  /* The mobile account menu starts 92 px down; keep its scroll area on screen. */
+  .account-dropdown {
+    max-height: min(640px, 75vh, calc(100dvh - 104px));
+  }
+
   .events-content > .row-between > .row {
     width: 100%;
   }

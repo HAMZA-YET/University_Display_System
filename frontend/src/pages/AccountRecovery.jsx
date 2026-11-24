@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import PageHeader from '../components/layout/PageHeader';
 import Input from '../components/ui/Input';
+import Select from '../components/ui/Select';
 import Button from '../components/ui/Button';
 import Alert from '../components/ui/Alert';
 import { securityRequest } from '../api/security';
@@ -31,9 +32,12 @@ export default function AccountRecovery() {
       <Input label="Account email" name="email" type="email" required /><Button type="submit" busy={busy}>Request recovery</Button></form>
     }
     {capabilities?.accountCompletionAvailable && <form className="panel stack" onSubmit={e => submit(e, purpose + '/complete')}>
-      <label>Message type <select value={purpose} onChange={e => setPurpose(e.target.value)}><option value="recovery">Password recovery</option><option value="activation">Account activation</option></select></label>
+      <Select label="Message type" value={purpose} onChange={e => setPurpose(e.target.value)} options={[
+        { value: 'recovery', label: 'Password recovery' },
+        { value: 'activation', label: 'Account activation' },
+      ]} />
       <Input label="Private message code" name="token" type="password" autoComplete="off" required />
       <Input label="New password" name="password" type="password" autoComplete="new-password" required />
       <Button type="submit" busy={busy}>Complete</Button></form>}
-    <Link to="/login">Return to login</Link></>;
+    <Link className="account-recovery-return" to="/login">Return to login</Link></>;
 }

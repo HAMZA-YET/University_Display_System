@@ -1,32 +1,51 @@
-import { useEffect, useId, useRef } from 'react';
+import { useEffect, useId, useLayoutEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import Icon from './Icon';
 
-const FOCUSABLE = 'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])';
+const FOCUSABLE = 'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), video[controls], audio[controls], [tabindex]:not([tabindex="-1"])';
+
+function focusableItems(node) {
+  return Array.from(node.querySelectorAll(FOCUSABLE)).filter((element) => {
+    const media = element.closest('video, audio');
+    if (media && media !== element) return false;
+    if (element.hasAttribute('data-modal-focus-guard') || element.closest('[hidden], [inert]') || (element.hasAttribute('tabindex') && element.tabIndex < 0)) return false;
+    const style = window.getComputedStyle(element);
+    return style.visibility !== 'hidden' && style.visibility !== 'collapse' && element.getClientRects().length > 0;
+  });
+}
+
+const nativeMedia = (element) => element?.matches('video[controls], audio[controls]');
 
 /** Accessible dialog: traps focus, closes with Escape, restores focus on close. */
 export default function Modal({ open, title, onClose, children, footer, wide = false }) {
   const titleId = useId();
   const dialogRef = useRef(null);
   const lastFocused = useRef(null);
+  const onCloseRef = useRef(onClose);
+
+  useLayoutEffect(() => {
+    onCloseRef.current = onClose;
+  }, [onClose]);
 
   useEffect(() => {
     if (!open) return undefined;
     lastFocused.current = document.activeElement;
     const node = dialogRef.current;
-    const focusables = node ? node.querySelectorAll(FOCUSABLE) : [];
-    const first = Array.from(focusables).find((el) => !el.classList.contains('modal-close'));
+    const focusables = node ? focusableItems(node) : [];
+    const first = focusables.find((el) => !el.classList.contains('modal-close'));
     (first || node).focus();
 
     function onKey(e) {
       if (e.key === 'Escape') {
         e.preventDefault();
-        onClose();
+        onCloseRef.current();
         return;
       }
       if (e.key !== 'Tab' || !node) return;
-      const items = Array.from(node.querySelectorAll(FOCUSABLE));
+      const items = focusableItems(node);
       if (!items.length) return;
+      // Let the browser traverse play, timeline and volume inside native media.
+      if (nativeMedia(document.activeElement)) return;
       const firstEl = items[0];
       const lastEl = items[items.length - 1];
       if (e.shiftKey && document.activeElement === firstEl) {
@@ -42,7 +61,7 @@ export default function Modal({ open, title, onClose, children, footer, wide = f
       document.removeEventListener('keydown', onKey);
       if (lastFocused.current && lastFocused.current.focus) lastFocused.current.focus();
     };
-  }, [open, onClose]);
+  }, [open]);
 
   if (!open) return null;
   return createPortal(
@@ -56,6 +75,11 @@ export default function Modal({ open, title, onClose, children, footer, wide = f
         </div>
         <div className="modal-body">{children}</div>
         {footer && <div className="modal-footer">{footer}</div>}
+        {/* Native media's inner Tab stops do not all bubble keydown events. */}
+        <span className="visually-hidden" tabIndex={0} aria-hidden="true" data-modal-focus-guard="" onFocus={() => {
+          const node = dialogRef.current;
+          if (node) (focusableItems(node)[0] || node).focus();
+        }} />
       </div>
     </div>,
     document.body
