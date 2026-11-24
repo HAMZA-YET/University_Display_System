@@ -10,6 +10,7 @@ import useQueryParams from '../hooks/useQueryParams';
 import useDepartments from '../hooks/useDepartments';
 import { listPublicEvents } from '../api/events';
 import { zonedParts, monthStartIso } from '../lib/time';
+import '../styles/event-calendar.css';
 
 const TABS = [
   { value: 'ALL', label: 'All events' },
@@ -54,26 +55,28 @@ export default function Events() {
     <>
       <PageHeader title="Events & activities" description="Discover what's happening around campus. All times are shown in Korea Standard Time (Asia/Seoul)." />
       <div className="stack events-content">
-        <div className="tabs" role="group" aria-label="Filter by event state">
+        <div className="tabs event-state-tabs" role="group" aria-label="Filter by event state">
           {TABS.map((t) => (
             <button key={t.value} type="button" aria-pressed={state === t.value} onClick={() => setParams({ state: t.value })}>
               {t.label}
             </button>
           ))}
         </div>
-        <div className="row-between">
-          <div className="row" role="group" aria-label="Month">
-            <Button variant="secondary" size="sm" icon="chevronLeft" onClick={() => shift(-1)} aria-label="Previous month">
-              Prev
-            </Button>
-            <strong aria-live="polite">{monthLabel}</strong>
-            <Button variant="secondary" size="sm" onClick={() => shift(1)} aria-label="Next month">
-              Next
-            </Button>
-            {awayFromThisMonth && <Button variant="secondary" size="sm" onClick={() => setParams({ month: '' })}>This month</Button>}
+        <div className="row-between event-browser-toolbar">
+          <div className="row event-month-controls" role="group" aria-label="Month">
+            <h2 className="event-month-title" aria-live="polite">{monthLabel}</h2>
+            <div className="event-month-buttons">
+              <Button variant="secondary" size="sm" icon="chevronLeft" onClick={() => shift(-1)} aria-label="Previous month">
+                Prev
+              </Button>
+              <Button variant="secondary" size="sm" icon="chevronRight" onClick={() => shift(1)} aria-label="Next month">
+                Next
+              </Button>
+              {awayFromThisMonth && <Button variant="secondary" size="sm" onClick={() => setParams({ month: '' })}>This month</Button>}
+            </div>
           </div>
-          <div className="row">
-            <div style={{ minWidth: 220 }}>
+          <div className="row event-view-controls">
+            <div className="event-department-filter">
               <Select
                 label="Department"
                 value={params.department}
@@ -82,7 +85,7 @@ export default function Events() {
                 options={[{ value: 'ALL', label: 'University-wide' }, ...departments.map((d) => ({ value: d.code, label: d.name }))]}
               />
             </div>
-            <div className="row" role="group" aria-label="View">
+            <div className="row event-view-toggle" role="group" aria-label="View">
               <Button variant={view === 'list' ? 'primary' : 'secondary'} size="sm" icon="list" aria-pressed={view === 'list'} onClick={() => setParams({ view: 'list' })}>
                 List
               </Button>

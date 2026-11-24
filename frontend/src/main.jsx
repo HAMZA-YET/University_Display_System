@@ -8,6 +8,8 @@ import './styles/portal.css';
 import './styles/kdu.css';
 import './styles/spacing.css';
 import './styles/faculty.css';
+import './styles/controls.css';
+import './styles/date-picker.css';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>

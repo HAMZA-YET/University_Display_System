@@ -1,0 +1,60 @@
+/* Shared field presentation; native select semantics and options are retained. */
+select:not([multiple]):not([size]) {
+  -webkit-appearance: none;
+  appearance: none;
+  background-color: #fff;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%230b315b' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  background-size: 16px 16px;
+  padding: 10px 44px 10px 14px;
+  min-height: 46px;
+  line-height: 1.45;
+  border-color: #c8d5e4;
+  border-radius: 7px;
+  cursor: pointer;
+  text-overflow: ellipsis;
+  color-scheme: light;
+}
+
+select:not([multiple]):not([size]):hover:not(:disabled) { border-color: #8da7c3; }
+select:not([multiple]):not([size]):disabled {
+  color: #617287;
+  background-color: #f0f4f8;
+  cursor: not-allowed;
+  opacity: 1;
+}
+select option { background: #fff; color: var(--color-text); }
+select:dir(rtl):not([multiple]):not([size]) { background-position: left 14px center; padding-left: 44px; padding-right: 14px; }
+
+.field input:not([type='checkbox']):not([type='radio']):not([type='hidden']):not([type='file']) { min-height: 46px; }
+input:focus-visible, select:focus-visible, textarea:focus-visible {
+  outline: 2px solid #3e78ae;
+  outline-offset: 2px;
+}
+input:not([aria-invalid='true']):focus-visible,
+select:not([aria-invalid='true']):focus-visible,
+textarea:not([aria-invalid='true']):focus-visible { border-color: #3e78ae; }
+select[aria-invalid='true'] { border-color: var(--color-danger); }
+input[type='datetime-local']::-webkit-calendar-picker-indicator,
+input[type='time']::-webkit-calendar-picker-indicator { width: 18px; height: 18px; margin-left: 8px; cursor: pointer; opacity: .75; }
+
+.notice-filters { background: #fff; border-color: #dce5ee; box-shadow: 0 3px 16px #0b315b04; }
+.notice-filter-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; align-items: start; }
+.notice-filter-grid > * { min-width: 0; }
+.notice-filters .field { gap: 7px; }
+.notice-filters .field label { font-size: 12px; }
+.notice-filters .field .hint { font-size: 11px; }
+.notice-filter-actions { margin-top: 20px; padding-top: 17px; border-top: 1px solid #edf1f6; justify-content: flex-end; }
+
+@media (max-width: 1024px) and (min-width: 640px) {
+  .notice-filter-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 639px) {
+  .notice-filter-grid { grid-template-columns: minmax(0, 1fr); gap: 19px; }
+  .notice-filters { padding: 20px; }
+}
+@media (forced-colors: active) {
+  select:not([multiple]):not([size]) { -webkit-appearance: auto; appearance: auto; background-image: none; padding-right: 14px; }
+  input:focus-visible, select:focus-visible, textarea:focus-visible { outline-color: Highlight; }
+}

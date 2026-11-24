@@ -21,8 +21,8 @@ export default function FilterBar({ params, setParams, departments }) {
   const toDate = params.to ? params.to.slice(0, 10) : '';
 
   return (
-    <form className="panel" role="search" aria-label="Filter notices" onSubmit={(e) => e.preventDefault()}>
-      <div className="grid grid-3">
+    <form className="panel notice-filters" role="search" aria-label="Filter notices" onSubmit={(e) => e.preventDefault()}>
+      <div className="notice-filter-grid">
         <Input label="Keyword" type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search title, summary and text" />
         <Select
           label="Category"
@@ -60,7 +60,7 @@ export default function FilterBar({ params, setParams, departments }) {
           hint="Korea Standard Time"
         />
       </div>
-      <div className="row" style={{ marginTop: 'var(--space-3)', justifyContent: 'flex-end' }}>
+      <div className="row notice-filter-actions">
         <Button
           variant="secondary"
           size="sm"
