@@ -49,7 +49,7 @@ export default function NavBar() {
 
   return (
     <header className="topbar">
-      <div className="utility-bar"><div className="container"><span><Icon name="building" size={13} />Kyungdong University · Global Campus</span><span className="utility-right">University Information Display System<span className="utility-separator">|</span>Asia/Seoul · KST</span></div></div>
+      <div className="utility-bar"><div className="container"><span><Icon name="building" size={13} />Kyungdong University · Global Campus</span><span className="utility-right">University Information Display System<span className="utility-separator" aria-hidden="true">|</span>Asia/Seoul · KST<span className="utility-separator" aria-hidden="true">|</span><a className="utility-official-link" href="https://kduniv.ac.kr/global/Main.do" target="_blank" rel="noopener noreferrer">Official KDU website<span className="visually-hidden"> (opens in a new tab)</span></a></span></div></div>
       <div className="container topbar-inner">
         <Link to="/" className="brand" aria-label="KDU Global campus portal home"><img className="brand-logo official-university-logo" src="/assets/kdu-official-logo.gif" width="175" height="64" alt="Kyungdong University" /></Link>
         <nav id="main-nav" className={`nav-links ${open ? 'open' : ''}`} aria-label="Main">

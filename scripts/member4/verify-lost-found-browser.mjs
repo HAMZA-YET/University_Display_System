@@ -6,6 +6,9 @@ import sharp from 'sharp';
 const { chromium } = await import(process.env.UIDS_PLAYWRIGHT_MODULE || 'playwright');
 const base = 'http://127.0.0.1:5187';
 const baseline = 'http://127.0.0.1:5188';
+// An explicitly requested redesign uses the dedicated visual verifier instead.
+// Preserve the original comparison by default for feature-only integrations.
+const comparePreviousDesign = !process.argv.includes('--skip-previous-design-comparison');
 const fixture = JSON.parse(await fs.readFile(new URL('../../node_modules/.cache/member4-e2e-fixtures.json', import.meta.url), 'utf8'));
 assert.equal(fixture.fictional, true);
 assert.equal(fixture.baseURL, 'http://127.0.0.1:5017');
@@ -40,7 +43,7 @@ const proof = 'Fictional ownership proof: the inside pocket has a green star pat
 const contact = 'fictional.owner@example.test';
 try {
   const anonymous = await session(), viewer = await session(), reporter = await session(), claimant = await session(), admin = await session();
-  await check('existing desktop/mobile header and footer match the previous built design', async () => {
+  if (comparePreviousDesign) await check('existing desktop/mobile header and footer match the previous built design', async () => {
     const old = await session();
     for (const width of [1280, 390]) {
       await old.page.setViewportSize({ width, height: 900 });

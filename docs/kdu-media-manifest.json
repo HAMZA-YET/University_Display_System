@@ -1,0 +1,1379 @@
+{
+  "sourcePage": "https://kduniv.ac.kr/global/Main.do",
+  "inspectedAt": "2026-11-25",
+  "scope": "Original first-party image files referenced by the public KDU Global homepage HTML, linked same-origin CSS, and public gallery endpoints referenced by the homepage. Original image bytes are preserved; no website scripts, stylesheets, fonts, trackers, or HTML content are copied.",
+  "summary": {
+    "downloadedImageCount": 74,
+    "totalOriginalBytes": 3748322,
+    "heroImageCount": 6,
+    "unavailableImageUrlCount": 5,
+    "externalVideoCount": 1,
+    "downloadedVideoCount": 1,
+    "totalVideoBytes": 27813902,
+    "totalDownloadedBytes": 31562224
+  },
+  "assets": [
+    {
+      "id": "logo",
+      "role": "logo",
+      "description": "Official Kyungdong University Global homepage logo",
+      "sourceUrl": "https://kduniv.ac.kr/attach/IMAGE/TopDesignMgr/LogoImgUpload/2026/10/IfXF9mmGDznGYvG2.GIF",
+      "localPath": "frontend/public/assets/kdu/originals/logo.gif",
+      "publicPath": "/assets/kdu/originals/logo.gif",
+      "contentType": "image/gif",
+      "bytes": 6665,
+      "sha256": "6dc5506c33a174f4059fbc85dc3d01676e9297f0a7a6fa9a8988352a16511993",
+      "width": 175,
+      "height": 64,
+      "referencedBy": [
+        "https://kduniv.ac.kr/global/Main.do"
+      ],
+      "frames": 1
+    },
+    {
+      "id": "hero-01",
+      "role": "hero",
+      "description": "Graduation ceremony address",
+      "sourceUrl": "https://kduniv.ac.kr/attach/IMAGE/PopupMgr/PopupZoneUpload/2026/10/QGcUcoLkSYsQ9pot.JPG",
+      "localPath": "frontend/public/assets/kdu/originals/hero-01.jpg",
+      "publicPath": "/assets/kdu/originals/hero-01.jpg",
+      "contentType": "image/jpeg",
+      "bytes": 411023,
+      "sha256": "570b0372b93881c28930187a7246589de974b10f5d0efd863dcbf2a5ae185efb",
+      "width": 1920,
+      "height": 860,
+      "referencedBy": [
+        "https://kduniv.ac.kr/global/Main.do"
+      ],
+      "frames": 1
+    },
+    {
+      "id": "hero-02",
+      "role": "hero",
+      "description": "International delegates at a university conference",
+      "sourceUrl": "https://kduniv.ac.kr/attach/IMAGE/PopupMgr/PopupZoneUpload/2026/10/OfHO04FTu8V6InVs.JPG",
+      "localPath": "frontend/public/assets/kdu/originals/hero-02.jpg",
+      "publicPath": "/assets/kdu/originals/hero-02.jpg",
+      "contentType": "image/jpeg",
+      "bytes": 440651,
+      "sha256": "379b1d3b75389bb748002a997dc8234c45d40fd342112249375758d0704baab0",
+      "width": 1920,
+      "height": 860,
+      "referencedBy": [
+        "https://kduniv.ac.kr/global/Main.do"
+      ],
+      "frames": 1
+    },
+    {
+      "id": "hero-03",
+      "role": "hero",
+      "description": "Graduate receiving an award at a graduation ceremony",
+      "sourceUrl": "https://kduniv.ac.kr/attach/IMAGE/PopupMgr/PopupZoneUpload/2026/10/pYL3Tyd2HKDqArXU.JPG",
+      "localPath": "frontend/public/assets/kdu/originals/hero-03.jpg",
+      "publicPath": "/assets/kdu/originals/hero-03.jpg",
+      "contentType": "image/jpeg",
+      "bytes": 508502,
+      "sha256": "377f086e149de0e7b3ff191bb6d5fb93f384d8ad0bde280e9e70c6be88fe05bb",
+      "width": 1920,
+      "height": 860,
+      "referencedBy": [
+        "https://kduniv.ac.kr/global/Main.do"
+      ],
+      "frames": 1
+    },
+    {
+      "id": "hero-04",
+      "role": "hero",
+      "description": "University representatives in discussion with students",
+      "sourceUrl": "https://kduniv.ac.kr/attach/IMAGE/PopupMgr/PopupZoneUpload/2026/10/VxAfSQcpXtmAB2S6.JPG",
+      "localPath": "frontend/public/assets/kdu/originals/hero-04.jpg",
+      "publicPath": "/assets/kdu/originals/hero-04.jpg",
+      "contentType": "image/jpeg",
+      "bytes": 428899,
+      "sha256": "f8b3343bf39bb354da97a224d6fc372a182e0255d845c67c1f7d8fc4189c5eea",
+      "width": 1920,
+      "height": 860,
+      "referencedBy": [
+        "https://kduniv.ac.kr/global/Main.do"
+      ],
+      "frames": 1
+    },
+    {
+      "id": "hero-05",
+      "role": "hero",
+      "description": "University speaker at a podium with international flags",
+      "sourceUrl": "https://kduniv.ac.kr/attach/IMAGE/PopupMgr/PopupZoneUpload/2026/10/nSVOvXjeluteP2ob.JPG",
+      "localPath": "frontend/public/assets/kdu/originals/hero-05.jpg",
+      "publicPath": "/assets/kdu/originals/hero-05.jpg",
+      "contentType": "image/jpeg",
+      "bytes": 195122,
+      "sha256": "415d1384795184dfb111fea42123eca4c6cb66c31a69a6cafa22d43261305ff1",
+      "width": 1920,
+      "height": 860,
+      "referencedBy": [
+        "https://kduniv.ac.kr/global/Main.do"
+      ],
+      "frames": 1
+    },
+    {
+      "id": "hero-06",
+      "role": "hero",
+      "description": "Students in national dress at an outdoor cultural celebration",
+      "sourceUrl": "https://kduniv.ac.kr/attach/IMAGE/PopupMgr/PopupZoneUpload/2026/10/OSu1SCZ7t43B0KAq.JPG",
+      "localPath": "frontend/public/assets/kdu/originals/hero-06.jpg",
+      "publicPath": "/assets/kdu/originals/hero-06.jpg",
+      "contentType": "image/jpeg",
+      "bytes": 501458,
+      "sha256": "dadb5315eae5c90dc51add037617ce3c3fc954475e7f7eea8fa857d69613baa3",
+      "width": 1920,
+      "height": 860,
+      "referencedBy": [
+        "https://kduniv.ac.kr/global/Main.do"
+      ],
+      "frames": 1
+    },
+    {
+      "id": "application-popup",
+      "role": "application-promotion",
+      "description": "Official homepage application portal promotional card",
+      "sourceUrl": "https://kduniv.ac.kr/attach/IMAGE/PopupMgr/PopupZoneUpload/2026/11/X7e7BHiXJqw1hN9M.JPG",
+      "localPath": "frontend/public/assets/kdu/originals/application-popup.jpg",
+      "publicPath": "/assets/kdu/originals/application-popup.jpg",
+      "contentType": "image/jpeg",
+      "bytes": 44791,
+      "sha256": "f0332858a6554dadb1155ddc17a49fd1bd1c534e95da1cbe1c21ce403e85f0f6",
+      "width": 340,
+      "height": 340,
+      "referencedBy": [
+        "https://kduniv.ac.kr/global/Main.do"
+      ],
+      "frames": 1
+    },
+    {
+      "id": "ui-ajax-loding-864a609",
+      "role": "interface",
+      "description": "Original homepage interface image: ajax_loding.gif",
+      "sourceUrl": "https://kduniv.ac.kr/resources/_Img/Common/ajax_loding.gif",
+      "localPath": "frontend/public/assets/kdu/originals/ui-ajax-loding-864a609.gif",
+      "publicPath": "/assets/kdu/originals/ui-ajax-loding-864a609.gif",
+      "contentType": "image/gif;charset=UTF-8",
+      "bytes": 17490,
+      "sha256": "d1583e292feba72fb461e11b45113a4aa6d898434399396e1bd0d1a48830a912",
+      "width": 441,
+      "height": 291,
+      "referencedBy": [
+        "https://kduniv.ac.kr/global/Main.do"
+      ],
+      "frames": 24
+    },
+    {
+      "id": "university-story",
+      "role": "student-support",
+      "description": "Official International Student Support and Services card",
+      "sourceUrl": "https://kduniv.ac.kr/attach/IMAGE//mimban/TMPL16/2021/9/q2QS8mditXnEX4ADrPwq.jpg",
+      "localPath": "frontend/public/assets/kdu/originals/university-story.jpg",
+      "publicPath": "/assets/kdu/originals/university-story.jpg",
+      "contentType": "image/jpeg",
+      "bytes": 43247,
+      "sha256": "79b38b78fd2d92325528c2e0cf8240d0f35cca70d981b4658c4a7fe3222c0be9",
+      "width": 420,
+      "height": 499,
+      "referencedBy": [
+        "https://kduniv.ac.kr/global/Main.do"
+      ],
+      "frames": 1
+    },
+    {
+      "id": "social-facebook",
+      "role": "social-icon",
+      "description": "Official homepage Facebook icon",
+      "sourceUrl": "https://kduniv.ac.kr/resources/homepage/global/_Img/facebook.svg",
+      "localPath": "frontend/public/assets/kdu/originals/social-facebook.svg",
+      "publicPath": "/assets/kdu/originals/social-facebook.svg",
+      "contentType": "image/svg+xml;charset=UTF-8",
+      "bytes": 267,
+      "sha256": "c2949b5ad150b5dc20ccf08d1c64e281f72566322e7d9fea88e63875eec83ed6",
+      "width": null,
+      "height": null,
+      "referencedBy": [
+        "https://kduniv.ac.kr/global/Main.do"
+      ],
+      "viewBox": "0 0 96 96",
+      "dimensionNote": "SVG viewBox retained; source SVG does not declare intrinsic pixel dimensions."
+    },
+    {
+      "id": "social-linkedin",
+      "role": "social-icon",
+      "description": "Official homepage LinkedIn icon",
+      "sourceUrl": "https://kduniv.ac.kr/resources/homepage/global/_Img/linkedin.svg",
+      "localPath": "frontend/public/assets/kdu/originals/social-linkedin.svg",
+      "publicPath": "/assets/kdu/originals/social-linkedin.svg",
+      "contentType": "image/svg+xml;charset=UTF-8",
+      "bytes": 339,
+      "sha256": "e418313cd96ee015e91710d6ad25772843febf3297ed3a17bf49bb2a5d081e9d",
+      "width": null,
+      "height": null,
+      "referencedBy": [
+        "https://kduniv.ac.kr/global/Main.do"
+      ],
+      "viewBox": "0 0 96 96",
+      "dimensionNote": "SVG viewBox retained; source SVG does not declare intrinsic pixel dimensions."
+    },
+    {
+      "id": "social-instagram",
+      "role": "social-icon",
+      "description": "Official homepage Instagram icon",
+      "sourceUrl": "https://kduniv.ac.kr/resources/homepage/global/_Img/instagram.svg",
+      "localPath": "frontend/public/assets/kdu/originals/social-instagram.svg",
+      "publicPath": "/assets/kdu/originals/social-instagram.svg",
+      "contentType": "image/svg+xml;charset=UTF-8",
+      "bytes": 630,
+      "sha256": "4b145aaf612a7d1ef6a3dd511b85ffeeea8ffee33d9bc84a77c541bec15edcd7",
+      "width": null,
+      "height": null,
+      "referencedBy": [
+        "https://kduniv.ac.kr/global/Main.do"
+      ],
+      "viewBox": "0 0 96 96",
+      "dimensionNote": "SVG viewBox retained; source SVG does not declare intrinsic pixel dimensions."
+    },
+    {
+      "id": "social-youtube",
+      "role": "social-icon",
+      "description": "Official homepage YouTube icon",
+      "sourceUrl": "https://kduniv.ac.kr/resources/homepage/global/_Img/youtube.svg",
+      "localPath": "frontend/public/assets/kdu/originals/social-youtube.svg",
+      "publicPath": "/assets/kdu/originals/social-youtube.svg",
+      "contentType": "image/svg+xml;charset=UTF-8",
+      "bytes": 175,
+      "sha256": "996b411190ff8c958453b8e14a708a42d7bbee7f2e16985cbbb767d437739a22",
+      "width": null,
+      "height": null,
+      "referencedBy": [
+        "https://kduniv.ac.kr/global/Main.do"
+      ],
+      "viewBox": "0 0 96 96",
+      "dimensionNote": "SVG viewBox retained; source SVG does not declare intrinsic pixel dimensions."
+    },
+    {
+      "id": "portal-card",
+      "role": "portal",
+      "description": "Official KDU Global Portal for Staff and Students card",
+      "sourceUrl": "https://kduniv.ac.kr/attach/IMAGE/UploadMgr/CommonFile/2026/11/9EoKmKp1fI9hi3Q8.JPG",
+      "localPath": "frontend/public/assets/kdu/originals/portal-card.jpg",
+      "publicPath": "/assets/kdu/originals/portal-card.jpg",
+      "contentType": "image/jpeg",
+      "bytes": 46845,
+      "sha256": "5fa4c9695aa877c68930b6e3e31e3e4eef86d40507d6c7f68cc000a0c07d8abc",
+      "width": 420,
+      "height": 499,
+      "referencedBy": [
+        "https://kduniv.ac.kr/global/Main.do"
+      ],
+      "frames": 1
+    },
+    {
+      "id": "ui-ui-bg-flat-75-ffffff-40x100-bfb0f08",
+      "role": "interface",
+      "description": "Original homepage interface image: ui-bg_flat_75_ffffff_40x100.png",
+      "sourceUrl": "https://kduniv.ac.kr/resources/_Img/core/ui-bg_flat_75_ffffff_40x100.png",
+      "localPath": "frontend/public/assets/kdu/originals/ui-ui-bg-flat-75-ffffff-40x100-bfb0f08.png",
+      "publicPath": "/assets/kdu/originals/ui-ui-bg-flat-75-ffffff-40x100-bfb0f08.png",
+      "contentType": "image/png;charset=UTF-8",
+      "bytes": 208,
+      "sha256": "592781fc5fa18f8bd531a8c8ec708f75b8997e75482550eeef0aa25124c349d1",
+      "width": 40,
+      "height": 100,
+      "referencedBy": [
+        "https://kduniv.ac.kr/resources/_Css/core/jquery-ui-1.9.2.custom.min.css"
+      ],
+      "frames": 1
+    },
+    {
+      "id": "ui-ui-bg-highlight-soft-75-cccccc-1x100-05125a6",
+      "role": "interface",
+      "description": "Original homepage interface image: ui-bg_highlight-soft_75_cccccc_1x100.png",
+      "sourceUrl": "https://kduniv.ac.kr/resources/_Img/core/ui-bg_highlight-soft_75_cccccc_1x100.png",
+      "localPath": "frontend/public/assets/kdu/originals/ui-ui-bg-highlight-soft-75-cccccc-1x100-05125a6.png",
+      "publicPath": "/assets/kdu/originals/ui-ui-bg-highlight-soft-75-cccccc-1x100-05125a6.png",
+      "contentType": "image/png;charset=UTF-8",
+      "bytes": 101,
+      "sha256": "54270656df079c4da5182629a080fc633b6f84b87985eb016d25a560e2c38d4a",
+      "width": 1,
+      "height": 100,
+      "referencedBy": [
+        "https://kduniv.ac.kr/resources/_Css/core/jquery-ui-1.9.2.custom.min.css"
+      ],
+      "frames": 1
+    },
+    {
+      "id": "ui-ui-bg-glass-75-e6e6e6-1x400-b262c14",
+      "role": "interface",
+      "description": "Original homepage interface image: ui-bg_glass_75_e6e6e6_1x400.png",
+      "sourceUrl": "https://kduniv.ac.kr/resources/_Img/core/ui-bg_glass_75_e6e6e6_1x400.png",
+      "localPath": "frontend/public/assets/kdu/originals/ui-ui-bg-glass-75-e6e6e6-1x400-b262c14.png",
+      "publicPath": "/assets/kdu/originals/ui-ui-bg-glass-75-e6e6e6-1x400-b262c14.png",
+      "contentType": "image/png;charset=UTF-8",
+      "bytes": 110,
+      "sha256": "ddf5dd4e0ef2b185e8bb0af7b6e90ebe74a84384cb4700658e76e754c8bfe550",
+      "width": 1,
+      "height": 400,
+      "referencedBy": [
+        "https://kduniv.ac.kr/resources/_Css/core/jquery-ui-1.9.2.custom.min.css"
+      ],
+      "frames": 1
+    },
+    {
+      "id": "ui-ui-bg-glass-75-dadada-1x400-bbaa006",
+      "role": "interface",
+      "description": "Original homepage interface image: ui-bg_glass_75_dadada_1x400.png",
+      "sourceUrl": "https://kduniv.ac.kr/resources/_Img/core/ui-bg_glass_75_dadada_1x400.png",
+      "localPath": "frontend/public/assets/kdu/originals/ui-ui-bg-glass-75-dadada-1x400-bbaa006.png",
+      "publicPath": "/assets/kdu/originals/ui-ui-bg-glass-75-dadada-1x400-bbaa006.png",
+      "contentType": "image/png;charset=UTF-8",
+      "bytes": 111,
+      "sha256": "c108f5cbf2dd9ec07a26530695ddd95e1664597ce6c056ae44c162cc2e28cec4",
+      "width": 1,
+      "height": 400,
+      "referencedBy": [
+        "https://kduniv.ac.kr/resources/_Css/core/jquery-ui-1.9.2.custom.min.css"
+      ],
+      "frames": 1
+    },
+    {
+      "id": "ui-ui-bg-glass-65-ffffff-1x400-1c49489",
+      "role": "interface",
+      "description": "Original homepage interface image: ui-bg_glass_65_ffffff_1x400.png",
+      "sourceUrl": "https://kduniv.ac.kr/resources/_Img/core/ui-bg_glass_65_ffffff_1x400.png",
+      "localPath": "frontend/public/assets/kdu/originals/ui-ui-bg-glass-65-ffffff-1x400-1c49489.png",
+      "publicPath": "/assets/kdu/originals/ui-ui-bg-glass-65-ffffff-1x400-1c49489.png",
+      "contentType": "image/png;charset=UTF-8",
+      "bytes": 207,
+      "sha256": "925cf87b9abbf9cb8a740ada83e66227b54a046dd1aafa02d1567e1035ed2f27",
+      "width": 1,
+      "height": 400,
+      "referencedBy": [
+        "https://kduniv.ac.kr/resources/_Css/core/jquery-ui-1.9.2.custom.min.css"
+      ],
+      "frames": 1
+    },
+    {
+      "id": "ui-ui-bg-glass-55-fbf9ee-1x400-c9e939e",
+      "role": "interface",
+      "description": "Original homepage interface image: ui-bg_glass_55_fbf9ee_1x400.png",
+      "sourceUrl": "https://kduniv.ac.kr/resources/_Img/core/ui-bg_glass_55_fbf9ee_1x400.png",
+      "localPath": "frontend/public/assets/kdu/originals/ui-ui-bg-glass-55-fbf9ee-1x400-c9e939e.png",
+      "publicPath": "/assets/kdu/originals/ui-ui-bg-glass-55-fbf9ee-1x400-c9e939e.png",
+      "contentType": "image/png;charset=UTF-8",
+      "bytes": 120,
+      "sha256": "691597e8a40a891ea94d3589976ecfc33e6145c49422443b00ac2b5a0022964c",
+      "width": 1,
+      "height": 400,
+      "referencedBy": [
+        "https://kduniv.ac.kr/resources/_Css/core/jquery-ui-1.9.2.custom.min.css"
+      ],
+      "frames": 1
+    },
+    {
+      "id": "ui-ui-bg-glass-95-fef1ec-1x400-5c27200",
+      "role": "interface",
+      "description": "Original homepage interface image: ui-bg_glass_95_fef1ec_1x400.png",
+      "sourceUrl": "https://kduniv.ac.kr/resources/_Img/core/ui-bg_glass_95_fef1ec_1x400.png",
+      "localPath": "frontend/public/assets/kdu/originals/ui-ui-bg-glass-95-fef1ec-1x400-5c27200.png",
+      "publicPath": "/assets/kdu/originals/ui-ui-bg-glass-95-fef1ec-1x400-5c27200.png",
+      "contentType": "image/png;charset=UTF-8",
+      "bytes": 119,
+      "sha256": "f6f1c1bedf1a0f37cfef81d12f5f012869d1ee7c984775a569827a1784d34f5c",
+      "width": 1,
+      "height": 400,
+      "referencedBy": [
+        "https://kduniv.ac.kr/resources/_Css/core/jquery-ui-1.9.2.custom.min.css"
+      ],
+      "frames": 1
+    },
+    {
+      "id": "ui-ui-icons-222222-256x240-2d42cbc",
+      "role": "interface",
+      "description": "Original homepage interface image: ui-icons_222222_256x240.png",
+      "sourceUrl": "https://kduniv.ac.kr/resources/_Img/core/ui-icons_222222_256x240.png",
+      "localPath": "frontend/public/assets/kdu/originals/ui-ui-icons-222222-256x240-2d42cbc.png",
+      "publicPath": "/assets/kdu/originals/ui-ui-icons-222222-256x240-2d42cbc.png",
+      "contentType": "image/png;charset=UTF-8",
+      "bytes": 4369,
+      "sha256": "a2ccfdc001858222885a9df39200840ac7a3f479ba889727d32a10398db7918a",
+      "width": 256,
+      "height": 240,
+      "referencedBy": [
+        "https://kduniv.ac.kr/resources/_Css/core/jquery-ui-1.9.2.custom.min.css"
+      ],
+      "frames": 1
+    },
+    {
+      "id": "ui-ui-icons-888888-256x240-1a4cf6a",
+      "role": "interface",
+      "description": "Original homepage interface image: ui-icons_888888_256x240.png",
+      "sourceUrl": "https://kduniv.ac.kr/resources/_Img/core/ui-icons_888888_256x240.png",
+      "localPath": "frontend/public/assets/kdu/originals/ui-ui-icons-888888-256x240-1a4cf6a.png",
+      "publicPath": "/assets/kdu/originals/ui-ui-icons-888888-256x240-1a4cf6a.png",
+      "contentType": "image/png;charset=UTF-8",
+      "bytes": 4369,
+      "sha256": "a42b23e21050a0f0f90c1f7a443b8087a409771611eae402861959a793be38e8",
+      "width": 256,
+      "height": 240,
+      "referencedBy": [
+        "https://kduniv.ac.kr/resources/_Css/core/jquery-ui-1.9.2.custom.min.css"
+      ],
+      "frames": 1
+    },
+    {
+      "id": "ui-ui-icons-454545-256x240-75ccb4a",
+      "role": "interface",
+      "description": "Original homepage interface image: ui-icons_454545_256x240.png",
+      "sourceUrl": "https://kduniv.ac.kr/resources/_Img/core/ui-icons_454545_256x240.png",
+      "localPath": "frontend/public/assets/kdu/originals/ui-ui-icons-454545-256x240-75ccb4a.png",
+      "publicPath": "/assets/kdu/originals/ui-ui-icons-454545-256x240-75ccb4a.png",
+      "contentType": "image/png;charset=UTF-8",
+      "bytes": 6992,
+      "sha256": "a8d28e2d83a807b2b86ed2a02e31086f6c0718dfa96e0ba6a4577b657f69cc34",
+      "width": 256,
+      "height": 240,
+      "referencedBy": [
+        "https://kduniv.ac.kr/resources/_Css/core/jquery-ui-1.9.2.custom.min.css"
+      ],
+      "frames": 1
+    },
+    {
+      "id": "ui-ui-icons-2e83ff-256x240-0c3e4c9",
+      "role": "interface",
+      "description": "Original homepage interface image: ui-icons_2e83ff_256x240.png",
+      "sourceUrl": "https://kduniv.ac.kr/resources/_Img/core/ui-icons_2e83ff_256x240.png",
+      "localPath": "frontend/public/assets/kdu/originals/ui-ui-icons-2e83ff-256x240-0c3e4c9.png",
+      "publicPath": "/assets/kdu/originals/ui-ui-icons-2e83ff-256x240-0c3e4c9.png",
+      "contentType": "image/png;charset=UTF-8",
+      "bytes": 4369,
+      "sha256": "4f907b912e024625d36b8af307f1043e6ebc97074e31216175d14bb74c370dc3",
+      "width": 256,
+      "height": 240,
+      "referencedBy": [
+        "https://kduniv.ac.kr/resources/_Css/core/jquery-ui-1.9.2.custom.min.css"
+      ],
+      "frames": 1
+    },
+    {
+      "id": "ui-ui-icons-cd0a0a-256x240-016ecb7",
+      "role": "interface",
+      "description": "Original homepage interface image: ui-icons_cd0a0a_256x240.png",
+      "sourceUrl": "https://kduniv.ac.kr/resources/_Img/core/ui-icons_cd0a0a_256x240.png",
+      "localPath": "frontend/public/assets/kdu/originals/ui-ui-icons-cd0a0a-256x240-016ecb7.png",
+      "publicPath": "/assets/kdu/originals/ui-ui-icons-cd0a0a-256x240-016ecb7.png",
+      "contentType": "image/png;charset=UTF-8",
+      "bytes": 4369,
+      "sha256": "53f9f6be37d5c395c125a53dbf39c697fc3e5fd44a5f09f0d99710910f840dd6",
+      "width": 256,
+      "height": 240,
+      "referencedBy": [
+        "https://kduniv.ac.kr/resources/_Css/core/jquery-ui-1.9.2.custom.min.css"
+      ],
+      "frames": 1
+    },
+    {
+      "id": "ui-ui-bg-flat-0-aaaaaa-40x100-55885fd",
+      "role": "interface",
+      "description": "Original homepage interface image: ui-bg_flat_0_aaaaaa_40x100.png",
+      "sourceUrl": "https://kduniv.ac.kr/resources/_Img/core/ui-bg_flat_0_aaaaaa_40x100.png",
+      "localPath": "frontend/public/assets/kdu/originals/ui-ui-bg-flat-0-aaaaaa-40x100-55885fd.png",
+      "publicPath": "/assets/kdu/originals/ui-ui-bg-flat-0-aaaaaa-40x100-55885fd.png",
+      "contentType": "image/png;charset=UTF-8",
+      "bytes": 212,
+      "sha256": "298c2642e5b31af9614160c554ed3c03f095c4094f52c2780ecf9f86d6d6c0a3",
+      "width": 40,
+      "height": 100,
+      "referencedBy": [
+        "https://kduniv.ac.kr/resources/_Css/core/jquery-ui-1.9.2.custom.min.css"
+      ],
+      "frames": 1
+    },
+    {
+      "id": "ui-btn-pclose-e3a3635",
+      "role": "interface",
+      "description": "Original homepage interface image: btn_pclose.gif",
+      "sourceUrl": "https://kduniv.ac.kr/resources/_Img/Popup/btn_pclose.gif",
+      "localPath": "frontend/public/assets/kdu/originals/ui-btn-pclose-e3a3635.gif",
+      "publicPath": "/assets/kdu/originals/ui-btn-pclose-e3a3635.gif",
+      "contentType": "image/gif;charset=UTF-8",
+      "bytes": 802,
+      "sha256": "fd395ca11bee0468746d1b5ef778a352a26f0846d691a57dce220f9236367b2a",
+      "width": 70,
+      "height": 70,
+      "referencedBy": [
+        "https://kduniv.ac.kr/resources/_Css/common/popup.css"
+      ],
+      "frames": 1
+    },
+    {
+      "id": "ui-btn-reload-71244dc",
+      "role": "interface",
+      "description": "Original homepage interface image: btn_reload.gif",
+      "sourceUrl": "https://kduniv.ac.kr/resources/_Img/Popup/btn_reload.gif",
+      "localPath": "frontend/public/assets/kdu/originals/ui-btn-reload-71244dc.gif",
+      "publicPath": "/assets/kdu/originals/ui-btn-reload-71244dc.gif",
+      "contentType": "image/gif;charset=UTF-8",
+      "bytes": 811,
+      "sha256": "05e1b4b451547823b84e1916a46262599b4880c15082cefd4f56dd3bb0662e1c",
+      "width": 70,
+      "height": 70,
+      "referencedBy": [
+        "https://kduniv.ac.kr/resources/_Css/common/popup.css"
+      ],
+      "frames": 1
+    },
+    {
+      "id": "ui-btn-minsize-5f556b7",
+      "role": "interface",
+      "description": "Original homepage interface image: btn_minsize.gif",
+      "sourceUrl": "https://kduniv.ac.kr/resources/_Img/Popup/btn_minsize.gif",
+      "localPath": "frontend/public/assets/kdu/originals/ui-btn-minsize-5f556b7.gif",
+      "publicPath": "/assets/kdu/originals/ui-btn-minsize-5f556b7.gif",
+      "contentType": "image/gif;charset=UTF-8",
+      "bytes": 350,
+      "sha256": "f41a1fd4198b571f19a75035c92b1d47d0bc431bb5596b2668b406c688bfd04e",
+      "width": 70,
+      "height": 70,
+      "referencedBy": [
+        "https://kduniv.ac.kr/resources/_Css/common/popup.css"
+      ],
+      "frames": 1
+    },
+    {
+      "id": "ui-btn-maxsize-1e55ab9",
+      "role": "interface",
+      "description": "Original homepage interface image: btn_maxsize.gif",
+      "sourceUrl": "https://kduniv.ac.kr/resources/_Img/Popup/btn_maxsize.gif",
+      "localPath": "frontend/public/assets/kdu/originals/ui-btn-maxsize-1e55ab9.gif",
+      "publicPath": "/assets/kdu/originals/ui-btn-maxsize-1e55ab9.gif",
+      "contentType": "image/gif;charset=UTF-8",
+      "bytes": 433,
+      "sha256": "198a99cea4d731ec1f3be50afbdb9e7b28d450531795e00f31952bd97b0258c8",
+      "width": 70,
+      "height": 70,
+      "referencedBy": [
+        "https://kduniv.ac.kr/resources/_Css/common/popup.css"
+      ],
+      "frames": 1
+    },
+    {
+      "id": "ui-ico-nodata-e491e3f",
+      "role": "interface",
+      "description": "Original homepage interface image: ico_nodata.png",
+      "sourceUrl": "https://kduniv.ac.kr/resources/_Img/Board/default/ico_nodata.png",
+      "localPath": "frontend/public/assets/kdu/originals/ui-ico-nodata-e491e3f.png",
+      "publicPath": "/assets/kdu/originals/ui-ico-nodata-e491e3f.png",
+      "contentType": "image/png;charset=UTF-8",
+      "bytes": 2847,
+      "sha256": "c574fff046b8313057bdc9134a84471606624cdb35092e79e6cc055a86cca71c",
+      "width": 71,
+      "height": 71,
+      "referencedBy": [
+        "https://kduniv.ac.kr/resources/_Css/common/common.css",
+        "https://kduniv.ac.kr/resources/_Templet/Main/main_org03/main_org03.css"
+      ],
+      "frames": 1
+    },
+    {
+      "id": "ui-layout-spr-a948164",
+      "role": "interface",
+      "description": "Original homepage interface image: layout_spr.png",
+      "sourceUrl": "https://kduniv.ac.kr/resources/_Templet/Layout/layout_org/Img/layout_spr.png",
+      "localPath": "frontend/public/assets/kdu/originals/ui-layout-spr-a948164.png",
+      "publicPath": "/assets/kdu/originals/ui-layout-spr-a948164.png",
+      "contentType": "image/png;charset=UTF-8",
+      "bytes": 9295,
+      "sha256": "7e1613fb3494ade989759938cfabfe242bfd878bcf42996ada9f369666f7cd26",
+      "width": 290,
+      "height": 140,
+      "referencedBy": [
+        "https://kduniv.ac.kr/resources/_Templet/globalLayout.css?styleCss=bGF5b3V0X29yZyxnbmF2aV9vcmcsbG9nb19vcmcsaGVhZGVyX29yZyxzdWJtZW51X29yZyxmb290ZXJfb3Jn"
+      ],
+      "frames": 1
+    },
+    {
+      "id": "ui-layout-spr-7c2e4d7",
+      "role": "interface",
+      "description": "Original homepage interface image: layout_spr.png",
+      "sourceUrl": "https://kduniv.ac.kr/resources/homepage/kor/_Img/Layout/layout_spr.png",
+      "localPath": "frontend/public/assets/kdu/originals/ui-layout-spr-7c2e4d7.png",
+      "publicPath": "/assets/kdu/originals/ui-layout-spr-7c2e4d7.png",
+      "contentType": "image/png;charset=UTF-8",
+      "bytes": 12496,
+      "sha256": "5edb5cfd915d4a3a371ed8ab1c6988e699edd18e3b89cffd34bdc38ae5b116bd",
+      "width": 255,
+      "height": 185,
+      "referencedBy": [
+        "https://kduniv.ac.kr/resources/_Templet/globalLayout.css?styleCss=bGF5b3V0X29yZyxnbmF2aV9vcmcsbG9nb19vcmcsaGVhZGVyX29yZyxzdWJtZW51X29yZyxmb290ZXJfb3Jn"
+      ],
+      "frames": 1
+    },
+    {
+      "id": "ui-header-spr-d48d0fd",
+      "role": "interface",
+      "description": "Original homepage interface image: header_spr.png",
+      "sourceUrl": "https://kduniv.ac.kr/resources/_Templet/Header/header_org/Img/header_spr.png",
+      "localPath": "frontend/public/assets/kdu/originals/ui-header-spr-d48d0fd.png",
+      "publicPath": "/assets/kdu/originals/ui-header-spr-d48d0fd.png",
+      "contentType": "image/png;charset=UTF-8",
+      "bytes": 6566,
+      "sha256": "cbbe6ec6a8616f0d957dabc14933815edc45adb8f4b1a2d6c18245da34a88b9f",
+      "width": 261,
+      "height": 80,
+      "referencedBy": [
+        "https://kduniv.ac.kr/resources/_Templet/globalLayout.css?styleCss=bGF5b3V0X29yZyxnbmF2aV9vcmcsbG9nb19vcmcsaGVhZGVyX29yZyxzdWJtZW51X29yZyxmb290ZXJfb3Jn"
+      ],
+      "frames": 1
+    },
+    {
+      "id": "ui-ico-window-7ac9ffc",
+      "role": "interface",
+      "description": "Original homepage interface image: ico_window.png",
+      "sourceUrl": "https://kduniv.ac.kr/resources/_Img/Common/ico_window.png",
+      "localPath": "frontend/public/assets/kdu/originals/ui-ico-window-7ac9ffc.png",
+      "publicPath": "/assets/kdu/originals/ui-ico-window-7ac9ffc.png",
+      "contentType": "image/png;charset=UTF-8",
+      "bytes": 1213,
+      "sha256": "e648fdc1d90433cafc3f7bef051e3251f625e40a29dd36cf3640d64ef706300e",
+      "width": 100,
+      "height": 12,
+      "referencedBy": [
+        "https://kduniv.ac.kr/resources/_Templet/globalLayout.css?styleCss=bGF5b3V0X29yZyxnbmF2aV9vcmcsbG9nb19vcmcsaGVhZGVyX29yZyxzdWJtZW51X29yZyxmb290ZXJfb3Jn"
+      ],
+      "frames": 1
+    },
+    {
+      "id": "ui-header-spr-9519c14",
+      "role": "interface",
+      "description": "Original homepage interface image: header_spr.png",
+      "sourceUrl": "https://kduniv.ac.kr/resources/_Templet/Header/header_iphak/Img/header_spr.png",
+      "localPath": "frontend/public/assets/kdu/originals/ui-header-spr-9519c14.png",
+      "publicPath": "/assets/kdu/originals/ui-header-spr-9519c14.png",
+      "contentType": "image/png;charset=UTF-8",
+      "bytes": 1391,
+      "sha256": "c904ec2ae63fa627caa676800acc6fbb48677f33d19f373c353293afa7adb8d6",
+      "width": 70,
+      "height": 30,
+      "referencedBy": [
+        "https://kduniv.ac.kr/resources/_Templet/globalLayout.css?styleCss=bGF5b3V0X29yZyxnbmF2aV9vcmcsbG9nb19vcmcsaGVhZGVyX29yZyxzdWJtZW51X29yZyxmb290ZXJfb3Jn"
+      ],
+      "frames": 1
+    },
+    {
+      "id": "ui-mheader-bg-c509149",
+      "role": "interface",
+      "description": "Original homepage interface image: mheader_bg.png",
+      "sourceUrl": "https://kduniv.ac.kr/resources/_Img/Common/mheader_bg.png",
+      "localPath": "frontend/public/assets/kdu/originals/ui-mheader-bg-c509149.png",
+      "publicPath": "/assets/kdu/originals/ui-mheader-bg-c509149.png",
+      "contentType": "image/png;charset=UTF-8",
+      "bytes": 19094,
+      "sha256": "d71dc2b69fea22990b2bfb0bf0e50a45fb60002152e834c3887f7a17e8bf2bbb",
+      "width": 240,
+      "height": 289,
+      "referencedBy": [
+        "https://kduniv.ac.kr/resources/_Templet/globalLayout.css?styleCss=bGF5b3V0X29yZyxnbmF2aV9vcmcsbG9nb19vcmcsaGVhZGVyX29yZyxzdWJtZW51X29yZyxmb290ZXJfb3Jn"
+      ],
+      "frames": 1
+    },
+    {
+      "id": "ui-footer-spr-67eb0b2",
+      "role": "interface",
+      "description": "Original homepage interface image: footer_spr.png",
+      "sourceUrl": "https://kduniv.ac.kr/resources/_Templet/Footer/footer_iphak/Img/footer_spr.png",
+      "localPath": "frontend/public/assets/kdu/originals/ui-footer-spr-67eb0b2.png",
+      "publicPath": "/assets/kdu/originals/ui-footer-spr-67eb0b2.png",
+      "contentType": "image/png;charset=UTF-8",
+      "bytes": 9367,
+      "sha256": "d283d86655832172ca3af49e92b9f8d1c8f0eb673cf67c97b95040bac56172c8",
+      "width": 260,
+      "height": 126,
+      "referencedBy": [
+        "https://kduniv.ac.kr/resources/_Templet/globalLayout.css?styleCss=bGF5b3V0X29yZyxnbmF2aV9vcmcsbG9nb19vcmcsaGVhZGVyX29yZyxzdWJtZW51X29yZyxmb290ZXJfb3Jn"
+      ],
+      "frames": 1
+    },
+    {
+      "id": "ui-flogo-ee539d6",
+      "role": "interface",
+      "description": "Original homepage interface image: flogo.png",
+      "sourceUrl": "https://kduniv.ac.kr/resources/_Templet/Footer/footer_org/Img/flogo.png",
+      "localPath": "frontend/public/assets/kdu/originals/ui-flogo-ee539d6.png",
+      "publicPath": "/assets/kdu/originals/ui-flogo-ee539d6.png",
+      "contentType": "image/png;charset=UTF-8",
+      "bytes": 9362,
+      "sha256": "d7840df79bc5916ba730441a9253438650c89aa3a244bc9da51b41b9b94a6a15",
+      "width": 83,
+      "height": 94,
+      "referencedBy": [
+        "https://kduniv.ac.kr/resources/_Templet/globalLayout.css?styleCss=bGF5b3V0X29yZyxnbmF2aV9vcmcsbG9nb19vcmcsaGVhZGVyX29yZyxzdWJtZW51X29yZyxmb290ZXJfb3Jn"
+      ],
+      "frames": 1
+    },
+    {
+      "id": "ui-icon-googleapi-4df8291",
+      "role": "interface",
+      "description": "Original homepage interface image: icon_googleapi.png",
+      "sourceUrl": "https://kduniv.ac.kr/resources/homepage/global/_Img/icon_googleapi.png",
+      "localPath": "frontend/public/assets/kdu/originals/ui-icon-googleapi-4df8291.png",
+      "publicPath": "/assets/kdu/originals/ui-icon-googleapi-4df8291.png",
+      "contentType": "image/png;charset=UTF-8",
+      "bytes": 1654,
+      "sha256": "2a71fd6efe495b2388b524c611099b31c2b688d519e169eaf236e7365dabd13b",
+      "width": 16,
+      "height": 18,
+      "referencedBy": [
+        "https://kduniv.ac.kr/resources/homepage/global/_Css/common.css"
+      ],
+      "frames": 1
+    },
+    {
+      "id": "ui-tmpl16-arrow-1-9ebf885",
+      "role": "interface",
+      "description": "Original homepage interface image: TMPL16_arrow_1.png",
+      "sourceUrl": "https://kduniv.ac.kr/resources/_Templet/Main/main_org03/Img/TMPL16_arrow_1.png",
+      "localPath": "frontend/public/assets/kdu/originals/ui-tmpl16-arrow-1-9ebf885.png",
+      "publicPath": "/assets/kdu/originals/ui-tmpl16-arrow-1-9ebf885.png",
+      "contentType": "image/png;charset=UTF-8",
+      "bytes": 209,
+      "sha256": "dbdbecf7d18ce6dc50719fc88130b4703501a0a46b0b9da74460f5ef564d3f58",
+      "width": 42,
+      "height": 8,
+      "referencedBy": [
+        "https://kduniv.ac.kr/resources/_Templet/Main/main_org03/main_org03.css"
+      ],
+      "frames": 1
+    },
+    {
+      "id": "ui-tmpl16-arrow-2-1ca5937",
+      "role": "interface",
+      "description": "Original homepage interface image: TMPL16_arrow_2.png",
+      "sourceUrl": "https://kduniv.ac.kr/resources/_Templet/Main/main_org03/Img/TMPL16_arrow_2.png",
+      "localPath": "frontend/public/assets/kdu/originals/ui-tmpl16-arrow-2-1ca5937.png",
+      "publicPath": "/assets/kdu/originals/ui-tmpl16-arrow-2-1ca5937.png",
+      "contentType": "image/png;charset=UTF-8",
+      "bytes": 289,
+      "sha256": "6be26c3fba3da67c23b27c3eeb26fd2b5b4ff20f1b71deaf3cbf7c2f370b62d4",
+      "width": 33,
+      "height": 14,
+      "referencedBy": [
+        "https://kduniv.ac.kr/resources/_Templet/Main/main_org03/main_org03.css"
+      ],
+      "frames": 1
+    },
+    {
+      "id": "ui-tmpl16-1-icon1-41cdcf1",
+      "role": "interface",
+      "description": "Original homepage interface image: TMPL16_1_icon1.png",
+      "sourceUrl": "https://kduniv.ac.kr/resources/_Img/MainModule/micban/TMPL16_1_icon1.png",
+      "localPath": "frontend/public/assets/kdu/originals/ui-tmpl16-1-icon1-41cdcf1.png",
+      "publicPath": "/assets/kdu/originals/ui-tmpl16-1-icon1-41cdcf1.png",
+      "contentType": "image/png;charset=UTF-8",
+      "bytes": 1723,
+      "sha256": "c466c49f8dc0e3842911bb603bc3cb6848acb2dac640c9877b2a3b6afc148b17",
+      "width": 65,
+      "height": 65,
+      "referencedBy": [
+        "https://kduniv.ac.kr/resources/_Templet/Main/main_org03/main_org03.css"
+      ],
+      "frames": 1
+    },
+    {
+      "id": "ui-tmpl16-1-icon2-8da16ea",
+      "role": "interface",
+      "description": "Original homepage interface image: TMPL16_1_icon2.png",
+      "sourceUrl": "https://kduniv.ac.kr/resources/_Img/MainModule/micban/TMPL16_1_icon2.png",
+      "localPath": "frontend/public/assets/kdu/originals/ui-tmpl16-1-icon2-8da16ea.png",
+      "publicPath": "/assets/kdu/originals/ui-tmpl16-1-icon2-8da16ea.png",
+      "contentType": "image/png;charset=UTF-8",
+      "bytes": 1542,
+      "sha256": "ff8a290450f2ac5b7cc3b971dd6059d308991f3152bdf1b26e4e9bfaa6d7fc2c",
+      "width": 65,
+      "height": 65,
+      "referencedBy": [
+        "https://kduniv.ac.kr/resources/_Templet/Main/main_org03/main_org03.css"
+      ],
+      "frames": 1
+    },
+    {
+      "id": "ui-tmpl16-1-icon3-8a33286",
+      "role": "interface",
+      "description": "Original homepage interface image: TMPL16_1_icon3.png",
+      "sourceUrl": "https://kduniv.ac.kr/resources/_Img/MainModule/micban/TMPL16_1_icon3.png",
+      "localPath": "frontend/public/assets/kdu/originals/ui-tmpl16-1-icon3-8a33286.png",
+      "publicPath": "/assets/kdu/originals/ui-tmpl16-1-icon3-8a33286.png",
+      "contentType": "image/png;charset=UTF-8",
+      "bytes": 2029,
+      "sha256": "27f353658e9c7eb5f4617eb9e0985425cc0a28022999a3e8e1733aecc552ecfc",
+      "width": 65,
+      "height": 65,
+      "referencedBy": [
+        "https://kduniv.ac.kr/resources/_Templet/Main/main_org03/main_org03.css"
+      ],
+      "frames": 1
+    },
+    {
+      "id": "ui-tmpl16-1-icon4-8d8c3a3",
+      "role": "interface",
+      "description": "Original homepage interface image: TMPL16_1_icon4.png",
+      "sourceUrl": "https://kduniv.ac.kr/resources/_Img/MainModule/micban/TMPL16_1_icon4.png",
+      "localPath": "frontend/public/assets/kdu/originals/ui-tmpl16-1-icon4-8d8c3a3.png",
+      "publicPath": "/assets/kdu/originals/ui-tmpl16-1-icon4-8d8c3a3.png",
+      "contentType": "image/png;charset=UTF-8",
+      "bytes": 2589,
+      "sha256": "c75c61a80fc7a454ffce08efd6c3d97c44b8718135aa500b12458b8dc8e58a1e",
+      "width": 65,
+      "height": 65,
+      "referencedBy": [
+        "https://kduniv.ac.kr/resources/_Templet/Main/main_org03/main_org03.css"
+      ],
+      "frames": 1
+    },
+    {
+      "id": "ui-tmpl16-1-icon5-b7fac00",
+      "role": "interface",
+      "description": "Original homepage interface image: TMPL16_1_icon5.png",
+      "sourceUrl": "https://kduniv.ac.kr/resources/_Img/MainModule/micban/TMPL16_1_icon5.png",
+      "localPath": "frontend/public/assets/kdu/originals/ui-tmpl16-1-icon5-b7fac00.png",
+      "publicPath": "/assets/kdu/originals/ui-tmpl16-1-icon5-b7fac00.png",
+      "contentType": "image/png;charset=UTF-8",
+      "bytes": 2037,
+      "sha256": "c9f215cb9d115df276c1bc9875e0f38c60093e9d1621b9585051c8a3df378e9c",
+      "width": 65,
+      "height": 65,
+      "referencedBy": [
+        "https://kduniv.ac.kr/resources/_Templet/Main/main_org03/main_org03.css"
+      ],
+      "frames": 1
+    },
+    {
+      "id": "ui-tmpl16-1-icon6-873a514",
+      "role": "interface",
+      "description": "Original homepage interface image: TMPL16_1_icon6.png",
+      "sourceUrl": "https://kduniv.ac.kr/resources/_Img/MainModule/micban/TMPL16_1_icon6.png",
+      "localPath": "frontend/public/assets/kdu/originals/ui-tmpl16-1-icon6-873a514.png",
+      "publicPath": "/assets/kdu/originals/ui-tmpl16-1-icon6-873a514.png",
+      "contentType": "image/png;charset=UTF-8",
+      "bytes": 2228,
+      "sha256": "db9e3c1965bf2f1947494b2fed6c4daa104398811e8964103372c69c5fca55cf",
+      "width": 65,
+      "height": 65,
+      "referencedBy": [
+        "https://kduniv.ac.kr/resources/_Templet/Main/main_org03/main_org03.css"
+      ],
+      "frames": 1
+    },
+    {
+      "id": "ui-tmpl16-1-icon7-84c2112",
+      "role": "interface",
+      "description": "Original homepage interface image: TMPL16_1_icon7.png",
+      "sourceUrl": "https://kduniv.ac.kr/resources/_Img/MainModule/micban/TMPL16_1_icon7.png",
+      "localPath": "frontend/public/assets/kdu/originals/ui-tmpl16-1-icon7-84c2112.png",
+      "publicPath": "/assets/kdu/originals/ui-tmpl16-1-icon7-84c2112.png",
+      "contentType": "image/png;charset=UTF-8",
+      "bytes": 2555,
+      "sha256": "9a5e72b2793454adfc59b2b4ee8187b477f463a0fa602f697c662fa342316a9f",
+      "width": 65,
+      "height": 65,
+      "referencedBy": [
+        "https://kduniv.ac.kr/resources/_Templet/Main/main_org03/main_org03.css"
+      ],
+      "frames": 1
+    },
+    {
+      "id": "ui-tmpl16-1-icon8-f122b7e",
+      "role": "interface",
+      "description": "Original homepage interface image: TMPL16_1_icon8.png",
+      "sourceUrl": "https://kduniv.ac.kr/resources/_Img/MainModule/micban/TMPL16_1_icon8.png",
+      "localPath": "frontend/public/assets/kdu/originals/ui-tmpl16-1-icon8-f122b7e.png",
+      "publicPath": "/assets/kdu/originals/ui-tmpl16-1-icon8-f122b7e.png",
+      "contentType": "image/png;charset=UTF-8",
+      "bytes": 1540,
+      "sha256": "494fdad354f566b1d32df9b6d6ea55997903866358795ea3e84577e445dec355",
+      "width": 65,
+      "height": 65,
+      "referencedBy": [
+        "https://kduniv.ac.kr/resources/_Templet/Main/main_org03/main_org03.css"
+      ],
+      "frames": 1
+    },
+    {
+      "id": "ui-tmpl16-1-icon9-f435c47",
+      "role": "interface",
+      "description": "Original homepage interface image: TMPL16_1_icon9.png",
+      "sourceUrl": "https://kduniv.ac.kr/resources/_Img/MainModule/micban/TMPL16_1_icon9.png",
+      "localPath": "frontend/public/assets/kdu/originals/ui-tmpl16-1-icon9-f435c47.png",
+      "publicPath": "/assets/kdu/originals/ui-tmpl16-1-icon9-f435c47.png",
+      "contentType": "image/png;charset=UTF-8",
+      "bytes": 2236,
+      "sha256": "d78c45b846b440946ea587d4a8d9fe01727bd67ae159509afe270e36d1f22eff",
+      "width": 65,
+      "height": 65,
+      "referencedBy": [
+        "https://kduniv.ac.kr/resources/_Templet/Main/main_org03/main_org03.css"
+      ],
+      "frames": 1
+    },
+    {
+      "id": "ui-tmpl16-1-icon10-93e9ea2",
+      "role": "interface",
+      "description": "Original homepage interface image: TMPL16_1_icon10.png",
+      "sourceUrl": "https://kduniv.ac.kr/resources/_Img/MainModule/micban/TMPL16_1_icon10.png",
+      "localPath": "frontend/public/assets/kdu/originals/ui-tmpl16-1-icon10-93e9ea2.png",
+      "publicPath": "/assets/kdu/originals/ui-tmpl16-1-icon10-93e9ea2.png",
+      "contentType": "image/png;charset=UTF-8",
+      "bytes": 1914,
+      "sha256": "a3428d38c9f22604752a974e1461c044ad6ff74dfa495a17eec95aa1d674a90f",
+      "width": 65,
+      "height": 65,
+      "referencedBy": [
+        "https://kduniv.ac.kr/resources/_Templet/Main/main_org03/main_org03.css"
+      ],
+      "frames": 1
+    },
+    {
+      "id": "ui-tmpl16-icon1-0845568",
+      "role": "interface",
+      "description": "Original homepage interface image: TMPL16_icon1.png",
+      "sourceUrl": "https://kduniv.ac.kr/resources/_Img/MainModule/micban/TMPL16_icon1.png",
+      "localPath": "frontend/public/assets/kdu/originals/ui-tmpl16-icon1-0845568.png",
+      "publicPath": "/assets/kdu/originals/ui-tmpl16-icon1-0845568.png",
+      "contentType": "image/png;charset=UTF-8",
+      "bytes": 2300,
+      "sha256": "224b942242f4e02cd40bba0d3f0a80367e3a2daa06b04dd44103baedc5db783c",
+      "width": 70,
+      "height": 70,
+      "referencedBy": [
+        "https://kduniv.ac.kr/resources/_Templet/Main/main_org03/main_org03.css"
+      ],
+      "frames": 1
+    },
+    {
+      "id": "ui-tmpl16-icon2-b29af40",
+      "role": "interface",
+      "description": "Original homepage interface image: TMPL16_icon2.png",
+      "sourceUrl": "https://kduniv.ac.kr/resources/_Img/MainModule/micban/TMPL16_icon2.png",
+      "localPath": "frontend/public/assets/kdu/originals/ui-tmpl16-icon2-b29af40.png",
+      "publicPath": "/assets/kdu/originals/ui-tmpl16-icon2-b29af40.png",
+      "contentType": "image/png;charset=UTF-8",
+      "bytes": 3557,
+      "sha256": "2c0c92abb5366679d84ad5ac2a019e8940c7cb1c034756332eabd6f6d93a8160",
+      "width": 70,
+      "height": 70,
+      "referencedBy": [
+        "https://kduniv.ac.kr/resources/_Templet/Main/main_org03/main_org03.css"
+      ],
+      "frames": 1
+    },
+    {
+      "id": "ui-tmpl16-icon3-bcc20ca",
+      "role": "interface",
+      "description": "Original homepage interface image: TMPL16_icon3.png",
+      "sourceUrl": "https://kduniv.ac.kr/resources/_Img/MainModule/micban/TMPL16_icon3.png",
+      "localPath": "frontend/public/assets/kdu/originals/ui-tmpl16-icon3-bcc20ca.png",
+      "publicPath": "/assets/kdu/originals/ui-tmpl16-icon3-bcc20ca.png",
+      "contentType": "image/png;charset=UTF-8",
+      "bytes": 2095,
+      "sha256": "2ff5808caf13e64bbd75633989bf141db445c4f4af4903050184c2a4b17218d1",
+      "width": 70,
+      "height": 70,
+      "referencedBy": [
+        "https://kduniv.ac.kr/resources/_Templet/Main/main_org03/main_org03.css"
+      ],
+      "frames": 1
+    },
+    {
+      "id": "ui-tmpl16-icon4-4367fd4",
+      "role": "interface",
+      "description": "Original homepage interface image: TMPL16_icon4.png",
+      "sourceUrl": "https://kduniv.ac.kr/resources/_Img/MainModule/micban/TMPL16_icon4.png",
+      "localPath": "frontend/public/assets/kdu/originals/ui-tmpl16-icon4-4367fd4.png",
+      "publicPath": "/assets/kdu/originals/ui-tmpl16-icon4-4367fd4.png",
+      "contentType": "image/png;charset=UTF-8",
+      "bytes": 2923,
+      "sha256": "d2676d2d59e406e1949e1f633ba1bef042509f2a08e0e85447a2cfc001a2cd53",
+      "width": 70,
+      "height": 70,
+      "referencedBy": [
+        "https://kduniv.ac.kr/resources/_Templet/Main/main_org03/main_org03.css"
+      ],
+      "frames": 1
+    },
+    {
+      "id": "ui-tmpl16-icon5-034da85",
+      "role": "interface",
+      "description": "Original homepage interface image: TMPL16_icon5.png",
+      "sourceUrl": "https://kduniv.ac.kr/resources/_Img/MainModule/micban/TMPL16_icon5.png",
+      "localPath": "frontend/public/assets/kdu/originals/ui-tmpl16-icon5-034da85.png",
+      "publicPath": "/assets/kdu/originals/ui-tmpl16-icon5-034da85.png",
+      "contentType": "image/png;charset=UTF-8",
+      "bytes": 1968,
+      "sha256": "fd2a4363a5f0cf6b1bc67358a4d432f64efa2b6e3c54d51c88efae71a4be4969",
+      "width": 70,
+      "height": 70,
+      "referencedBy": [
+        "https://kduniv.ac.kr/resources/_Templet/Main/main_org03/main_org03.css"
+      ],
+      "frames": 1
+    },
+    {
+      "id": "ui-tmpl16-icon6-45ff0aa",
+      "role": "interface",
+      "description": "Original homepage interface image: TMPL16_icon6.png",
+      "sourceUrl": "https://kduniv.ac.kr/resources/_Img/MainModule/micban/TMPL16_icon6.png",
+      "localPath": "frontend/public/assets/kdu/originals/ui-tmpl16-icon6-45ff0aa.png",
+      "publicPath": "/assets/kdu/originals/ui-tmpl16-icon6-45ff0aa.png",
+      "contentType": "image/png;charset=UTF-8",
+      "bytes": 1962,
+      "sha256": "4c07602497b35da7bc7574f8552194d56018b5494f40fe070a90975bf57f9293",
+      "width": 70,
+      "height": 70,
+      "referencedBy": [
+        "https://kduniv.ac.kr/resources/_Templet/Main/main_org03/main_org03.css"
+      ],
+      "frames": 1
+    },
+    {
+      "id": "ui-tmpl16-icon7-f168b4e",
+      "role": "interface",
+      "description": "Original homepage interface image: TMPL16_icon7.png",
+      "sourceUrl": "https://kduniv.ac.kr/resources/_Img/MainModule/micban/TMPL16_icon7.png",
+      "localPath": "frontend/public/assets/kdu/originals/ui-tmpl16-icon7-f168b4e.png",
+      "publicPath": "/assets/kdu/originals/ui-tmpl16-icon7-f168b4e.png",
+      "contentType": "image/png;charset=UTF-8",
+      "bytes": 2472,
+      "sha256": "6959590aeea6957079c24e8c9a7a220d791e0bbe7e3674d5e2c299182b374c3a",
+      "width": 70,
+      "height": 70,
+      "referencedBy": [
+        "https://kduniv.ac.kr/resources/_Templet/Main/main_org03/main_org03.css"
+      ],
+      "frames": 1
+    },
+    {
+      "id": "ui-tmpl16-icon8-fd602e5",
+      "role": "interface",
+      "description": "Original homepage interface image: TMPL16_icon8.png",
+      "sourceUrl": "https://kduniv.ac.kr/resources/_Img/MainModule/micban/TMPL16_icon8.png",
+      "localPath": "frontend/public/assets/kdu/originals/ui-tmpl16-icon8-fd602e5.png",
+      "publicPath": "/assets/kdu/originals/ui-tmpl16-icon8-fd602e5.png",
+      "contentType": "image/png;charset=UTF-8",
+      "bytes": 2954,
+      "sha256": "de68ac8f582f5d077e8a7d372856125367b8ef661834bce6bd7c2bf084863125",
+      "width": 70,
+      "height": 70,
+      "referencedBy": [
+        "https://kduniv.ac.kr/resources/_Templet/Main/main_org03/main_org03.css"
+      ],
+      "frames": 1
+    },
+    {
+      "id": "ui-tmpl16-icon9-fa8ff55",
+      "role": "interface",
+      "description": "Original homepage interface image: TMPL16_icon9.png",
+      "sourceUrl": "https://kduniv.ac.kr/resources/_Img/MainModule/micban/TMPL16_icon9.png",
+      "localPath": "frontend/public/assets/kdu/originals/ui-tmpl16-icon9-fa8ff55.png",
+      "publicPath": "/assets/kdu/originals/ui-tmpl16-icon9-fa8ff55.png",
+      "contentType": "image/png;charset=UTF-8",
+      "bytes": 1573,
+      "sha256": "328c160d5238a65d014166fd6c1155f21dab5196b618cb3d21469e073b405799",
+      "width": 70,
+      "height": 70,
+      "referencedBy": [
+        "https://kduniv.ac.kr/resources/_Templet/Main/main_org03/main_org03.css"
+      ],
+      "frames": 1
+    },
+    {
+      "id": "ui-tmpl16-icon10-b169af8",
+      "role": "interface",
+      "description": "Original homepage interface image: TMPL16_icon10.png",
+      "sourceUrl": "https://kduniv.ac.kr/resources/_Img/MainModule/micban/TMPL16_icon10.png",
+      "localPath": "frontend/public/assets/kdu/originals/ui-tmpl16-icon10-b169af8.png",
+      "publicPath": "/assets/kdu/originals/ui-tmpl16-icon10-b169af8.png",
+      "contentType": "image/png;charset=UTF-8",
+      "bytes": 3455,
+      "sha256": "a75003d8ec7d6d805e3909fe478dbc740f7df8abdfa748fb08192a11391f807b",
+      "width": 70,
+      "height": 70,
+      "referencedBy": [
+        "https://kduniv.ac.kr/resources/_Templet/Main/main_org03/main_org03.css"
+      ],
+      "frames": 1
+    },
+    {
+      "id": "ui-no-thum-70081c8",
+      "role": "interface",
+      "description": "Original homepage interface image: no_thum.gif",
+      "sourceUrl": "https://kduniv.ac.kr/resources/_Templet/Main/main_org01/Img/no_thum.gif",
+      "localPath": "frontend/public/assets/kdu/originals/ui-no-thum-70081c8.gif",
+      "publicPath": "/assets/kdu/originals/ui-no-thum-70081c8.gif",
+      "contentType": "image/gif;charset=UTF-8",
+      "bytes": 6121,
+      "sha256": "8422a9134ba68637fa5a10bf4fc3908cac630e9206eeea66889cc0bc4ae5dc7d",
+      "width": 320,
+      "height": 240,
+      "referencedBy": [
+        "https://kduniv.ac.kr/resources/_Templet/Main/main_org03/main_org03.css"
+      ],
+      "frames": 1
+    },
+    {
+      "id": "ui-micban-icon1-e531412",
+      "role": "interface",
+      "description": "Original homepage interface image: micban_icon1.png",
+      "sourceUrl": "https://kduniv.ac.kr/resources/_Img/MainModule/micban/TMPL02/micban_icon1.png",
+      "localPath": "frontend/public/assets/kdu/originals/ui-micban-icon1-e531412.png",
+      "publicPath": "/assets/kdu/originals/ui-micban-icon1-e531412.png",
+      "contentType": "image/png;charset=UTF-8",
+      "bytes": 1599,
+      "sha256": "467ac23f2c953e690975497c98fc54e1affdab0a0b256cc2ead2b8b5e740be8e",
+      "width": 60,
+      "height": 60,
+      "referencedBy": [
+        "https://kduniv.ac.kr/resources/Main/globalmainModule.css?styleCss=bWFpbnZpc3VhbC1UTVBMMTYsbXRhYmdhbGxlcnktVE1QTDE2LG10YWJib2FyZC1UTVBMMTYsbWltYmFuLVRNUEwxNixtdGFiZ2FsbGVyeTItVE1QTDE2LG1pY2Jhbi1UTVBMMTYsbWljYmFuMi1UTVBMMTYs"
+      ],
+      "frames": 1
+    },
+    {
+      "id": "ui-micban-icon2-2b0de90",
+      "role": "interface",
+      "description": "Original homepage interface image: micban_icon2.png",
+      "sourceUrl": "https://kduniv.ac.kr/resources/_Img/MainModule/micban/TMPL02/micban_icon2.png",
+      "localPath": "frontend/public/assets/kdu/originals/ui-micban-icon2-2b0de90.png",
+      "publicPath": "/assets/kdu/originals/ui-micban-icon2-2b0de90.png",
+      "contentType": "image/png;charset=UTF-8",
+      "bytes": 1606,
+      "sha256": "0ffe1f6d54bc4207a29f172e5c111387bb01a02a7846aa0faed67742a9981216",
+      "width": 60,
+      "height": 60,
+      "referencedBy": [
+        "https://kduniv.ac.kr/resources/Main/globalmainModule.css?styleCss=bWFpbnZpc3VhbC1UTVBMMTYsbXRhYmdhbGxlcnktVE1QTDE2LG10YWJib2FyZC1UTVBMMTYsbWltYmFuLVRNUEwxNixtdGFiZ2FsbGVyeTItVE1QTDE2LG1pY2Jhbi1UTVBMMTYsbWljYmFuMi1UTVBMMTYs"
+      ],
+      "frames": 1
+    },
+    {
+      "id": "ui-micban-icon3-cfe0fd9",
+      "role": "interface",
+      "description": "Original homepage interface image: micban_icon3.png",
+      "sourceUrl": "https://kduniv.ac.kr/resources/_Img/MainModule/micban/TMPL02/micban_icon3.png",
+      "localPath": "frontend/public/assets/kdu/originals/ui-micban-icon3-cfe0fd9.png",
+      "publicPath": "/assets/kdu/originals/ui-micban-icon3-cfe0fd9.png",
+      "contentType": "image/png;charset=UTF-8",
+      "bytes": 1793,
+      "sha256": "3176d2274d21a12415a1b691a9a226aaa275ae04f654a3428d364e886b7510a7",
+      "width": 60,
+      "height": 60,
+      "referencedBy": [
+        "https://kduniv.ac.kr/resources/Main/globalmainModule.css?styleCss=bWFpbnZpc3VhbC1UTVBMMTYsbXRhYmdhbGxlcnktVE1QTDE2LG10YWJib2FyZC1UTVBMMTYsbWltYmFuLVRNUEwxNixtdGFiZ2FsbGVyeTItVE1QTDE2LG1pY2Jhbi1UTVBMMTYsbWljYmFuMi1UTVBMMTYs"
+      ],
+      "frames": 1
+    },
+    {
+      "id": "ui-micban-icon4-8e2fe96",
+      "role": "interface",
+      "description": "Original homepage interface image: micban_icon4.png",
+      "sourceUrl": "https://kduniv.ac.kr/resources/_Img/MainModule/micban/TMPL02/micban_icon4.png",
+      "localPath": "frontend/public/assets/kdu/originals/ui-micban-icon4-8e2fe96.png",
+      "publicPath": "/assets/kdu/originals/ui-micban-icon4-8e2fe96.png",
+      "contentType": "image/png;charset=UTF-8",
+      "bytes": 2205,
+      "sha256": "6c260d1e1e71e8f90e840b4d5d34f7ee49a6e04c0fc8b3018fca379babfd59c0",
+      "width": 60,
+      "height": 60,
+      "referencedBy": [
+        "https://kduniv.ac.kr/resources/Main/globalmainModule.css?styleCss=bWFpbnZpc3VhbC1UTVBMMTYsbXRhYmdhbGxlcnktVE1QTDE2LG10YWJib2FyZC1UTVBMMTYsbWltYmFuLVRNUEwxNixtdGFiZ2FsbGVyeTItVE1QTDE2LG1pY2Jhbi1UTVBMMTYsbWljYmFuMi1UTVBMMTYs"
+      ],
+      "frames": 1
+    },
+    {
+      "id": "ui-micban-icon5-955a9e4",
+      "role": "interface",
+      "description": "Original homepage interface image: micban_icon5.png",
+      "sourceUrl": "https://kduniv.ac.kr/resources/_Img/MainModule/micban/TMPL02/micban_icon5.png",
+      "localPath": "frontend/public/assets/kdu/originals/ui-micban-icon5-955a9e4.png",
+      "publicPath": "/assets/kdu/originals/ui-micban-icon5-955a9e4.png",
+      "contentType": "image/png;charset=UTF-8",
+      "bytes": 1753,
+      "sha256": "300fa1ad050be9dbf8dffd27872ea5ddaa72570d468a085ea6a56d80e16698f9",
+      "width": 60,
+      "height": 60,
+      "referencedBy": [
+        "https://kduniv.ac.kr/resources/Main/globalmainModule.css?styleCss=bWFpbnZpc3VhbC1UTVBMMTYsbXRhYmdhbGxlcnktVE1QTDE2LG10YWJib2FyZC1UTVBMMTYsbWltYmFuLVRNUEwxNixtdGFiZ2FsbGVyeTItVE1QTDE2LG1pY2Jhbi1UTVBMMTYsbWljYmFuMi1UTVBMMTYs"
+      ],
+      "frames": 1
+    },
+    {
+      "id": "ui-micban-icon6-ee37c28",
+      "role": "interface",
+      "description": "Original homepage interface image: micban_icon6.png",
+      "sourceUrl": "https://kduniv.ac.kr/resources/_Img/MainModule/micban/TMPL02/micban_icon6.png",
+      "localPath": "frontend/public/assets/kdu/originals/ui-micban-icon6-ee37c28.png",
+      "publicPath": "/assets/kdu/originals/ui-micban-icon6-ee37c28.png",
+      "contentType": "image/png;charset=UTF-8",
+      "bytes": 1506,
+      "sha256": "8e1a28fdf6b20fcabdff6613135caa401ee7a39b6f77ec8f4daad22cfba32e44",
+      "width": 60,
+      "height": 60,
+      "referencedBy": [
+        "https://kduniv.ac.kr/resources/Main/globalmainModule.css?styleCss=bWFpbnZpc3VhbC1UTVBMMTYsbXRhYmdhbGxlcnktVE1QTDE2LG10YWJib2FyZC1UTVBMMTYsbWltYmFuLVRNUEwxNixtdGFiZ2FsbGVyeTItVE1QTDE2LG1pY2Jhbi1UTVBMMTYsbWljYmFuMi1UTVBMMTYs"
+      ],
+      "frames": 1
+    },
+    {
+      "id": "ui-micban-icon7-be259ae",
+      "role": "interface",
+      "description": "Original homepage interface image: micban_icon7.png",
+      "sourceUrl": "https://kduniv.ac.kr/resources/_Img/MainModule/micban/TMPL02/micban_icon7.png",
+      "localPath": "frontend/public/assets/kdu/originals/ui-micban-icon7-be259ae.png",
+      "publicPath": "/assets/kdu/originals/ui-micban-icon7-be259ae.png",
+      "contentType": "image/png;charset=UTF-8",
+      "bytes": 1596,
+      "sha256": "820745576cf5b740910762be7546231cb4e17f731f07d16658413e785caa6a7e",
+      "width": 60,
+      "height": 60,
+      "referencedBy": [
+        "https://kduniv.ac.kr/resources/Main/globalmainModule.css?styleCss=bWFpbnZpc3VhbC1UTVBMMTYsbXRhYmdhbGxlcnktVE1QTDE2LG10YWJib2FyZC1UTVBMMTYsbWltYmFuLVRNUEwxNixtdGFiZ2FsbGVyeTItVE1QTDE2LG1pY2Jhbi1UTVBMMTYsbWljYmFuMi1UTVBMMTYs"
+      ],
+      "frames": 1
+    },
+    {
+      "id": "ui-micban-icon8-57404b4",
+      "role": "interface",
+      "description": "Original homepage interface image: micban_icon8.png",
+      "sourceUrl": "https://kduniv.ac.kr/resources/_Img/MainModule/micban/TMPL02/micban_icon8.png",
+      "localPath": "frontend/public/assets/kdu/originals/ui-micban-icon8-57404b4.png",
+      "publicPath": "/assets/kdu/originals/ui-micban-icon8-57404b4.png",
+      "contentType": "image/png;charset=UTF-8",
+      "bytes": 2097,
+      "sha256": "c59800602b4cafacf24f714b7cd2844607279c33514403f1eee5dde0d6848919",
+      "width": 60,
+      "height": 60,
+      "referencedBy": [
+        "https://kduniv.ac.kr/resources/Main/globalmainModule.css?styleCss=bWFpbnZpc3VhbC1UTVBMMTYsbXRhYmdhbGxlcnktVE1QTDE2LG10YWJib2FyZC1UTVBMMTYsbWltYmFuLVRNUEwxNixtdGFiZ2FsbGVyeTItVE1QTDE2LG1pY2Jhbi1UTVBMMTYsbWljYmFuMi1UTVBMMTYs"
+      ],
+      "frames": 1
+    },
+    {
+      "id": "2027-flyer",
+      "role": "brochure",
+      "description": "SC_Flyer_2027 from the public gallery endpoint referenced in the homepage source",
+      "sourceUrl": "https://kduniv.ac.kr/attach/IMAGE/Board/369/2026/11/vCGKa1yahOyoZgof.JPG",
+      "localPath": "frontend/public/assets/kdu/originals/2027-flyer.jpg",
+      "publicPath": "/assets/kdu/originals/2027-flyer.jpg",
+      "contentType": "image/jpeg",
+      "bytes": 934455,
+      "sha256": "d5b096a3915e3eabc6d4eab487e7742465b6259556a6010da3b97d18c5a23f64",
+      "width": 2481,
+      "height": 3508,
+      "referencedBy": [
+        "https://kduniv.ac.kr/global/ajx_json/MainBoard.do?site_code=global&pageSize=1&mCode=MN045&skin=gallery_org3&mgr_seq=369&category="
+      ],
+      "frames": 1
+    }
+  ],
+  "externalVideos": [
+    {
+      "provider": "YouTube",
+      "id": "HL4dlG7BPeM",
+      "embedUrl": "https://www.youtube.com/embed/HL4dlG7BPeM",
+      "watchUrl": "https://www.youtube.com/watch?v=HL4dlG7BPeM",
+      "sourcePage": "https://kduniv.ac.kr/global/Main.do",
+      "note": "The official homepage embeds this public KDU Global YouTube video. Public YouTube H.264 video and AAC audio streams were downloaded anonymously and remuxed into a local MP4 without re-encoding; this is not the university uploader-original file.",
+      "title": "KDU Global 2027: We lead the world with new traditions!",
+      "durationSeconds": 365,
+      "availability": "public",
+      "uploader": "KDU Global",
+      "localDownload": {
+        "status": "downloaded",
+        "localPath": "frontend/public/assets/kdu/originals/official-kdu-video.mp4",
+        "publicPath": "/assets/kdu/originals/official-kdu-video.mp4",
+        "contentType": "video/mp4",
+        "bytes": 27813902,
+        "sha256": "9019a4d9ab13b2364f9364732efcf217785ea02b9168ce7251511855c9e05ce2",
+        "width": 640,
+        "height": 360,
+        "durationSeconds": 365.389206,
+        "framesPerSecond": 25,
+        "codecs": {
+          "video": "h264",
+          "videoProfile": "Main",
+          "audio": "aac",
+          "audioProfile": "LC",
+          "audioChannels": 2,
+          "audioSampleRate": 44100
+        },
+        "formatIDs": {
+          "video": "134",
+          "audio": "140"
+        },
+        "sourceTitle": "KDU Global 2027: We lead the world with new traditions!",
+        "sourceUploader": "KDU Global",
+        "sourceVideoID": "HL4dlG7BPeM",
+        "technicalNote": "Container remux only: ffmpeg -c copy with faststart metadata placement. No video or audio re-encoding, editing, trimming, or generated content. Encoded packet SHA-256 hashes match the downloaded source streams.",
+        "uploaderOriginalFile": false,
+        "verification": {
+          "ffprobe": "H.264 video and AAC audio present; dimensions and full duration verified.",
+          "videoEncodedPacketsUnchanged": true,
+          "audioEncodedPacketsUnchanged": true
+        },
+        "sourceStreams": [
+          {
+            "kind": "video",
+            "formatID": "134",
+            "bytes": 21813025,
+            "sha256": "b91b0ba8bf76e832f988349cbfbc9355edfbed5611adff8a7c63333ffa93ca3e"
+          },
+          {
+            "kind": "audio",
+            "formatID": "140",
+            "bytes": 5914306,
+            "sha256": "d796b114d63bec0cd9e81bc0265840e71a4afae1bafb7c460289fca6e32660d7"
+          }
+        ]
+      }
+    }
+  ],
+  "unavailableSources": [
+    {
+      "sourceUrl": "https://kduniv.ac.kr/resources/_Img/Common/mCSB_buttons.png",
+      "referencedBy": [
+        "https://kduniv.ac.kr/resources/_Css/plugin/jquery.mCustomScrollbar.min.css"
+      ],
+      "reason": "HTTP Error 404: 404"
+    },
+    {
+      "sourceUrl": "https://kduniv.ac.kr/resources/homepage/kor/_Img/Layout/layoutM_spr.png",
+      "referencedBy": [
+        "https://kduniv.ac.kr/resources/_Templet/globalLayout.css?styleCss=bGF5b3V0X29yZyxnbmF2aV9vcmcsbG9nb19vcmcsaGVhZGVyX29yZyxzdWJtZW51X29yZyxmb290ZXJfb3Jn"
+      ],
+      "reason": "HTTP Error 404: 404"
+    },
+    {
+      "sourceUrl": "https://kduniv.ac.kr/resources/_Css/plugin/owl.video.play.png",
+      "referencedBy": [
+        "https://kduniv.ac.kr/resources/_Css/plugin/owl.carousel.min.css"
+      ],
+      "reason": "HTTP Error 404: 404"
+    },
+    {
+      "sourceUrl": "https://kduniv.ac.kr/resources/homepage/kor/_Img/Layout/main_spr.png",
+      "referencedBy": [
+        "https://kduniv.ac.kr/resources/Main/globalmainModule.css?styleCss=bWFpbnZpc3VhbC1UTVBMMTYsbXRhYmdhbGxlcnktVE1QTDE2LG10YWJib2FyZC1UTVBMMTYsbWltYmFuLVRNUEwxNixtdGFiZ2FsbGVyeTItVE1QTDE2LG1pY2Jhbi1UTVBMMTYsbWljYmFuMi1UTVBMMTYs"
+      ],
+      "reason": "HTTP Error 404: 404"
+    },
+    {
+      "sourceUrl": "https://kduniv.ac.kr/resources/homepage/kor/_Img/Layout/board_more.png",
+      "referencedBy": [
+        "https://kduniv.ac.kr/resources/Main/globalmainModule.css?styleCss=bWFpbnZpc3VhbC1UTVBMMTYsbXRhYmdhbGxlcnktVE1QTDE2LG10YWJib2FyZC1UTVBMMTYsbWltYmFuLVRNUEwxNixtdGFiZ2FsbGVyeTItVE1QTDE2LG1pY2Jhbi1UTVBMMTYsbWljYmFuMi1UTVBMMTYs"
+      ],
+      "reason": "HTTP Error 404: 404"
+    }
+  ]
+}
