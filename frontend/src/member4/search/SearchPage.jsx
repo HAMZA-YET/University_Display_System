@@ -16,6 +16,9 @@ import { LF_CATEGORIES, lfLabel } from '../../lib/lostFoundLabels.js';
 import { SEARCH_SOURCES, parseLiveSearch, liveSearchParams, searchConnectedRecords } from './liveSearch.js';
 
 const request = (path, config) => api.get(path, config).then((response) => response.data);
+const resultDestination = (record) => record.source === 'professor'
+  ? '/professors?' + new URLSearchParams({ q: record.title })
+  : record.href || `/items/${record.id}`;
 
 export default function SearchPage() {
   const { search, state } = useLocation();
@@ -94,7 +97,7 @@ function ConnectedSearch({ search, signedIn, focusReturn }) {
           {result.kind === 'signin' && <EmptyState title="Sign in to search lost and found"><Link to="/login" state={{ from: '/search' + search }}>Log in</Link></EmptyState>}
           {result.kind === 'results' && <>
             <p role="status">{result.meta.total} {result.meta.total === 1 ? 'result' : 'results'} in {SEARCH_SOURCES[state.source].label.toLowerCase()}</p>
-            {result.records.length === 0 ? <EmptyState title={result.meta.total ? 'No results on this page' : 'No matching information'}><p>Try another search term or department.</p>{state.page > 1 && <button className="btn btn-secondary" type="button" onClick={() => setSearchParams(liveSearchParams({ ...state, page: 1 }))}>Return to first page</button>}</EmptyState> : <div className="grid grid-3">{result.records.map((record) => state.source === 'professor' ? <ProfessorCard key={record.id} professor={record} departmentName={byCode[record.department]} /> : state.source === 'notice' ? <NoticeCard key={record.id} notice={record} departments={byCode} returnTo={"/search" + search} /> : <article className="card stack" key={`${record.source || state.source}:${record.id}`}><span className="tag">{SEARCH_SOURCES[record.source || state.source]?.label}</span><h3><Link to={record.href || `/items/${record.id}`} state={{ returnTo: "/search" + search }}>{record.title}</Link></h3><p>{record.summary || record.description}</p></article>)}</div>}
+            {result.records.length === 0 ? <EmptyState title={result.meta.total ? 'No results on this page' : 'No matching information'}><p>Try another search term or filter.</p>{state.page > 1 && <button className="btn btn-secondary" type="button" onClick={() => setSearchParams(liveSearchParams({ ...state, page: 1 }))}>Return to first page</button>}</EmptyState> : <div className="grid grid-3">{result.records.map((record) => state.source === 'professor' ? <ProfessorCard key={record.id} professor={record} departmentName={byCode[record.department]} /> : state.source === 'notice' ? <NoticeCard key={record.id} notice={record} departments={byCode} returnTo={"/search" + search} /> : <article className="card stack" key={`${record.source || state.source}:${record.id}`}><span className="tag">{SEARCH_SOURCES[record.source || state.source]?.label}</span><h3><Link to={resultDestination(record)} state={{ returnTo: "/search" + search }}>{record.title}</Link></h3><p>{record.summary || record.description}</p></article>)}</div>}
             <Pagination meta={result.meta} onPage={(page) => setSearchParams(liveSearchParams({ ...state, page }))} />
           </>}
         </section>

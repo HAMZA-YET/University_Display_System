@@ -19,6 +19,20 @@ async function visit(path) { await page.goto(base + path); await page.getByRole(
 async function check(name, run) { await run(); checks.push(name); }
 async function shot(name) { await page.screenshot({ path: fileURLToPath(new URL(name, output)), fullPage: true }); }
 try {
+  await check('home search finds professors across sources and footer navigation starts at the page heading', async () => {
+    await visit('/');
+    const hero = page.getByRole('search', { name: 'Search campus information' });
+    await hero.getByRole('searchbox').fill('Learning');
+    await hero.getByRole('button', { name: 'Search', exact: true }).click();
+    await page.waitForURL(url => url.pathname === '/search' && url.searchParams.get('source') === 'all');
+    await page.getByRole('link', { name: 'Fictional Learning Professor (Demo)', exact: true }).click();
+    await page.waitForURL(url => url.pathname === '/professors' && url.searchParams.get('q') === 'Fictional Learning Professor (Demo)');
+    await page.getByRole('heading', { name: 'Dr. Fictional Learning Professor (Demo)', exact: true }).waitFor();
+    await page.locator('footer').getByRole('link', { name: 'Campus notices', exact: true }).click();
+    await page.getByRole('heading', { name: 'Campus notices', exact: true }).waitFor();
+    assert.equal(await page.evaluate(() => window.scrollY), 0);
+    assert.equal(await page.evaluate(() => document.activeElement.id), 'main-content');
+  });
   await check('live filtered notice search, fictional label, detail and browser Back', async () => {
     await visit('/search?q=Integration&category=EXAM&department=BSC&sort=newest');
     await page.getByRole('link', { name: '[Sample] Integration exam', exact: true }).waitFor();
@@ -98,6 +112,16 @@ try {
     await visit('/notifications');
     await page.getByRole('button', { name: 'Refresh inbox', exact: true }).waitFor();
     await shot('inbox-mobile.png');
+    const account = page.locator('.account-menu');
+    const summary = account.locator('summary');
+    await summary.click();
+    assert.equal(await account.evaluate(menu => menu.open), true);
+    await page.keyboard.press('Escape');
+    assert.equal(await account.evaluate(menu => menu.open), false);
+    assert.equal(await summary.evaluate(element => element === document.activeElement), true);
+    await summary.click();
+    await page.mouse.click(8, 500);
+    assert.equal(await account.evaluate(menu => menu.open), false);
     await page.getByRole('button', { name: 'Open menu', exact: true }).click();
     await page.keyboard.press('Escape');
     assert.equal(await page.getByRole('button', { name: 'Open menu', exact: true }).evaluate((button) => button === document.activeElement), true);
