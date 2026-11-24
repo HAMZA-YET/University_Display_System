@@ -4,7 +4,7 @@ import LfCategoryIcon from '../../components/lostFound/LfCategoryIcon';
 import Button from '../../components/ui/Button';
 import Icon from '../../components/ui/Icon';
 import Pagination from '../../components/ui/Pagination';
-import { DataState } from '../../components/ui/States';
+import { DataState, EmptyState } from '../../components/ui/States';
 import useApi from '../../hooks/useApi';
 import useAuth from '../../hooks/useAuth';
 import useDebounce from '../../hooks/useDebounce';
@@ -64,6 +64,7 @@ export default function LostFoundBrowse() {
           <input
             id="lf-search"
             type="search"
+            maxLength={100}
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder="Try 'umbrella', 'library' or a reference like LF-2026-00001"
@@ -141,11 +142,16 @@ export default function LostFoundBrowse() {
         <DataState
           {...result}
           onRetry={result.reload}
-          isEmpty={(d) => !d.data.length}
+          isEmpty={(d) => !d.data.length && !(Number(params.page) > 1)}
           emptyTitle={filtered ? 'Nothing matches yet' : 'Nothing listed right now'}
           emptyText={filtered ? 'Try fewer words or another category.' : 'New reports appear here as soon as they are posted.'}
         >
-          {(d) => (
+          {(d) => !d.data.length ? (
+            <EmptyState title="No items on this page">
+              <p>Return to the first page to see the current results.</p>
+              <Button variant="secondary" onClick={() => setParams({ page: 1 })}>Return to first page</Button>
+            </EmptyState>
+          ) : (
             <>
               <div className="lf-grid">
                 {d.data.map((item) => (

@@ -14,6 +14,7 @@ export default function NavBar() {
   const location = useLocation();
   const navigate = useNavigate();
   const menuButtonRef = useRef(null);
+  const accountMenuRef = useRef(null);
   const open = openPath === location.pathname;
   const canReview = hasRole('REVIEWER', 'ADMIN');
   const pending = canReview && pendingResult?.path === location.pathname ? pendingResult.count : null;
@@ -31,6 +32,15 @@ export default function NavBar() {
     return () => document.removeEventListener('keydown', close);
   }, [open]);
 
+  useEffect(() => {
+    const dismiss = (event) => {
+      const menu = accountMenuRef.current;
+      if (menu?.open && !menu.contains(event.target)) menu.open = false;
+    };
+    document.addEventListener('pointerdown', dismiss);
+    return () => document.removeEventListener('pointerdown', dismiss);
+  }, []);
+
   async function handleLogout() {
     setLogoutError(null);
     try { await logout(); navigate('/'); }
@@ -43,11 +53,18 @@ export default function NavBar() {
       <div className="container topbar-inner">
         <Link to="/" className="brand" aria-label="KDU Global campus portal home"><img className="brand-logo official-university-logo" src="/assets/kdu-official-logo.gif" width="175" height="64" alt="Kyungdong University" /></Link>
         <nav id="main-nav" className={`nav-links ${open ? 'open' : ''}`} aria-label="Main">
-          <NavLink to="/" end>Home</NavLink><NavLink to="/notices">Notices</NavLink><NavLink to="/events">Events</NavLink><NavLink to="/professors">Directory</NavLink><NavLink to="/items">Lost &amp; found</NavLink><NavLink className="nav-search" to="/search"><Icon name="search" size={17} /><span>Search</span></NavLink>
+          <NavLink to="/" end>Home</NavLink><NavLink to="/notices">Notices</NavLink><NavLink to="/events">Events</NavLink><NavLink to="/professors">Directory</NavLink><NavLink to="/items">Lost &amp; found</NavLink><NavLink className="nav-search" to="/search?source=all"><Icon name="search" size={17} /><span>Search</span></NavLink>
         </nav>
         <div className="nav-controls">
           {user ? (
-            <details className="account-menu" key={location.pathname}>
+            <details ref={accountMenuRef} className="account-menu" key={location.pathname} onKeyDown={(event) => {
+              if (event.key === 'Escape' && event.currentTarget.open) {
+                event.preventDefault();
+                event.stopPropagation();
+                event.currentTarget.open = false;
+                event.currentTarget.querySelector('summary')?.focus();
+              }
+            }}>
               <summary aria-label={`Account menu for ${user.name}`}><span className="user-avatar">{user.name?.trim().slice(0, 1).toUpperCase() || 'U'}</span><span className="account-summary-name">{user.name?.split(' ')[0]}<small>{humanize(user.role)}</small></span><Icon name="chevronDown" size={14} /></summary>
               <div className="account-dropdown"><div className="account-identity"><strong>{user.name}</strong><span>{user.email}</span><span className="tag">{humanize(user.role)}</span></div>
                 <Link to="/account-security">Account security</Link>

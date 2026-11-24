@@ -34,6 +34,7 @@ export default function MyReport() {
                 <span className="row" style={{ gap: 'var(--space-4)' }}>
                   <BackToLostFound />
                   <Link to="/items/my-cases">My Cases</Link>
+                  {location.state?.returnTo === '/notifications' && <Link to="/notifications" state={{ focusReturn: true }}>Back to notifications</Link>}
                 </span>
               }
               actions={

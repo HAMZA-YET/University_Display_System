@@ -12,6 +12,7 @@ import { listPublicEvents } from '../api/events';
 import { zonedParts, monthStartIso } from '../lib/time';
 
 const TABS = [
+  { value: 'ALL', label: 'All events' },
   { value: 'UPCOMING', label: 'Upcoming' },
   { value: 'COMPLETED', label: 'Completed' },
   { value: 'CANCELLED', label: 'Cancelled' },
@@ -39,7 +40,9 @@ export default function Events() {
 
   const from = monthStartIso(year, month);
   const to = month === 11 ? monthStartIso(year + 1, 0) : monthStartIso(year, month + 1);
-  const result = useApi(() => listPublicEvents({ state, from, to, department: params.department, limit: 100 }), [state, from, to, params.department]);
+  const result = useApi(() => listPublicEvents({ ...(state === 'ALL' ? {} : { state }), from, to, department: params.department, limit: 100 }), [state, from, to, params.department]);
+  const currentMonth = zonedParts(new Date());
+  const awayFromThisMonth = year !== currentMonth.year || month !== currentMonth.month;
 
   const monthLabel = new Date(Date.UTC(year, month, 1)).toLocaleString('en-GB', { month: 'long', year: 'numeric', timeZone: 'UTC' });
   const shift = (delta) => {
@@ -67,6 +70,7 @@ export default function Events() {
             <Button variant="secondary" size="sm" onClick={() => shift(1)} aria-label="Next month">
               Next
             </Button>
+            {awayFromThisMonth && <Button variant="secondary" size="sm" onClick={() => setParams({ month: '' })}>This month</Button>}
           </div>
           <div className="row">
             <div style={{ minWidth: 220 }}>

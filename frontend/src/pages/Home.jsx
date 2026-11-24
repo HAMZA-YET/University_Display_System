@@ -17,7 +17,7 @@ const QUICK_LINKS = [
   { to: '/notices', icon: 'file', title: 'Campus notices', text: 'The updates that matter to you' },
   { to: '/events', icon: 'calendar', title: 'Events & activities', text: 'Make room for something new' },
   { to: '/professors', icon: 'user', title: 'Professor directory', text: 'Find the right person to ask' },
-  { to: '/search', icon: 'search', title: 'Campus search', text: 'Find notices and faculty' },
+  { to: '/search?source=all', icon: 'search', title: 'Campus search', text: 'Find notices, faculty and more' },
 ];
 
 function SectionHeading({ eyebrow, title, to, link = 'View all' }) {
@@ -45,7 +45,9 @@ export default function Home() {
           <p className="hero-description">From the next big opportunity to the everyday details. Stay informed, find your people, and make the most of life at KDU.</p>
           <form className="hero-search" role="search" aria-label="Search campus information" onSubmit={(event) => {
             event.preventDefault();
-            navigate(`/search${q.trim() ? `?q=${encodeURIComponent(q.trim())}` : ''}`);
+            const params = new URLSearchParams({ source: 'all' });
+            if (q.trim()) params.set('q', q.trim());
+            navigate(`/search?${params}`);
           }}>
             <Icon name="search" size={20} />
             <label className="visually-hidden" htmlFor="home-search">Search campus information</label>
@@ -99,7 +101,7 @@ export default function Home() {
           {(data) => <div className="grid grid-3">{data.data.slice(0, 3).map((professor) => <ProfessorCard key={professor.id} professor={professor} departmentName={byCode[professor.department]} />)}</div>}
         </DataState>
       </section>
-      <div className="campus-help-banner"><div><Icon name="info" size={24} /><span><strong>A little help goes a long way.</strong><small>Looking for something? Search notices or connect with your professor.</small></span></div><Link to="/search">Find campus information<Icon name="arrowRight" size={18} /></Link></div>
+      <div className="campus-help-banner"><div><Icon name="info" size={24} /><span><strong>A little help goes a long way.</strong><small>Looking for something? Search notices or connect with your professor.</small></span></div><Link to="/search?source=all">Find campus information<Icon name="arrowRight" size={18} /></Link></div>
     </div>
   );
 }

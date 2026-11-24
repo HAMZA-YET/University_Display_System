@@ -1,5 +1,5 @@
-import { Routes, Route, useLocation } from 'react-router-dom';
-import { lazy, Suspense, useState } from 'react';
+import { Routes, Route, useLocation, useNavigationType } from 'react-router-dom';
+import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import { LoadingState } from './components/ui/States';
 import NavBar from './components/layout/NavBar';
 import Footer from './components/layout/Footer';
@@ -49,6 +49,17 @@ const AdminLfClaims = lazy(() => import('./pages/adminLostFound/AdminLfClaims'))
 export default function App() {
   const [setupToken, setSetupToken] = useState('');
   const location = useLocation();
+  const navigationType = useNavigationType();
+  const previousPath = useRef(location.pathname);
+  useEffect(() => {
+    const changedPage = previousPath.current !== location.pathname;
+    previousPath.current = location.pathname;
+    // Filters and browser Back retain their context; explicit return links
+    // restore their own result/inbox focus after loading.
+    if (!changedPage || navigationType === 'POP' || location.state?.focusReturn) return;
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    document.getElementById('main-content')?.focus({ preventScroll: true });
+  }, [location.pathname, location.state?.focusReturn, navigationType]);
   return (
     <div className="app-shell">
       <a href="#main-content" className="skip-link">
