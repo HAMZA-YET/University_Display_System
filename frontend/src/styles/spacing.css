@@ -1,0 +1,171 @@
+/* Shared spacing corrections for the integrated public and member screens. */
+
+/* Long content should wrap inside its column, including nested admin panels. */
+#main-content :is(.grid, .form-grid, .grid-sidebar) > *,
+#main-content .panel,
+#main-content .row-between > * {
+  min-width: 0;
+}
+
+/* These cards are flex containers: use their gap instead of stack margins too. */
+#main-content .card.stack {
+  gap: 16px;
+}
+
+#main-content .card.stack > * {
+  margin-block: 0;
+}
+
+#main-content .card.stack > .tag {
+  align-self: flex-start;
+}
+
+#main-content .panel > :last-child {
+  margin-bottom: 0;
+}
+
+/* Account forms are siblings rather than children of a .stack wrapper. */
+#main-content > .container > .panel + .panel {
+  margin-top: 24px;
+}
+
+/* Inline links need a box for the stack's vertical margin to take effect. */
+#main-content .stack > .panel + a:not(.btn) {
+  display: inline-block;
+}
+
+/* Keep action groups aligned without changing their order or destinations. */
+#main-content .page-header .row-between > .row {
+  gap: 8px;
+}
+
+/* Numbered Home shortcuts added a span before the icon; keep flex on the text. */
+.home-page .quick-link {
+  justify-content: flex-start;
+}
+
+.home-page .quick-link > .quick-link-icon {
+  flex: 0 0 auto;
+}
+
+.home-page .quick-link > span:last-of-type {
+  min-width: 0;
+  flex: 1;
+}
+
+#main-content :is(section[aria-labelledby="bookmarks-title"], section[aria-labelledby="saved-items-title"]) > .row-between {
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+#main-content :is(#bookmarks-title, #saved-items-title) {
+  margin-bottom: 0;
+}
+
+/* Align the event view controls with the department input, below its label. */
+.events-content > .row-between,
+.events-content > .row-between > .row:last-child {
+  align-items: flex-end;
+}
+
+.events-content > .row-between > .row:last-child > div:first-child {
+  max-width: 100%;
+}
+
+/* Native file controls also need to fit narrow report and evidence panels. */
+#main-content input[type="file"] {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.lf-module .lf-hero-search {
+  min-width: 0;
+}
+
+.lf-module .lf-hero-search input {
+  min-width: 0;
+}
+
+.lf-module .lf-legend {
+  flex-wrap: wrap;
+  row-gap: 8px;
+}
+
+/* Keep private file names separate from their actions, including long names. */
+section[aria-label="Private proof files"] > ul {
+  padding-left: 20px;
+}
+
+section[aria-label="Private proof files"] > ul > li > span:first-child {
+  display: block;
+  margin-bottom: 8px;
+}
+
+section[aria-label="Private proof files"] > ul > li > .btn {
+  margin: 0 4px 6px 0;
+}
+
+section[aria-labelledby="notification-preferences-title"] fieldset > label {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  line-height: 1.6;
+}
+
+section[aria-labelledby="notification-preferences-title"] fieldset > label > input {
+  flex-shrink: 0;
+  margin: 5px 0 0;
+}
+
+@media (max-width: 1024px) {
+  /* The stacked Home columns already have a grid gap between them. */
+  .home-content-grid > .home-primary > .content-section:last-child {
+    margin-bottom: 0;
+  }
+}
+
+@media (max-width: 700px) {
+  .events-content > .row-between > .row {
+    width: 100%;
+  }
+
+  .events-content > .row-between > .row:last-child > div:first-child {
+    flex: 1 1 220px;
+  }
+
+  #main-content .form-actions {
+    row-gap: 10px;
+  }
+}
+
+@media (max-width: 639px) {
+  /* A select's desktop minimum must not widen a stacked table's value cell. */
+  #main-content .stack-mobile .table td {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+    gap: 10px;
+  }
+
+  #main-content .stack-mobile .table td > *,
+  #main-content .stack-mobile .table select {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  #main-content .stack-mobile .table td[data-label=""] {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  #main-content .stack-mobile .table td[data-label=""]::before {
+    display: none;
+  }
+
+  #main-content .stack-mobile .table .checkbox {
+    align-items: flex-start;
+    line-height: 1.5;
+  }
+
+  #main-content .stack-mobile .table .checkbox input {
+    flex-shrink: 0;
+  }
+}

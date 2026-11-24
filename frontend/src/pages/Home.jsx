@@ -11,7 +11,7 @@ import useApi from '../hooks/useApi';
 import useDepartments from '../hooks/useDepartments';
 import { getHome } from '../api/notices';
 import { listPublicEvents } from '../api/events';
-import { listProfessors, professorDepartments } from '../api/professors';
+import { listProfessors } from '../api/professors';
 import { formatDate } from '../lib/time';
 
 const QUICK_LINKS = [
@@ -31,7 +31,6 @@ export default function Home() {
   const { byCode } = useDepartments();
   const home = useApi(getHome, []);
   const events = useApi(() => listPublicEvents({ state: 'UPCOMING', limit: 3 }), []);
-  const depts = useApi(professorDepartments, []);
   const professors = useApi(() => listProfessors({ limit: 3 }), []);
 
   useEffect(() => { document.title = 'Your campus, connected — KDU Global UIDS'; }, []);
@@ -87,12 +86,9 @@ export default function Home() {
               {(data) => <div className="event-preview-list">{data.data.map((event) => <EventCard key={event.id} event={event} compact />)}</div>}
             </DataState>
           </section>
-          <section className="directory-promo" aria-label="Explore departments">
+          <section className="directory-promo" aria-label="Explore faculty">
             <img src="/assets/kdu/originals/hero-04.jpg" alt="Students and staff in discussion, from the official KDU website" loading="lazy" decoding="async" width="1920" height="860" />
-            <p className="eyebrow">HERE TO HELP YOU GROW</p><h2>Find your faculty.</h2><p>Discover the people, subjects, and office hours behind your department.</p>
-            <DataState {...depts} onRetry={depts.reload} isEmpty={(data) => !data.length} emptyTitle="Directory coming together" emptyText="Departments will appear as profiles are added.">
-              {(data) => <div className="department-links">{data.map((department) => <Link key={department.code} to={`/professors?department=${encodeURIComponent(department.code)}`} title={department.name}>{department.code}<span>{department.count}</span></Link>)}</div>}
-            </DataState>
+            <p className="eyebrow">THE PEOPLE BEHIND YOUR UNIVERSITY</p><h2>Find your faculty.</h2><p>Get to know the people at KDU through their published profiles, qualifications and contact details.</p>
             <Link to="/professors" className="section-link">Explore the directory<Icon name="arrowRight" size={16} /></Link>
           </section>
         </aside>

@@ -53,10 +53,10 @@ export default function AdminProfessors() {
 
   const columns = [
     { key: 'name', header: 'Name', render: (p) => <strong>{[p.titlePrefix, p.name].filter(Boolean).join(' ')}</strong> },
-    { key: 'department', header: 'Department', render: (p) => byCode[p.department] || p.department },
-    { key: 'position', header: 'Position', render: (p) => humanize(p.position) },
-    { key: 'office', header: 'Office', render: (p) => `${p.officeRoom}, ${p.officeBuilding}` },
-    { key: 'subjects', header: 'Subjects', render: (p) => p.subjects.join(', ') },
+    { key: 'department', header: 'Department', render: (p) => byCode[p.department] || p.department || 'Not published' },
+    { key: 'position', header: 'Position', render: (p) => p.positionLabel || humanize(p.position) },
+    { key: 'office', header: 'Office', render: (p) => [p.officeRoom, p.officeBuilding].filter(Boolean).join(', ') || 'Not published' },
+    { key: 'subjects', header: 'Subjects', render: (p) => (p.subjects || []).join(', ') || 'Not published' },
     { key: 'hours', header: 'Counselling', render: (p) => p.counsellingHours.map((h) => `${dayName(h.day).slice(0, 3)} ${h.startTime}-${h.endTime}`).join('; ') || '-' },
     { key: 'active', header: 'Listed', render: (p) => (p.isActive ? 'Yes' : 'No') },
     {

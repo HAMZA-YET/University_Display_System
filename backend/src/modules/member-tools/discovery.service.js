@@ -16,13 +16,18 @@ async function searchAll(user, query) {
   const { page, limit, skip } = getPaging(query);
   const rx = query.q ? containsRegex(query.q) : null;
   const noticeKeyword = rx ? { $or: [{ 'publicSearch.title': rx }, { 'publicSearch.summary': rx }, { 'publicSearch.body': rx }] } : {};
-  const professorFilter = { isActive: true, ...(rx ? { $or: [{ name: rx }, { subjects: rx }] } : {}) };
+  const professorFilter = { isActive: true, ...(rx ? { $or: [{ name: rx }, { subjects: rx }, { sourceKey: { $exists: true }, $or: [{ qualifications: rx }, { roles: rx }] }] } : {}) };
   const pipeline = [
     { $match: withEligibility(clock.now(), user, noticeKeyword) },
     { $project: { _id: 0, id: { $toString: '$_id' }, source: { $literal: 'notice' }, title: '$publicSearch.title', summary: { $ifNull: ['$publicSearch.summary', ''] }, href: { $concat: ['/notices/', { $toString: '$_id' }] } } },
     { $unionWith: { coll: Professor.collection.name, pipeline: [
       { $match: professorFilter },
-      { $project: { _id: 0, id: { $toString: '$_id' }, source: { $literal: 'professor' }, title: '$name', summary: { $reduce: { input: { $ifNull: ['$subjects', []] }, initialValue: '', in: { $concat: ['$$value', { $cond: [{ $eq: ['$$value', ''] }, '', ', '] }, '$$this'] } } }, href: { $literal: '/professors' } } },
+      { $project: { _id: 0, id: { $toString: '$_id' }, source: { $literal: 'professor' }, title: '$name', summary: {
+        $cond: [{ $gt: [{ $size: { $ifNull: ['$subjects', []] } }, 0] },
+          { $reduce: { input: '$subjects', initialValue: '', in: { $concat: ['$$value', { $cond: [{ $eq: ['$$value', ''] }, '', ', '] }, '$$this'] } } },
+          { $ifNull: ['$positionLabel', { $reduce: { input: { $ifNull: ['$roles', []] }, initialValue: '', in: { $concat: ['$$value', { $cond: [{ $eq: ['$$value', ''] }, '', ', '] }, '$$this'] } } }] },
+        ],
+      }, href: { $literal: '/professors' }, sourceUrl: 1, sourceRetrievedAt: 1, positionLabel: 1, roles: 1 } },
     ] } },
   ];
   if (user) pipeline.push({ $unionWith: { coll: Item.collection.name, pipeline: [

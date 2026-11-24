@@ -2,7 +2,7 @@ import { useId, useState } from 'react';
 import Button from '../ui/Button';
 
 /** Dynamic subject list: add and remove items. Duplicates are ignored (case-insensitive). */
-export default function SubjectsEditor({ value = [], onChange, error }) {
+export default function SubjectsEditor({ value = [], onChange, error, optional = false }) {
   const id = useId();
   const [draft, setDraft] = useState('');
   const [note, setNote] = useState(null);
@@ -29,7 +29,7 @@ export default function SubjectsEditor({ value = [], onChange, error }) {
   return (
     <div className="field">
       <label htmlFor={id}>
-        Subjects<span className="required-mark" aria-hidden="true">*</span>
+        Subjects{!optional && <span className="required-mark" aria-hidden="true">*</span>}
       </label>
       <div className="row">
         <input
@@ -53,7 +53,7 @@ export default function SubjectsEditor({ value = [], onChange, error }) {
         </Button>
       </div>
       <span className="hint" id={`${id}-hint`}>
-        Between 1 and 20 subjects. Press Enter or Add subject.
+        {optional ? 'Add only published teaching subjects, or leave blank.' : 'Between 1 and 20 subjects. Press Enter or Add subject.'}
       </span>
       {(note || error) && (
         <span className="error" role="alert">

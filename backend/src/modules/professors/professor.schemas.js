@@ -38,7 +38,7 @@ const counsellingHours = z
   });
 
 /** Subjects: 1-20 items, each 2-100 chars, trimmed, duplicates removed case-insensitively. */
-const subjects = z
+const optionalSubjects = z
   .array(z.string().trim().min(2, 'Each subject must be at least 2 characters').max(100))
   .transform((list) => {
     const seen = new Set();
@@ -49,7 +49,8 @@ const subjects = z
       return true;
     });
   })
-  .refine((list) => list.length >= 1 && list.length <= 20, 'Add between 1 and 20 subjects');
+  .refine((list) => list.length <= 20, 'Add no more than 20 subjects');
+const subjects = optionalSubjects.refine((list) => list.length >= 1, 'Add between 1 and 20 subjects');
 
 const profileImage = z
   .union([
@@ -84,7 +85,17 @@ const professorBody = z
   })
   .strict();
 
-const updateBody = professorBody.extend({ expectedVersion: z.number().int().min(1).optional() }).strict();
+// Only an existing source-backed record can use these nullable fields. The
+// service reapplies professorBody to every other record after loading it.
+const updateBody = professorBody.extend({
+  department: professorBody.shape.department.nullable().default(null),
+  position: professorBody.shape.position.nullable().default(null),
+  officeRoom: professorBody.shape.officeRoom.nullable().default(null),
+  officeBuilding: professorBody.shape.officeBuilding.nullable().default(null),
+  email: professorBody.shape.email.nullable().default(null),
+  subjects: optionalSubjects.default([]),
+  expectedVersion: z.number().int().min(1).optional(),
+}).strict();
 
 const listQuery = z
   .object({
