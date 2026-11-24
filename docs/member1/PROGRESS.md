@@ -1,5 +1,7 @@
 # Member 1 integration progress
 
+> November 25 integration update: this is the historical Member 1 branch report. The real claim authorization callback, private Blob proof-file storage and claimant/admin proof controls are now connected. A production message adapter is implemented but no sender/provider is configured. Use INTEGRATION.md and OPERATIONS.md for current capabilities and operational limits; the older counts and blockers below describe the original handoff.
+
 Branch: feature/member1-security-integration. Base main: 529f459e00d5ceb08bb603a2eacaba89aae093a9. Original UIDS-Member1 remains unchanged. The prior uncommitted audit changes were retained and extended.
 
 ## Completed locally

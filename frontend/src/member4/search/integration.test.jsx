@@ -5,6 +5,7 @@ import userEvent from '@testing-library/user-event';
 import SearchPage from './SearchPage.jsx';
 const get = vi.hoisted(() => vi.fn());
 vi.mock('../../api/client.js', () => ({ default: { get } }));
+vi.mock('../../hooks/useAuth.js', () => ({ default: () => ({ user: null, loading: false }) }));
 vi.mock('../../hooks/useDepartments.js', () => ({ default: () => ({ departments: [{ code: 'CS', name: 'Computing' }], byCode: { CS: 'Computing' } }) }));
 beforeEach(() => get.mockReset());
 

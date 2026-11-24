@@ -27,6 +27,26 @@ test('professor search uses the real directory endpoint', async () => {
   assert.equal(result.state.source, 'professor');
 });
 
+test('lost-and-found search requires a signed-in account and uses only its supported fields', async () => {
+  const guest = await searchConnectedRecords('source=item&q=umbrella', { request: () => assert.fail('Guest requested item metadata') });
+  assert.equal(guest.kind, 'signin');
+  let sent;
+  await searchConnectedRecords('source=item&q=umbrella&category=UMBRELLA&page=2', { signedIn: true,
+    request: async (...args) => { sent = args; return response; },
+  });
+  assert.equal(sent[0], '/public/lost-found/items');
+  assert.deepEqual(sent[1].params, { page: 2, limit: 12, q: 'umbrella', category: 'UMBRELLA' });
+});
+
+test('combined search uses one server-paginated endpoint and rejects source-specific filters', async () => {
+  let sent;
+  await searchConnectedRecords('source=all&q=campus&page=2', { request: async (...args) => { sent = args; return response; } });
+  assert.equal(sent[0], '/member-tools/search');
+  assert.deepEqual(sent[1].params, { page: 2, limit: 12, q: 'campus' });
+  assert.equal((await searchConnectedRecords('source=all&department=CS')).kind, 'invalid');
+  assert.equal((await searchConnectedRecords('source=item&category=EXAM', { signedIn: true })).kind, 'invalid');
+});
+
 test('invalid or duplicate filters never issue a request', async () => {
   for (const input of ['source=lost', 'source=__proto__', 'q=a&q=b', 'source=notice&source=professor', 'page=0', 'page=1.5', 'department=%24where', 'source=professor&department=ALL', `q=${'x'.repeat(101)}`]) {
     const result = await searchConnectedRecords(input, { request: () => { assert.fail('Invalid filters reached API'); } });

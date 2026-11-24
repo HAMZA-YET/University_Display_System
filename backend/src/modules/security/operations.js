@@ -68,7 +68,7 @@ async function readPrivate(directory, name) {
   if (await fs.realpath(directory) !== path.resolve(directory)) throw new Error('Unsafe backup directory');
   return fs.readFile(file);
 }
-const omitted = new Set(['actiontokens', 'revokedtokens', 'security_maintenance', 'security_jobs']);
+const omitted = new Set(['actiontokens', 'revokedtokens', 'accountdeliverythrottles', 'security_maintenance', 'security_jobs']);
 async function backup(destination) {
   const key = encryptionKey();
   const bundle = { version: 1, collections: [], files: [] };
@@ -84,6 +84,9 @@ async function backup(destination) {
   }
   const records = await Evidence.find({ state: 'PRIVATE' }).lean();
   for (const record of records) {
+    // Do not create an archive whose metadata would point to an old cloud store
+    // after local restore. A coordinated cloud export/restore is still required.
+    if (record.storageProvider === 'vercel-blob') throw new Error('Remote evidence backup requires provider-coordinated export');
     const data = await require('./evidence').bytes(record);
     bundle.files.push({ area: 'evidence', name: record.fileId, hash: hash(data), data: data.toString('base64') });
     bytes += data.length;
@@ -165,6 +168,9 @@ router.get('/status', asyncHandler(async (req, res) => {
   res.json({ data: { databaseReady: mongoose.connection.readyState === 1,
     mfaConfigured: /^[a-f0-9]{64}$/i.test(process.env.MFA_ENCRYPTION_KEY || ''),
     localDeliveryEnabled: process.env.ACCOUNT_DELIVERY === 'local' && process.env.NODE_ENV !== 'production',
+    accountMessagesConfigured: require('./delivery').status().available,
+    privateEvidenceConfigured: require('./evidenceStorage').capabilities().available,
+    cloudBackupSupported: false,
     jobs: await jobs().find({}, { projection: { _id: 0, action: 1, state: 1, startedAt: 1, finishedAt: 1 } }).sort({ startedAt: -1 }).limit(10).toArray() } });
 }));
 module.exports = { guard, exclusive, cleanup, backup, restore, router };

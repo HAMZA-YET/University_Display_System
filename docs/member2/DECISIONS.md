@@ -21,11 +21,14 @@ deviation from it, with the reason.
 
 ## Choices where the specification was silent
 
-1. **Audience (visibility rule 6).** The MVP user model has no audience group
-   (student, faculty, staff). Audience is therefore shown to readers as a
-   label and does not hide notices. The eligibility function already accepts
-   `viewer.audienceGroups`; when Member 1's accounts module supplies it,
-   notices are restricted to `ALL` plus the viewer's groups with no other change.
+1. **Audience (visibility rule 6, shared application update).** PUBLIC notices
+   remain visible to everyone; their audience is a targeting label. CAMPUS
+   notices require login. CAMPUS/ALL permits every signed-in account, while
+   CAMPUS/STUDENTS, FACULTY or STAFF requires the matching administrator-assigned
+   `User.audienceGroups` value. New and legacy accounts default to no trusted
+   groups; registration and profile edits cannot assign them. Administrators
+   assign groups through user management, with an audit entry and session
+   revocation. An administrator cannot change their own trusted groups.
 2. **One event per notice.** "The linked public event" is singular in the
    spec, so `Event.notice` has a unique index. Creating a second event returns
    409 DUPLICATE.
@@ -44,6 +47,10 @@ deviation from it, with the reason.
    approved, not-expired, pinned notices (published or scheduled), so a
    scheduled pin cannot push the live count over the limit when it goes live.
    The error code is `409 PIN_LIMIT_REACHED`.
+   Capacity-increasing approval and placement transactions first write one
+   shared `NoticePinGuard` document, so parallel changes to different notices
+   cannot each consume the final slot. Pinning requires a MongoDB replica set;
+   it fails closed with `503 PIN_TRANSACTIONS_REQUIRED` without transactions.
 7. **Pending correction conflict.** A second correction while one is pending
    returns `409 CORRECTION_PENDING` (clearer than a generic code).
 8. **Corrections and the working copy.** When a correction is approved, the

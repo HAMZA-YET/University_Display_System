@@ -9,12 +9,21 @@ export default function AccountSecurity() {
   const { user, refreshProfile } = useAuth();
   const [name, setName] = useState(user?.name || '');
   const [enabled, setEnabled] = useState(null);
+  const [enrollmentAvailable, setEnrollmentAvailable] = useState(false);
+  const [capabilities, setCapabilities] = useState(null);
   const [secret, setSecret] = useState(null);
   const [codes, setCodes] = useState([]);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
-  useEffect(() => { securityRequest('mfa', undefined, 'get').then(x => setEnabled(x.enabled)).catch(e => setError(e.message)); }, []);
+  useEffect(() => {
+    let active = true;
+    securityRequest('mfa', undefined, 'get').then(x => {
+      if (active) { setEnabled(x.enabled); setEnrollmentAvailable(x.enrollmentAvailable === true); }
+    }).catch(e => { if (active) setError(e.message); });
+    securityRequest('capabilities', undefined, 'get').then(x => { if (active) setCapabilities(x); }).catch(e => { if (active) setError(e.message); });
+    return () => { active = false; };
+  }, []);
   async function submit(event, operation) {
     event.preventDefault(); if (busy) return;
     setBusy(true); setError(''); setMessage('');
@@ -24,7 +33,7 @@ export default function AccountSecurity() {
       if (operation === 'profile') { await refreshProfile(); setMessage('Profile updated.'); }
       if (operation === 'mfa/enroll') setSecret(result.secret);
       if (operation === 'mfa/confirm') { setCodes(result.recoveryCodes); setSecret(null); setEnabled(true); }
-      if (operation === 'invitations') setMessage('Invitation written to the configured private delivery destination.');
+      if (operation === 'invitations') setMessage(capabilities?.deliveryChannel === 'email' ? 'Invitation sent by email.' : 'Invitation saved to the private local message directory.');
       if (operation !== 'profile') form.reset();
     } catch (e) { setError(e.message); } finally { setBusy(false); }
   }
@@ -36,7 +45,8 @@ export default function AccountSecurity() {
     </form>
     <section className="panel stack"><h2>Authenticator protection</h2>
       <p>{enabled === null ? 'Checking status…' : enabled ? 'MFA is enabled. Every new login requires a code.' : 'Enroll before using this account for privileged work.'}</p>
-      {enabled === false && !secret && <form className="stack" onSubmit={e => submit(e, 'mfa/enroll')}>
+      {enabled === false && !enrollmentAvailable && <p className="small muted">Authenticator enrollment is unavailable. Contact an administrator to complete account security setup.</p>}
+      {enabled === false && enrollmentAvailable && !secret && <form className="stack" onSubmit={e => submit(e, 'mfa/enroll')}>
         <Input label="Current password" type="password" name="password" autoComplete="current-password" required />
         <Button type="submit" busy={busy}>Start enrollment</Button></form>}
       {secret && <><p>Enter this setup key in your authenticator. Keep it private:</p><code className="mono" style={{ display: 'block', overflowWrap: 'anywhere' }}>{secret}</code>
@@ -45,8 +55,10 @@ export default function AccountSecurity() {
       {codes.length > 0 && <><p>Store these recovery codes privately now. Each works once; they are not shown again.</p>
         <pre className="mono" style={{ maxWidth: '100%', whiteSpace: 'pre-wrap', overflowWrap: 'anywhere' }}>{codes.join('\n')}</pre><Button onClick={() => setCodes([])}>I saved my codes</Button></>}
     </section>
-    {user?.role === 'ADMIN' && <form className="panel stack" onSubmit={e => submit(e, 'invitations')}><h2>Invite a reader</h2>
+    {user?.role === 'ADMIN' && <section className="panel stack"><h2>Invite a reader</h2>
+      {capabilities === null ? <p className="muted">Checking invitation availability…</p> : capabilities.accountMessagesAvailable ? <form className="stack" onSubmit={e => submit(e, 'invitations')}>
       <Input label="Name" name="name" required /><Input label="Email" name="email" type="email" required />
-      <Button type="submit" busy={busy}>Create invitation</Button></form>}
+      <Button type="submit" busy={busy}>Create invitation</Button></form> : <p className="muted">Invitations are unavailable until account message delivery is configured.</p>}
+    </section>}
   </>;
 }

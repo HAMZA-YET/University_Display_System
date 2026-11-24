@@ -1,8 +1,11 @@
 import { CATEGORIES } from '../../lib/labels.js';
+import { LF_CATEGORIES } from '../../lib/lostFoundConstants.js';
 // Only documented public API contracts are accepted. No fixtures or browser identity.
 export const SEARCH_SOURCES = Object.freeze({
   notice: { label: 'Public notices', endpoint: '/public/notices' },
   professor: { label: 'Professor directory', endpoint: '/professors' },
+  item: { label: 'Lost and found', endpoint: '/public/lost-found/items' },
+  all: { label: 'All sources', endpoint: '/member-tools/search' },
 });
 
 export function parseLiveSearch(input = '') {
@@ -19,14 +22,16 @@ export function parseLiveSearch(input = '') {
   const to = params.get('to') || '';
   const sort = params.get('sort') || 'default';
   const validDate = (value) => /^\d{4}-\d{2}-\d{2}$/.test(value) && Number.isFinite(Date.parse(value + 'T00:00:00Z')) && new Date(value + 'T00:00:00Z').toISOString().slice(0, 10) === value;
-  if (category && !CATEGORIES.includes(category)) errors.push('Choose a valid notice category.');
+  if (category && !(source === 'item' ? LF_CATEGORIES : CATEGORIES).includes(category)) errors.push(source === 'item' ? 'Choose a valid item category.' : 'Choose a valid notice category.');
   if (![ 'default', 'newest' ].includes(sort)) errors.push('Choose a supported notice sort order.');
   for (const date of [from, to]) if (date && !validDate(date)) errors.push('Use a valid YYYY-MM-DD publication date.');
   if (from && to && from > to) errors.push('Start date must be on or before end date.');
   if (source === 'professor' && (category || from || to || sort !== 'default')) errors.push('Notice filters are not available for professor search.');
+  if (source === 'item' && (department || from || to || sort !== 'default')) errors.push('Department and publication filters are not available for item search.');
+  if (source === 'all' && (department || category || from || to || sort !== 'default')) errors.push('Choose a source before applying its specific filters.');
   const rawPage = params.get('page') || '1';
   const page = Number(rawPage);
-  if (!Object.hasOwn(SEARCH_SOURCES, source)) errors.push('Choose public notices or the professor directory.');
+  if (!Object.hasOwn(SEARCH_SOURCES, source)) errors.push('Choose a supported information source.');
   if (q.length > 100) errors.push('Search text must be 100 characters or fewer.');
   if (department && !/^[A-Z]{2,10}$/.test(department)) errors.push('Choose a valid department.');
   if (source === 'professor' && department === 'ALL') errors.push('Choose all departments or a specific professor department.');
@@ -45,9 +50,10 @@ export function liveSearchParams(state) {
   return params;
 }
 
-export async function searchConnectedRecords(input, { request, signal } = {}) {
+export async function searchConnectedRecords(input, { request, signal, signedIn = false } = {}) {
   const { state, errors } = parseLiveSearch(input);
   if (errors.length) return { kind: 'invalid', errors, state };
+  if (state.source === 'item' && !signedIn) return { kind: 'signin', state };
   if (typeof request !== 'function') throw new Error('A connected public API is required.');
   const params = { page: state.page, limit: 12 };
   if (state.q) params.q = state.q;
@@ -59,6 +65,7 @@ export async function searchConnectedRecords(input, { request, signal } = {}) {
     if (state.to) params.to = state.to + 'T23:59:59.999+09:00';
     if (state.sort !== 'default') params.sort = state.sort;
   }
+  if (state.source === 'item' && state.category) params.category = state.category;
   const response = await request(SEARCH_SOURCES[state.source].endpoint, { params, signal });
   if (!response || !Array.isArray(response.data) || !response.meta || !Number.isInteger(response.meta.total) || !Number.isInteger(response.meta.totalPages)) {
     throw new Error('The server returned an unexpected search response. Please try again.');

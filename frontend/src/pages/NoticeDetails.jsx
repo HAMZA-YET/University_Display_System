@@ -1,4 +1,4 @@
-import { Link, useParams } from 'react-router-dom';
+import { Link, useLocation, useParams } from 'react-router-dom';
 import NoticeView from '../components/notices/NoticeView';
 import { LoadingState, ErrorState } from '../components/ui/States';
 import useApi from '../hooks/useApi';
@@ -10,6 +10,8 @@ import BookmarkControl from '../member4/items/BookmarkControl';
 
 export default function NoticeDetails() {
   const { id } = useParams();
+  const { state } = useLocation();
+  const returnTo = typeof state?.returnTo === 'string' && /^\/(?:search|notifications)(?:\?[^#]*)?$/.test(state.returnTo) ? state.returnTo : null;
   const { byCode } = useDepartments();
   const { data, error, loading, reload } = useApi(() => getPublicNotice(id), [id]);
 
@@ -27,6 +29,7 @@ export default function NoticeDetails() {
       </div>
       <NoticeView notice={data} departments={byCode} />
       <BookmarkControl noticeId={data.id} />
+      {returnTo && <Link to={returnTo} state={{ focusReturn: true }}>{returnTo.startsWith('/notifications') ? 'Back to notifications' : 'Back to search'}</Link>}
     </div>
   );
 }

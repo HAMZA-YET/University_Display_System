@@ -5,6 +5,9 @@ const { useTestApp } = require('./helpers/testApp');
 const F = require('./helpers/fixtures');
 const Professor = require('../src/modules/professors/professor.model');
 const AuditLog = require('../src/modules/audit/audit.model');
+const User = require('../src/modules/users/user.model');
+const { signToken } = require('../src/modules/auth/token');
+const { resetEnvCache } = require('../src/config/env');
 
 const ctx = useTestApp();
 
@@ -156,5 +159,30 @@ describe('PROF Professor directory', () => {
     const dup = await admin.agent.post('/api/professors').send(professor({ email: 'same@example.edu' }));
     expect(dup.status).toBe(409);
     expect(dup.body.error.code).toBe('DUPLICATE');
+  });
+
+  test('inactive professor reads respect privileged MFA without restricting the active public directory', async () => {
+    const admin = await F.createUserAndLogin(ctx.app, 'ADMIN');
+    const hidden = await admin.agent.post('/api/professors').send(professor({ isActive: false }));
+    const active = await admin.agent.post('/api/professors').send(professor({ name: 'Active Professor' }));
+    expect(hidden.status).toBe(201);
+    expect((await admin.agent.get(`/api/professors/${hidden.body.data.id}`)).status).toBe(200);
+    const previous = process.env.REQUIRE_PRIVILEGED_MFA;
+    try {
+      process.env.REQUIRE_PRIVILEGED_MFA = 'true';
+      resetEnvCache();
+      const list = await admin.agent.get('/api/professors').query({ includeInactive: 'true' });
+      expect(list.body.data.map(value => value.id)).toEqual([active.body.data.id]);
+      expect((await admin.agent.get(`/api/professors/${hidden.body.data.id}`)).status).toBe(404);
+      expect((await request(ctx.app).get(`/api/professors/${active.body.data.id}`)).status).toBe(200);
+      const enrolled = await User.findByIdAndUpdate(admin.user._id, { $set: { mfaEnabled: true } }, { new: true }).lean();
+      const cookie = `uids_token=${signToken(enrolled, true)}`;
+      const permitted = await request(ctx.app).get(`/api/professors/${hidden.body.data.id}`).set('Cookie', cookie);
+      expect(permitted.status).toBe(200);
+    } finally {
+      if (previous === undefined) delete process.env.REQUIRE_PRIVILEGED_MFA;
+      else process.env.REQUIRE_PRIVILEGED_MFA = previous;
+      resetEnvCache();
+    }
   });
 });

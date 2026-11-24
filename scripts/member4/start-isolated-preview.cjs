@@ -5,7 +5,7 @@ const crypto = require('node:crypto');
 const fs = require('node:fs/promises');
 const os = require('node:os');
 const root = path.resolve(__dirname, '../..');
-for (const key of ['MONGO_URI', 'MONGODB_URI', 'MONGO_TEST_URI', 'JWT_SECRET', 'BOOTSTRAP_TOKEN', 'BLOB_READ_WRITE_TOKEN', 'BLOB_STORE_ID', 'VERCEL', 'MFA_ENCRYPTION_KEY', 'BACKUP_ENCRYPTION_KEY', 'ACCOUNT_DELIVERY', 'REQUIRE_PRIVILEGED_MFA']) delete process.env[key];
+for (const key of ['MONGO_URI', 'MONGODB_URI', 'MONGO_TEST_URI', 'JWT_SECRET', 'BOOTSTRAP_TOKEN', 'BLOB_READ_WRITE_TOKEN', 'BLOB_STORE_ID', 'VERCEL', 'VERCEL_OIDC_TOKEN', 'MFA_ENCRYPTION_KEY', 'BACKUP_ENCRYPTION_KEY', 'ACCOUNT_DELIVERY', 'RESEND_API_KEY', 'ACCOUNT_MESSAGE_FROM', 'REQUIRE_PRIVILEGED_MFA']) delete process.env[key];
 Object.assign(process.env, { NODE_ENV: 'test', JWT_SECRET: crypto.randomBytes(48).toString('hex'), JWT_EXPIRES_IN: '1h', BCRYPT_ROUNDS: '4', CLIENT_ORIGIN: 'http://127.0.0.1:5187', ENABLE_STATUS_SYNC: 'false', AUTH_LOGIN_RATE_LIMIT: '1000', AUTH_RATE_LIMIT: '10000', ATTACHMENT_STORAGE: 'local', MONGOMS_DOWNLOAD_DIR: path.join(root, 'node_modules/.cache/mongodb-binaries'), MONGOMS_RESUME_DOWNLOAD: 'true' });
 process.env.MFA_ENCRYPTION_KEY = crypto.randomBytes(32).toString('hex');
 const { MongoMemoryReplSet } = require('mongodb-memory-server');
@@ -55,7 +55,7 @@ async function main() {
   await reader.agent.post('/api/member-tools/follows').send({ kind: 'category', target: 'EXAM' });
   const common = { summary: 'Fictional integration test record. Not real university information.', body: 'This is fictional local test content. No university event or requirement is established.' };
   const publicNotice = await F.createApproved(author.agent, reviewer.agent, { ...common, title: '[Sample] Integration exam' });
-  const campusNotice = await F.createApproved(author.agent, reviewer.agent, { ...common, title: '[Sample] Campus-only integration', visibility: 'CAMPUS' });
+  const campusNotice = await F.createApproved(author.agent, reviewer.agent, { ...common, title: '[Sample] Campus-only integration', visibility: 'CAMPUS', audience: 'ALL' });
   const withdrawn = await F.createApproved(author.agent, reviewer.agent, { ...common, title: '[Sample] Withdrawn integration' });
   await require('../../backend/src/modules/notices/notice.model').updateOne({ _id: withdrawn.id }, { $set: { status: 'WITHDRAWN' } });
   const draft = await author.agent.post('/api/notices').send(F.completeNotice({ ...common, title: '[Sample] Private draft sentinel' }));

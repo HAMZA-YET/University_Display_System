@@ -1,6 +1,6 @@
 # Actual test results — Member 4 on updated main, 2026-11-22
 
-> November 23 integration update: Member 3 now mounts the lost-and-found pages and APIs under `/items` in the combined integration build. References below to unmounted/unavailable items describe the dated November 22 baseline, not the new routing. Item bookmarks, unified cross-type search and consumption of LF CaseEvents by the shared inbox remain pending. Historical test results are retained as historical evidence.
+> November 25 update: item bookmarks, server-paginated combined search and recipient-scoped lost-and-found inbox delivery are now integrated. See `docs/member4-integration/LOST_FOUND_CONNECTION.md` for the current contracts and limits. The older dated results and missing-feature statements below are retained as historical evidence.
 
 Base: `a53db54fa24f0237ef42bcad2f9a2eb33a4add45`, including Member 1 PR #4. Branch: feature/member4-final-review. Windows, Node 24.22.3. Tests use disposable local MongoDB replica sets, random per-suite databases and synthetic users. No production accounts, credentials, delivery or databases were used.
 

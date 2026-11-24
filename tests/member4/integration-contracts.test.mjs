@@ -29,5 +29,7 @@ test('invalid dates, categories, sorts and professor-only mismatches never call 
 
 test('notification destinations reject external URLs, wrong record types and extra context', () => {
   assert.equal(noticeDestination('/notices/012345678901234567890123'), '/notices/012345678901234567890123');
+  assert.equal(noticeDestination('/items/my-claims/012345678901234567890123'), '/items/my-claims/012345678901234567890123');
+  assert.equal(noticeDestination('/items/my-reports/012345678901234567890123'), '/items/my-reports/012345678901234567890123');
   for (const value of ['https://evil.invalid/notices/012345678901234567890123', '//evil.invalid', '/author/notices/012345678901234567890123', '/notices/012345678901234567890123?redirect=evil', '/items/012345678901234567890123', null, 'javascript:alert(1)']) assert.throws(() => noticeDestination(value), /unavailable/);
 });

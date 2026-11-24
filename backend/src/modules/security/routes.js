@@ -22,6 +22,17 @@ const codeBody = z.object({ code: z.string().min(6).max(64) }).strict();
 const tokenBody = z.object({ token: z.string().regex(/^[a-f0-9]{64}$/), password }).strict();
 const event = (req, action, user = req.user) => audit.recordSafe({ ...audit.contextFromRequest(req), user },
   { action, entityType: 'USER', entityId: user ? user._id : null });
+router.get('/capabilities', asyncHandler(async (req, res) => {
+  const transactions = await require('../../utils/transaction').supportsTransactions();
+  const delivery = require('./delivery').status();
+  const mfaConfigured = /^[a-f0-9]{64}$/i.test(process.env.MFA_ENCRYPTION_KEY || '');
+  res.json({ data: {
+    mfaEnrollmentAvailable: mfaConfigured && transactions,
+    accountMessagesAvailable: delivery.available && transactions,
+    accountCompletionAvailable: transactions,
+    deliveryChannel: delivery.channel,
+  } });
+}));
 router.post('/recovery/request', validate({ body: z.object({ email }).strict() }), asyncHandler(async (req, res) => {
   await service.requestRecovery(req.body.email);
   await event(req, 'RECOVERY_REQUESTED');
@@ -48,7 +59,10 @@ router.patch('/profile', authenticate, validate({ body: z.object({ name: z.strin
   await event(req, 'PROFILE_UPDATED');
   res.json({ data: toAuthUser(user) });
 }));
-router.get('/mfa', authenticate, (req, res) => res.json({ data: { enabled: Boolean(req.user.mfaEnabled) } }));
+router.get('/mfa', authenticate, asyncHandler(async (req, res) => res.json({ data: {
+  enabled: Boolean(req.user.mfaEnabled),
+  enrollmentAvailable: /^[a-f0-9]{64}$/i.test(process.env.MFA_ENCRYPTION_KEY || '') && await require('../../utils/transaction').supportsTransactions(),
+} })));
 router.post('/mfa/enroll', authenticate, validate({ body: z.object({ password: z.string().min(1).max(128) }).strict() }), asyncHandler(async (req, res) => {
   const data = await service.beginEnrollment(req.user, req.body.password);
   await event(req, 'MFA_ENROLLMENT_STARTED');

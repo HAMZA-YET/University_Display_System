@@ -12,6 +12,7 @@ import useApi from '../../hooks/useApi';
 import useAuth from '../../hooks/useAuth';
 import { getPublicItem, getMyItem, submitClaim, publicPhotoUrl } from '../../api/lostFound';
 import { lfLabel, postedDate } from '../../lib/lostFoundLabels';
+import BookmarkControl from '../../member4/items/BookmarkControl';
 
 export function BackToLostFound() {
   return (
@@ -148,6 +149,7 @@ export default function LostFoundItem() {
             </article>
 
             <aside className="stack">
+              <BookmarkControl itemId={item.id} />
               {item.type === 'LOST' && (
                 <Alert type="info" title="Did you find this?">
                   Please hand it in at the lost-and-found office and quote reference <strong className="mono">{item.reference}</strong>.
@@ -157,14 +159,6 @@ export default function LostFoundItem() {
               {item.type === 'FOUND' && item.status === 'CLAIM_IN_PROGRESS' && (
                 <Alert type="warning" title="Claim in progress">
                   The admin has approved a claim for this item. New claims are paused.
-                </Alert>
-              )}
-              {item.type === 'FOUND' && item.status === 'OPEN' && !user && (
-                <Alert type="info" title="Is this yours?">
-                  <Link to="/login" state={{ from: `/items/${item.id}` }}>
-                    Log in
-                  </Link>{' '}
-                  to claim it.
                 </Alert>
               )}
                            {mine && (

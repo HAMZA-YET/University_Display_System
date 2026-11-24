@@ -20,9 +20,9 @@ const { loadEnv } = require('../../config/env');
  * Everyone else, deleted claims and deleted items are refused. Any error
  * refuses (fail closed). The finder (reporter) never sees claim evidence.
  *
- * There is currently no "attach photo proof" button in the interface; claims
- * use written proof. This keeps Member 1's service usable and safe if the team
- * enables photo proof later.
+ * Written proof remains required. The claimant's private claim page supports
+ * optional JPEG/PNG proof files; administrators review them with these same
+ * current database permissions. File URLs are never public.
  */
 async function authorizeEvidence({ actor, caseId, action }) {
   try {

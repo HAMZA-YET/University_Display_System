@@ -5,6 +5,7 @@ import { MemoryRouter, Route, Routes, useLocation } from 'react-router-dom';
 import { AuthProvider } from '../context/AuthContext';
 import Login from '../pages/Login';
 import AccountSecurity from '../pages/AccountSecurity';
+import AccountRecovery from '../pages/AccountRecovery';
 import * as auth from '../api/auth';
 import { securityRequest } from '../api/security';
 vi.mock('../api/auth', () => ({ login: vi.fn(), me: vi.fn(), logout: vi.fn(), register: vi.fn() }));
@@ -86,5 +87,23 @@ describe('integrated account security screens', () => {
     await events.click(screen.getByRole('button', { name: 'Save profile' }));
     expect(await screen.findByText('Profile updated.')).toBeInTheDocument();
     expect(securityRequest).toHaveBeenCalledWith('profile', { name: 'Updated Student' }, 'patch');
+  });
+  test('unconfigured security setup does not offer enrollment or invitations', async () => {
+    securityRequest.mockImplementation(path => Promise.resolve(path === 'mfa'
+      ? { enabled: false, enrollmentAvailable: false }
+      : { accountMessagesAvailable: false, accountCompletionAvailable: true, deliveryChannel: 'disabled' }));
+    render(<AuthProvider initialUser={user}><MemoryRouter><AccountSecurity /></MemoryRouter></AuthProvider>);
+    expect(await screen.findByText(/Authenticator enrollment is unavailable/)).toBeInTheDocument();
+    expect(await screen.findByText(/Invitations are unavailable/)).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Start enrollment' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Create invitation' })).not.toBeInTheDocument();
+  });
+  test('recovery keeps existing-code completion available when message delivery is unavailable', async () => {
+    securityRequest.mockResolvedValue({ accountMessagesAvailable: false, accountCompletionAvailable: true, deliveryChannel: 'disabled' });
+    render(<MemoryRouter><AccountRecovery /></MemoryRouter>);
+    expect(await screen.findByText(/Recovery messages are unavailable/)).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Request recovery' })).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Complete' })).toBeInTheDocument();
+    expect(screen.getByLabelText(/^Private message code/)).toBeInTheDocument();
   });
 });

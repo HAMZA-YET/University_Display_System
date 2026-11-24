@@ -14,7 +14,7 @@ Cleanup defaults to dry-run. It reports expired action tokens, abandoned quarant
 
 Backup creates a new encrypted `.uids-backup` in `backend/.local/backups`, without overwriting an existing file. It bundles BSON documents/indexes, valid private evidence and valid local notice attachments. Action tokens, JWT revocations and maintenance/job metadata are omitted. MFA factors stay encrypted inside the encrypted backup. Keep MFA_ENCRYPTION_KEY and BACKUP_ENCRYPTION_KEY separately and privately; neither is added to the bundle. Files are immutable during this offline process. A successful backup reports restoreVerified=false until a restore actually occurs.
 
-Limits: 64 MiB of document/file payload, memory-buffered archive, local storage only. Vercel Blob attachments cause backup to refuse: a provider-coordinated export is not implemented. This is not a live/distributed production backup tool. Never run it while other writers are active.
+Limits: 64 MiB of document/file payload, memory-buffered archive, local storage only. Vercel Blob notice attachments or claim evidence cause backup to refuse: a provider-coordinated export/restore is not implemented. This prevents a misleading archive whose restored metadata would still point at an old private cloud store. This is not a live/distributed production backup tool. Never run it while other writers are active.
 
 ## Nondestructive restore
 
@@ -46,7 +46,7 @@ This only releases a successfully verified, nonfailed restore. It is not a comma
 
 ## Diagnostics and acceptance
 
-GET /api/operations/status is ADMIN-only and returns database-ready/configured booleans and recent job state, without keys, URIs, paths or message bodies. Existing audit viewing remains ADMIN-only. Local account delivery is tested file delivery, not SMTP. Production mail and serverless evidence storage remain unavailable.
+GET /api/operations/status is ADMIN-only and returns database-ready/configured booleans and recent job state, without keys, URIs, paths or message bodies. Existing audit viewing remains ADMIN-only. Resend delivery can run in production after private provider/sender setup; local file delivery remains development-only. Private evidence can run on Vercel through the existing private Blob connection. Cloud backup/export remains unsupported, and the diagnostics explicitly report this limitation. Configured booleans do not imply a successful provider delivery or restore rehearsal.
 
 Automated tests exercise a real service-level encrypted restore into a disposable MongoDB database and temporary file directory. They do not establish independent B T15 approval, a production rehearsal, host ACL/cloud-sync privacy, or a live backup guarantee. The CLI confirmation guards and setup utility have separate tests; do not confuse a syntax check with an operational restore.
 

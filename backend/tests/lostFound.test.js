@@ -44,6 +44,12 @@ async function post(p, overrides) {
   return res.body.data;
 }
 
+/** Lost & found listings are for signed-in members: read them as a fresh student. */
+async function asMember(url) {
+  const m = await F.createUserAndLogin(ctx.app, 'READER');
+  return m.agent.get(url);
+}
+
 const claim = (agent, itemId, text = EVIDENCE) => agent.post(`/api/lost-found/items/${itemId}/claims`).send({ evidenceText: text });
 const decide = (p, claimId, decision, note) =>
   p.admin.agent.post(`/api/lost-found/admin/claims/${claimId}/decision`).send(note ? { decision, note } : { decision });
@@ -51,6 +57,21 @@ const handover = (p, claimId) =>
   p.admin.agent.post(`/api/lost-found/admin/claims/${claimId}/handover`).send({ identityChecked: true, recipientName: 'Claimant Person' });
 
 describe('LF-REPORT Reports (published immediately)', () => {
+  test('LF-REPORT-0 listings, details and photos need a login; capabilities stay open', async () => {
+    const p = await people();
+    const item = await post(p);
+    const anonymous = await request(ctx.app).get('/api/public/lost-found/items');
+    expect(anonymous.status).toBe(401);
+    expect(anonymous.headers['cache-control']).toBe('private, no-store');
+    expect((await request(ctx.app).get(`/api/public/lost-found/items/${item.id}`)).status).toBe(401);
+    expect((await request(ctx.app).get(`/api/public/lost-found/items/${item.id}/photos/${'a'.repeat(32)}`)).status).toBe(401);
+    expect((await request(ctx.app).get('/api/public/lost-found/capabilities')).status).toBe(200);
+    const list = await p.other.agent.get('/api/public/lost-found/items');
+    expect(list.status).toBe(200);
+    expect(list.headers['cache-control']).toBe('private, no-store');
+    expect(list.body.data.map((i) => i.id)).toContain(item.id);
+  });
+
   test('LF-REPORT-1 a report is public at once with a unique reference and an automatic date', async () => {
     const p = await people();
     const before = Date.now();
@@ -59,8 +80,8 @@ describe('LF-REPORT Reports (published immediately)', () => {
     expect(a.reference).toMatch(/^LF-\d{4}-\d{5}$/);
     expect(a.reference).not.toBe(b.reference);
     expect(new Date(a.postedAt).getTime()).toBeGreaterThanOrEqual(before - 1000);
-    expect((await request(ctx.app).get(`/api/public/lost-found/items/${a.id}`)).status).toBe(200);
-    expect((await request(ctx.app).get('/api/public/lost-found/items')).body.data).toHaveLength(2);
+    expect((await asMember(`/api/public/lost-found/items/${a.id}`)).status).toBe(200);
+    expect((await asMember('/api/public/lost-found/items')).body.data).toHaveLength(2);
     expect((await request(ctx.app).post('/api/lost-found/items').send(report())).status).toBe(401);
   });
 
@@ -78,13 +99,13 @@ describe('LF-REPORT Reports (published immediately)', () => {
     const p = await people();
     const hidden = await post(p, { type: 'LOST', privateDetails: 'SECRET-MARK' });
     const shown = await post(p, { contactDetails: 'PUBLIC-CONTACT desk', contactVisibility: 'EVERYONE' });
-    const list = JSON.stringify((await request(ctx.app).get('/api/public/lost-found/items')).body);
+    const list = JSON.stringify((await asMember('/api/public/lost-found/items')).body);
     expect(list).toContain('PUBLIC-CONTACT');
     expect(list).not.toContain('SECRET-CONTACT');
     expect(list).not.toContain('SECRET-MARK');
     expect(list).not.toContain(p.reporter.user.email);
-    expect((await request(ctx.app).get(`/api/public/lost-found/items/${hidden.id}`)).body.data.contactDetails).toBeNull();
-    expect((await request(ctx.app).get(`/api/public/lost-found/items/${shown.id}`)).body.data.contactDetails).toBe('PUBLIC-CONTACT desk');
+    expect((await asMember(`/api/public/lost-found/items/${hidden.id}`)).body.data.contactDetails).toBeNull();
+    expect((await asMember(`/api/public/lost-found/items/${shown.id}`)).body.data.contactDetails).toBe('PUBLIC-CONTACT desk');
   });
 
   test('LF-REPORT-4 reporters edit and delete their own reports only; deleted reports disappear', async () => {
@@ -95,14 +116,14 @@ describe('LF-REPORT Reports (published immediately)', () => {
     ).toBe(404);
     const edit = await p.reporter.agent.patch(`/api/lost-found/me/items/${item.id}`).set('If-Match', '1').send({ title: 'Edited title' });
     expect(edit.status).toBe(200);
-    expect((await request(ctx.app).get(`/api/public/lost-found/items/${item.id}`)).body.data.title).toBe('Edited title');
+    expect((await asMember(`/api/public/lost-found/items/${item.id}`)).body.data.title).toBe('Edited title');
     expect((await p.reporter.agent.patch(`/api/lost-found/me/items/${item.id}`).set('If-Match', '1').send({ title: 'Stale' })).status).toBe(
       409
     );
 
     expect((await p.other.agent.delete(`/api/lost-found/me/items/${item.id}`)).status).toBe(404);
     expect((await p.reporter.agent.delete(`/api/lost-found/me/items/${item.id}`)).status).toBe(200);
-    expect((await request(ctx.app).get(`/api/public/lost-found/items/${item.id}`)).status).toBe(404);
+    expect((await asMember(`/api/public/lost-found/items/${item.id}`)).status).toBe(404);
     expect((await p.reporter.agent.get('/api/lost-found/me/items')).body.data).toHaveLength(0);
     expect((await Item.findById(item.id).lean()).deletedAt).not.toBeNull(); // kept for audit
   });
@@ -114,7 +135,7 @@ describe('LF-REPORT Reports (published immediately)', () => {
     expect((await p.reporter.agent.post(`/api/lost-found/me/items/${found.id}/resolve`)).status).toBe(409);
     const res = await p.reporter.agent.post(`/api/lost-found/me/items/${lost.id}/resolve`);
     expect(res.body.data.status).toBe('RESOLVED');
-    expect((await request(ctx.app).get(`/api/public/lost-found/items/${lost.id}`)).status).toBe(404);
+    expect((await asMember(`/api/public/lost-found/items/${lost.id}`)).status).toBe(404);
   });
 
   test('LF-REPORT-6 at most 10 reports per member per day; admins are exempt', async () => {
@@ -190,14 +211,14 @@ describe('LF-CLAIM Claims (found items only, verified by the admin)', () => {
     const c2 = (await claim(p.other.agent, item.id)).body.data;
     expect((await handover(p, c1.id)).status).toBe(409);
     await decide(p, c1.id, 'APPROVE');
-    expect((await request(ctx.app).get(`/api/public/lost-found/items/${item.id}`)).body.data.status).toBe('CLAIM_IN_PROGRESS');
+    expect((await asMember(`/api/public/lost-found/items/${item.id}`)).body.data.status).toBe('CLAIM_IN_PROGRESS');
     expect((await claim((await F.createUserAndLogin(ctx.app, 'READER')).agent, item.id)).status).toBe(409);
 
     const results = await Promise.all([handover(p, c1.id), handover(p, c1.id)]);
     expect(results.map((r) => r.status).sort()).toEqual([200, 409]);
     expect((await Item.findById(item.id).lean()).status).toBe('RETURNED');
     expect(await AuditLog.countDocuments({ action: 'LF_ITEM_HANDED_OVER', entityId: c1.id })).toBe(1);
-    expect((await request(ctx.app).get(`/api/public/lost-found/items/${item.id}`)).status).toBe(404);
+    expect((await asMember(`/api/public/lost-found/items/${item.id}`)).status).toBe(404);
 
     const mine = (await p.claimant.agent.get(`/api/lost-found/me/claims/${c1.id}`)).body.data;
     expect(mine.status).toBe('APPROVED');
@@ -230,7 +251,7 @@ describe('LF-CLAIM Claims (found items only, verified by the admin)', () => {
     expect(reporterView.data.claimCount).toBe(1);
     const leaks = JSON.stringify([
       reporterView,
-      (await request(ctx.app).get(`/api/public/lost-found/items/${item.id}`)).body,
+      (await asMember(`/api/public/lost-found/items/${item.id}`)).body,
       await CaseEvent.find({}).lean(),
     ]);
     expect(leaks).not.toContain('SECRET-EVIDENCE');
@@ -334,13 +355,13 @@ describe('LF-PHOTO Item photos', () => {
     const up = await p.reporter.agent.post(`/api/lost-found/me/items/${item.id}/photos`).attach('photo', PNG, 'umbrella.png');
     expect(up.status).toBe(201);
     const photoId = up.body.data.photoIds[0];
-    const pub = await request(ctx.app).get(`/api/public/lost-found/items/${item.id}/photos/${photoId}`);
+    const pub = await asMember(`/api/public/lost-found/items/${item.id}/photos/${photoId}`);
     expect(pub.status).toBe(200);
     expect(pub.headers['content-type']).toBe('image/png');
     expect((await p.other.agent.get(`/api/lost-found/items/${item.id}/photos/${photoId}`)).status).toBe(404);
     expect((await p.admin.agent.get(`/api/lost-found/items/${item.id}/photos/${photoId}`)).status).toBe(200);
     await p.reporter.agent.delete(`/api/lost-found/me/items/${item.id}`);
-    expect((await request(ctx.app).get(`/api/public/lost-found/items/${item.id}/photos/${photoId}`)).status).toBe(404);
+    expect((await asMember(`/api/public/lost-found/items/${item.id}/photos/${photoId}`)).status).toBe(404);
   });
 
   test('LF-PHOTO-2 wrong types, fake images, other members and more than 3 photos are rejected', async () => {

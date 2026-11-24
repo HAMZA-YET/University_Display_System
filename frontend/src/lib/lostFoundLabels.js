@@ -2,20 +2,7 @@
 import { formatInTimeZone } from 'date-fns-tz';
 import { UNIVERSITY_TZ } from './time';
 
-export const LF_TYPES = ['LOST', 'FOUND'];
-
-export const LF_CATEGORIES = [
-  'ELECTRONICS',
-  'WALLET_ID_CARD',
-  'KEYS',
-  'BAG',
-  'CLOTHING',
-  'BOOKS_STATIONERY',
-  'JEWELLERY_ACCESSORY',
-  'WATER_BOTTLE',
-  'UMBRELLA',
-  'OTHER',
-];
+export { LF_TYPES, LF_CATEGORIES } from './lostFoundConstants.js';
 
 export const CLAIM_TABS = ['ALL', 'PENDING', 'APPROVED', 'REJECTED'];
 

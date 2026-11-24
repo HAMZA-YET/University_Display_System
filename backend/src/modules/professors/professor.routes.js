@@ -10,10 +10,12 @@ const audit = require('../audit/audit.service');
 const { requireExpectedVersion } = require('../../utils/ifMatch');
 const s = require('./professor.schemas');
 const service = require('./professor.service');
+const { loadEnv } = require('../../config/env');
 
 const router = express.Router();
 const ctx = (req) => audit.contextFromRequest(req);
-const isAdmin = (req) => Boolean(req.user && req.user.role === 'ADMIN');
+const isAdmin = (req) => Boolean(req.user && req.user.role === 'ADMIN'
+  && (!loadEnv().REQUIRE_PRIVILEGED_MFA || req.user.mfaEnabled === true));
 
 router.get(
   '/',

@@ -11,10 +11,13 @@ All times in the system are Korea Standard Time (Asia/Seoul).
 3. Fill in the rest: summary, body, category, department, audience,
    visibility, publishing office and the requested publication start.
    - **Visibility PUBLIC**: anyone can see it. **CAMPUS**: only signed-in users.
+     Within CAMPUS, audience All permits every signed-in account; Students,
+     Faculty or Staff permits only accounts in that administrator-verified group.
+     PUBLIC notices remain public regardless of their audience label.
    - **Action deadline** is for things like "apply by 10 December". It is shown
      to readers but does not hide the notice.
 4. Optional: add an **event** (date, time, venue, organizer) and **attachments**
-   (PDF, PNG, JPG or DOCX, up to 10 MB).
+   (PDF, PNG, JPG or DOCX, up to 4 MB through the shared website).
 
 ### Preview and submit
 - **Preview** shows the notice exactly as students will see it, with a

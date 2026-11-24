@@ -21,7 +21,13 @@ const revocationSchema = new mongoose.Schema({
   digest: { type: String, unique: true, required: true },
   expiresAt: { type: Date, required: true, index: { expires: 0 } },
 });
+const deliveryThrottleSchema = new mongoose.Schema({
+  _id: String,
+  nextAt: { type: Date, required: true },
+  expiresAt: { type: Date, required: true, index: { expires: 0 } },
+}, { versionKey: false });
 module.exports = {
+  AccountDeliveryThrottle: mongoose.models.AccountDeliveryThrottle || mongoose.model('AccountDeliveryThrottle', deliveryThrottleSchema),
   RevokedToken: mongoose.models.RevokedToken || mongoose.model('RevokedToken', revocationSchema),
   ActionToken: mongoose.models.ActionToken || mongoose.model('ActionToken', tokenSchema),
   SecurityFactor: mongoose.models.SecurityFactor || mongoose.model('SecurityFactor', factorSchema),

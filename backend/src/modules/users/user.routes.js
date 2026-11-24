@@ -24,6 +24,10 @@ const listQuery = z
   .strict();
 const roleBody = z.object({ role: z.enum(User.ROLES) }).strict();
 const statusBody = z.object({ isActive: z.boolean() }).strict();
+const audiencesBody = z.object({
+  audienceGroups: z.array(z.enum(User.AUDIENCE_GROUPS)).max(User.AUDIENCE_GROUPS.length)
+    .transform(groups => [...new Set(groups)].sort()),
+}).strict();
 
 function toUserView(u) {
   return {
@@ -32,6 +36,7 @@ function toUserView(u) {
     email: u.email,
     role: u.role,
     department: u.department || null,
+    audienceGroups: u.audienceGroups || [],
     isActive: u.isActive,
     createdAt: u.createdAt,
     updatedAt: u.updatedAt,
@@ -71,7 +76,7 @@ router.get(
 
 async function changeUser(req, update, auditEntry) {
   if (String(req.user._id) === req.params.id) {
-    throw AppError.forbidden('Administrators cannot change their own role or status.');
+    throw AppError.forbidden('Administrators cannot change their own role, status or trusted account groups.');
   }
   const before = await User.findById(req.params.id).lean();
   if (!before) throw AppError.notFound();
@@ -79,7 +84,7 @@ async function changeUser(req, update, auditEntry) {
   const after = await User.findByIdAndUpdate(
     req.params.id,
     { $set: update, $inc: { tokenVersion: 1 } },
-    { new: true }
+    { new: true, runValidators: true }
   ).lean();
   await audit.record(audit.contextFromRequest(req), auditEntry(before, after));
   return after;
@@ -121,6 +126,16 @@ router.patch('/:id/department', validate({ params: idParams, body: z.object({ de
     const user = await changeUser(req, { department: req.body.department }, (before, after) => ({
       action: 'USER_DEPARTMENT_CHANGED', entityType: 'USER', entityId: after._id,
       fromStatus: before.department, toStatus: after.department,
+    }));
+    res.json({ data: toUserView(user) });
+  }));
+
+router.patch('/:id/audiences', require('../security/origin'), validate({ params: idParams, body: audiencesBody }),
+  asyncHandler(async (req, res) => {
+    const user = await changeUser(req, { audienceGroups: req.body.audienceGroups }, (before, after) => ({
+      action: 'USER_AUDIENCES_CHANGED', entityType: 'USER', entityId: after._id,
+      fromStatus: (before.audienceGroups || []).join(',') || 'NONE',
+      toStatus: (after.audienceGroups || []).join(',') || 'NONE',
     }));
     res.json({ data: toUserView(user) });
   }));
