@@ -7,7 +7,7 @@ import { savePreferences } from '../data/memberApi.js';
 
 export default function NotificationPreferences() {
   const preferences = useMemberQuery('/member-tools/preferences');
-  return <section className="panel stack" aria-labelledby="notification-preferences-title"><h2 id="notification-preferences-title">Notification preferences</h2><p>These settings affect future deliveries. Existing inbox history and your access to notices are retained. Re-enabling delivery starts with new updates.</p><DataState {...preferences} onRetry={preferences.reload}>{(data) => <PreferenceEditor initial={data.data} />}</DataState></section>;
+  return <section className="panel stack" aria-labelledby="notification-preferences-title"><h2 id="notification-preferences-title">Notification preferences</h2><p>In-app notifications include your lost-and-found case updates. The notice setting controls followed publications. Existing inbox history is retained; re-enabling delivery starts with new updates.</p><DataState {...preferences} onRetry={preferences.reload}>{(data) => <PreferenceEditor initial={data.data} />}</DataState></section>;
 }
 function PreferenceEditor({ initial }) {
   const [draft, setDraft] = useState(initial);

@@ -62,6 +62,13 @@ Password: 8+ characters, at least one letter and one number.
 | GET | /:id | - | one user |
 | PATCH | /:id/role | `{ role }` | audited; signs the user out; not on yourself |
 | PATCH | /:id/status | `{ isActive }` | audited; signs the user out; not on yourself |
+| PATCH | /:id/audiences | `{ audienceGroups: ["STUDENTS", "FACULTY", "STAFF"] }` (choose zero or more) | ADMIN only; trusted group assignment; audited; signs the user out; not on yourself |
+
+User management responses include `audienceGroups`, defaulting to `[]` for
+unassigned accounts. Unknown groups and extra fields are rejected; registration
+and own-profile updates cannot assign groups. These groups restrict CAMPUS
+notices addressed to a specific audience. PUBLIC notices remain public and
+CAMPUS/ALL remains available to all signed-in users.
 
 ## Departments
 

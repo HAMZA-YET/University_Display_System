@@ -26,6 +26,11 @@ try {
     await shot('search-desktop.png');
     await page.getByRole('link', { name: '[Sample] Integration exam', exact: true }).click();
     await page.getByRole('heading', { name: '[Sample] Integration exam', exact: true }).waitFor();
+    await page.getByRole('link', { name: 'Back to search', exact: true }).click();
+    await page.getByRole('link', { name: '[Sample] Integration exam', exact: true }).waitFor();
+    await page.waitForFunction(() => document.activeElement.id === 'campus-search-results');
+    await page.getByRole('link', { name: '[Sample] Integration exam', exact: true }).click();
+    await page.getByRole('heading', { name: '[Sample] Integration exam', exact: true }).waitFor();
     await page.goBack();
     await page.getByRole('link', { name: '[Sample] Integration exam', exact: true }).waitFor();
     assert.equal(new URL(page.url()).searchParams.get('category'), 'EXAM');

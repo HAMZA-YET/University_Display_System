@@ -53,7 +53,10 @@ publicRouter.get('/capabilities', asyncHandler(async (req, res) => {
   res.json({ data: { maxPhotoBytes: maxPhotoBytes(), maxPhotos: MAX_PHOTOS, photosAvailable: status.features.attachments } });
 }));
 
-publicRouter.use('/items', authenticate);
+publicRouter.use('/items', (req, res, next) => {
+  res.setHeader('Cache-Control', 'private, no-store');
+  next();
+}, authenticate);
 
 publicRouter.get(
   '/items',

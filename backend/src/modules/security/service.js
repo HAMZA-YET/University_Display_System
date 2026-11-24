@@ -2,7 +2,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const OTPAuth = require('otpauth');
-const { ActionToken, SecurityFactor } = require('./models');
+const { ActionToken, SecurityFactor, AccountDeliveryThrottle } = require('./models');
 const { digest, randomToken, encrypt, decrypt } = require('./crypto');
 const User = require('../users/user.model');
 const { hashPassword } = require('../auth/auth.service');
@@ -24,6 +24,16 @@ async function issue(user, purpose, minutes, session) {
 async function requestRecovery(email) {
   await requireTransactions();
   delivery.available();
+  // A MongoDB cooldown applies across serverless instances, including unknown
+  // addresses, so duplicate requests remain indistinguishable to the caller.
+  const now = clock.now();
+  try {
+    await AccountDeliveryThrottle.findOneAndUpdate({ _id: digest(email), nextAt: { $lte: now } },
+      { $set: { nextAt: new Date(now.getTime() + 60000), expiresAt: new Date(now.getTime() + 24 * 3600000) } }, { upsert: true });
+  } catch (error) {
+    if (error.code === 11000) return;
+    throw error;
+  }
   const user = await User.findOne({ email, isActive: true, activationPending: { $ne: true } }).lean();
   if (!user) return;
   const token = await issue(user, 'recovery', 30);

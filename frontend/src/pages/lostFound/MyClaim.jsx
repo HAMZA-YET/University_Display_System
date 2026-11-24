@@ -8,6 +8,7 @@ import { BackToLostFound } from './LostFoundItem';
 import useApi from '../../hooks/useApi';
 import { getMyClaim, deleteMyClaim } from '../../api/lostFound';
 import { lfLabel, postedDate } from '../../lib/lostFoundLabels';
+import PrivateEvidence from '../../components/lostFound/PrivateEvidence';
 
 const MESSAGE = {
   PENDING: 'The admin will review your claim. You will see a notice when it is decided.',
@@ -104,6 +105,9 @@ export default function MyClaim() {
                 </p>
               </section>
             </div>
+            {!claim.evidenceRedacted && !claim.item?.deleted && <PrivateEvidence claimId={claim.id}
+              canUpload={claim.status === 'PENDING' && ['OPEN', 'COLLECTION_APPROVED'].includes(claim.item?.status)}
+              canDelete={claim.status === 'PENDING'} />}
           </div>
         </>
       )}

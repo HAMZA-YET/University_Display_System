@@ -60,12 +60,15 @@ describe('LF-REPORT Reports (published immediately)', () => {
   test('LF-REPORT-0 listings, details and photos need a login; capabilities stay open', async () => {
     const p = await people();
     const item = await post(p);
-    expect((await request(ctx.app).get('/api/public/lost-found/items')).status).toBe(401);
+    const anonymous = await request(ctx.app).get('/api/public/lost-found/items');
+    expect(anonymous.status).toBe(401);
+    expect(anonymous.headers['cache-control']).toBe('private, no-store');
     expect((await request(ctx.app).get(`/api/public/lost-found/items/${item.id}`)).status).toBe(401);
     expect((await request(ctx.app).get(`/api/public/lost-found/items/${item.id}/photos/${'a'.repeat(32)}`)).status).toBe(401);
     expect((await request(ctx.app).get('/api/public/lost-found/capabilities')).status).toBe(200);
     const list = await p.other.agent.get('/api/public/lost-found/items');
     expect(list.status).toBe(200);
+    expect(list.headers['cache-control']).toBe('private, no-store');
     expect(list.body.data.map((i) => i.id)).toContain(item.id);
   });
 

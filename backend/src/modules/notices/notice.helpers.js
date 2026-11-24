@@ -4,6 +4,7 @@ const AppError = require('../../utils/AppError');
 const { getGateway } = require('../attachments/attachmentGateway');
 const { loadEnv } = require('../../config/env');
 const Notice = require('./notice.model');
+const PinGuard = require('./pinGuard.model');
 
 /** Population used for management views. */
 const MANAGEMENT_POPULATE = [
@@ -109,7 +110,23 @@ function publicSearchFrom(snapshot) {
  * Pinned limit (Section 12): at most MAX_PINNED_NOTICES pinned notices that
  * are approved and not expired (published now or scheduled) at once.
  */
+async function preparePinCapacity() {
+  if (!(await require('../../utils/transaction').supportsTransactions())) {
+    throw new AppError(503, 'PIN_TRANSACTIONS_REQUIRED', 'Pinning notices requires a MongoDB replica set.');
+  }
+  // Initialize outside the transaction so concurrent first use cannot race on
+  // inserting the singleton inside a transaction that will later be retried.
+  try {
+    await PinGuard.updateOne({ _id: 'global' }, { $setOnInsert: { revision: 0 } }, { upsert: true });
+  } catch (error) {
+    if (error.code !== 11000) throw error;
+  }
+}
+
 async function assertPinCapacity(now, excludeId, session) {
+  if (!session) throw new AppError(503, 'PIN_TRANSACTIONS_REQUIRED', 'Pinning notices requires a MongoDB replica set.');
+  const guard = await PinGuard.updateOne({ _id: 'global' }, { $inc: { revision: 1 } }, { session });
+  if (guard.matchedCount !== 1) throw new AppError(503, 'PIN_GUARD_UNAVAILABLE', 'Notice pin capacity is unavailable. Try again.');
   const max = loadEnv().MAX_PINNED_NOTICES;
   const filter = {
     status: 'APPROVED',
@@ -140,5 +157,6 @@ module.exports = {
   snapshotFrom,
   publicSearchFrom,
   assertPinCapacity,
+  preparePinCapacity,
   sessionOpts,
 };

@@ -1,6 +1,6 @@
 # Member 4 integration requirements — 2026-11-22
 
-> November 23 integration update: Member 3 now mounts the lost-and-found pages and APIs under `/items` in the combined integration build. References below to unmounted/unavailable items describe the dated November 22 baseline, not the new routing. Item bookmarks, unified cross-type search and consumption of LF CaseEvents by the shared inbox remain pending. Historical test results are retained as historical evidence.
+> November 25 update: item bookmarks, server-paginated combined search and recipient-scoped lost-and-found inbox delivery are now integrated. See `docs/member4-integration/LOST_FOUND_CONNECTION.md` for the current contracts and limits. The older dated results and missing-feature statements below are retained as historical evidence.
 
 Member 4 is already mounted in the shared App.jsx through Member4Routes. Search calls public notice/professor APIs; saved interests and inbox use authenticated MongoDB-backed member-tools APIs. Shared authentication derives identity on the server. Legacy synthetic adapters and injection switches are not imported by live routes.
 

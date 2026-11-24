@@ -269,7 +269,7 @@ describe('T03 Publication workflow', () => {
 
   test('T03-12 CAMPUS notices are visible only to logged-in users', async () => {
     const { author, reviewer, reader } = await setup();
-    const campus = await F.createApproved(author.agent, reviewer.agent, { title: 'Campus only parking notice', visibility: 'CAMPUS' });
+    const campus = await F.createApproved(author.agent, reviewer.agent, { title: 'Campus only parking notice', visibility: 'CAMPUS', audience: 'ALL' });
     expect((await request(ctx.app).get(`/api/public/notices/${campus.id}`)).status).toBe(404);
     expect((await request(ctx.app).get('/api/public/notices')).body.data).toHaveLength(0);
     expect((await reader.agent.get(`/api/public/notices/${campus.id}`)).status).toBe(200);

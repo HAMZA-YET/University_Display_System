@@ -70,6 +70,15 @@ test('encrypted backup restores real documents and private bytes into a locked s
   const corrupted = await fs.readFile(file); corrupted[corrupted.length - 1] ^= 1; await fs.writeFile(path.join(temp, 'bad.uids-backup'), corrupted);
   await expect(ops.restore(path.join(temp, 'bad.uids-backup'), url.toString(), target)).rejects.toThrow();
 });
+test('offline backup refuses cloud evidence before writing a misleading local-restorable archive', async () => {
+  const user = await createUser('READER');
+  const fileId = crypto.randomBytes(24).toString('hex');
+  await Evidence.create({ fileId, caseId: '123456789012345678901234', uploader: user._id, state: 'PRIVATE',
+    storageProvider: 'vercel-blob', storageKey: `uids/evidence/${fileId}`, size: 1, sha256: 'synthetic-checksum' });
+  const destination = path.join(temp, 'cloud-refusal.uids-backup');
+  await expect(ops.backup(destination)).rejects.toThrow('Remote evidence backup requires provider-coordinated export');
+  await expect(fs.access(destination)).rejects.toThrow();
+});
 (process.platform === 'win32' ? test.skip : test)('restore rejects a symbolic-link target before restoring documents or files', async () => {
   const user = await createUser('READER');
   const file = path.join(temp, 'symlink-check.uids-backup');

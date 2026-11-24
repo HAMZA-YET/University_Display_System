@@ -83,6 +83,25 @@ test('missing signing secret cannot silently create a session', () => {
     .toThrow('Authentication is not configured.');
 });
 
+test('health distinguishes a configured backend from unavailable optional security services', async () => {
+  delete process.env.MONGO_URI;
+  delete process.env.MONGODB_URI;
+  delete process.env.MFA_ENCRYPTION_KEY;
+  delete process.env.ACCOUNT_DELIVERY;
+  delete process.env.BLOB_READ_WRITE_TOKEN;
+  delete process.env.BLOB_STORE_ID;
+  process.env.ATTACHMENT_STORAGE = 'disabled';
+  resetEnvCache();
+  const response = await request(createApp()).get('/api/health');
+  expect(response.body.data.features.security).toMatchObject({
+    mfaConfigured: false,
+    privilegedMfaRequired: false,
+    accountMessagesConfigured: false,
+    privateEvidenceConfigured: false,
+  });
+  expect(JSON.stringify(response.body)).not.toContain('RESEND_API_KEY');
+});
+
 test('Vercel Atlas MONGODB_URI alias is accepted while legacy MONGO_URI takes precedence', () => {
   delete process.env.MONGO_URI;
   process.env.MONGODB_URI = 'mongodb://atlas.invalid/university';

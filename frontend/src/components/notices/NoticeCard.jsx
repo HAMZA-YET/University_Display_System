@@ -5,7 +5,7 @@ import { formatDate, formatDateTime } from '../../lib/time';
 import { humanize } from '../../lib/labels';
 import BookmarkControl from '../../member4/items/BookmarkControl';
 
-export default function NoticeCard({ notice, departments = {} }) {
+export default function NoticeCard({ notice, departments = {}, returnTo }) {
   return (
     <article className={`card notice-card ${notice.pinned ? 'pinned' : ''}`}>
       <div className="notice-card-top"><span className="notice-type-icon"><Icon name={notice.category === 'EVENT' ? 'calendar' : notice.category === 'SCHOLARSHIP' ? 'flag' : 'file'} size={20} /></span><div className="notice-card-labels">
@@ -15,7 +15,7 @@ export default function NoticeCard({ notice, departments = {} }) {
         {/^\[(?:demo|sample)\]/i.test(notice.title) && <span className="sample-badge">Sample content</span>}
       </div></div>
       <h3>
-        <Link to={`/notices/${notice.id}`}>{notice.title}</Link>
+        <Link to={`/notices/${notice.id}`} state={returnTo ? { returnTo } : undefined}>{notice.title}</Link>
       </h3>
       <p className="notice-card-summary">{notice.summary}</p>
       <div className="card-meta">

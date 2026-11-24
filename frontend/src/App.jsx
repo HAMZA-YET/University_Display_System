@@ -1,9 +1,10 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import { lazy, Suspense, useState } from 'react';
 import { LoadingState } from './components/ui/States';
 import NavBar from './components/layout/NavBar';
 import Footer from './components/layout/Footer';
 import ProtectedRoute from './components/layout/ProtectedRoute';
+import PageLoadBoundary from './components/layout/PageLoadBoundary';
 import NoticeToaster from './components/lostFound/NoticeToaster';
 import Home from './pages/Home';
 import Notices from './pages/Notices';
@@ -47,6 +48,7 @@ const AdminLfClaims = lazy(() => import('./pages/adminLostFound/AdminLfClaims'))
 /** Routes only. Role checks here are a convenience; the server enforces them. */
 export default function App() {
   const [setupToken, setSetupToken] = useState('');
+  const location = useLocation();
   return (
     <div className="app-shell">
       <a href="#main-content" className="skip-link">
@@ -56,6 +58,7 @@ export default function App() {
       <NoticeToaster />
       <main id="main-content" tabIndex={-1}>
         <div className="container">
+          <PageLoadBoundary key={location.pathname + location.search}>
           <Suspense fallback={<LoadingState label="Loading page…" />}>
           <Routes>
             <Route path="/" element={<Home />} />
@@ -117,6 +120,7 @@ export default function App() {
             <Route path="*" element={<NotFound />} />
           </Routes>
           </Suspense>
+          </PageLoadBoundary>
         </div>
       </main>
       <Footer />

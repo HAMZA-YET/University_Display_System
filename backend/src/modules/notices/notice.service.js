@@ -293,6 +293,7 @@ async function approveNotice(ctx, id, body, expectedVersion) {
   const pinned = body.pinned !== undefined ? body.pinned : Boolean(notice.pinned);
   const snapshot = H.snapshotFrom(notice);
   const isPublishedNow = start.getTime() <= now.getTime();
+  if (pinned) await H.preparePinCapacity();
 
   const result = await withTransaction(async (session) => {
     if (pinned) await H.assertPinCapacity(now, id, session);
@@ -453,6 +454,7 @@ async function updatePlacement(ctx, id, body, expectedVersion) {
     set.priorityRank = PRIORITY_RANK[body.priority];
   }
   if (body.pinned !== undefined) set.pinned = body.pinned;
+  if (body.pinned === true && !notice.pinned) await H.preparePinCapacity();
   await withTransaction(async (session) => {
     if (body.pinned === true && !notice.pinned) await H.assertPinCapacity(now, id, session);
     const updated = await Notice.findOneAndUpdate(

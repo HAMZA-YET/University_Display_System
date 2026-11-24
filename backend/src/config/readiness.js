@@ -30,6 +30,7 @@ async function readiness({ connect = false } = {}) {
   }
   if (mongoose.connection.readyState === 1) database = 'connected';
   const ready = missing.length === 0 && database === 'connected';
+  const evidence = require('../modules/security/evidenceStorage').capabilities();
   return {
     status: ready ? 'ok' : (missing.length ? 'setup_required' : 'unavailable'),
     ready,
@@ -39,6 +40,13 @@ async function readiness({ connect = false } = {}) {
       attachments: (env.ATTACHMENT_STORAGE === 'vercel-blob' && Boolean(process.env.BLOB_STORE_ID || process.env.BLOB_READ_WRITE_TOKEN))
         || (!process.env.VERCEL && env.ATTACHMENT_STORAGE === 'local'),
       attachmentMaxBytes: env.ATTACHMENT_STORAGE === 'vercel-blob' ? 4 * 1024 * 1024 : maxUploadBytes(),
+      security: {
+        mfaConfigured: /^[a-f0-9]{64}$/i.test(process.env.MFA_ENCRYPTION_KEY || ''),
+        privilegedMfaRequired: env.REQUIRE_PRIVILEGED_MFA,
+        accountMessagesConfigured: require('../modules/security/delivery').status().available,
+        privateEvidenceConfigured: evidence.available,
+        privateEvidenceMaxBytes: evidence.maxBytes,
+      },
     },
   };
 }

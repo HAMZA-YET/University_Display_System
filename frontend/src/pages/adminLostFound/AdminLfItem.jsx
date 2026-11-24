@@ -14,6 +14,7 @@ import { TypeTag, ItemStatusBadge, ClaimStatusBadge } from '../../components/los
 import PhotoGallery from '../../components/lostFound/PhotoGallery';
 import CaseHistory from '../../components/lostFound/CaseHistory';
 import DeleteButton from '../../components/lostFound/DeleteButton';
+import PrivateEvidence from '../../components/lostFound/PrivateEvidence';
 import { BackToDashboard } from './AdminLfItems';
 import useApi from '../../hooks/useApi';
 import {
@@ -105,6 +106,7 @@ function ClaimCard({ claim, item, onAction, onDeleted }) {
           <div className="lf-evidence">{claim.evidenceText}</div>
         )}
       </div>
+      {!claim.evidenceRedacted && !item.deleted && <PrivateEvidence claimId={claim.id} canDelete />}
       {claim.decisionNote && (
         <p className="small" style={{ margin: 0 }}>
           <strong>Note:</strong> {claim.decisionNote}

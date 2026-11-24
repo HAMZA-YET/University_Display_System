@@ -19,7 +19,15 @@ A notice is visible to a viewer only when ALL are true:
 3. `publicationStart <= now` (start is inclusive)
 4. `publicationEnd` is null OR `now < publicationEnd` (end is exclusive)
 5. visibility allows the viewer: PUBLIC for everyone, CAMPUS for any signed-in user
-6. audience matches the viewer when the viewer carries audience groups (see DECISIONS.md)
+6. for CAMPUS notices, audience is ALL or matches a trusted administrator-assigned
+   account group (STUDENTS, FACULTY or STAFF)
+
+PUBLIC notices remain public regardless of their audience label, including
+existing PUBLIC/STUDENTS notices. CAMPUS notices addressed to a specific group
+deny accounts with missing or empty `audienceGroups`; no registration input or
+role name implicitly grants group membership. CAMPUS/ALL remains available to
+every signed-in account. Group changes revoke existing sessions, and current
+database membership is used on every authenticated request.
 
 Visibility, audience, department and category are read from the approved
 snapshot copy (`publicSearch`), never from the working copy. Public content

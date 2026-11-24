@@ -9,11 +9,11 @@ import useDepartments from '../../hooks/useDepartments.js';
 import { CATEGORIES, humanize } from '../../lib/labels.js';
 import MemberPage from '../components/MemberPage.jsx';
 import useMemberQuery from '../data/useMemberQuery.js';
-import { addFollow, removeFollow, removeBookmark } from '../data/memberApi.js';
+import { addFollow, removeFollow, removeBookmark, removeItemBookmark } from '../data/memberApi.js';
 import NotificationPreferences from '../notifications/NotificationPreferences.jsx';
 
 export default function SavedInterests() {
-  return <MemberPage title="Saved interests" description="Save public notices and follow notice categories or departments with your UIDS account."><SavedContent /></MemberPage>;
+  return <MemberPage title="Saved interests" description="Save notices and lost-and-found reports, and follow notice topics with your UIDS account."><SavedContent /></MemberPage>;
 }
 function SavedContent() {
   const [page, setPage] = useState(1);
@@ -31,10 +31,27 @@ function SavedContent() {
       {error && <Alert type="error">{error}</Alert>}
       <DataState {...bookmarks} onRetry={bookmarks.reload} isEmpty={(data) => !data.data.length} emptyTitle="No saved notices" emptyText="Use Save notice on a published notice to keep it here.">{(data) => <><div className="grid grid-3">{data.data.map((bookmark) => <article className="card stack" key={bookmark.id}><h3>{bookmark.available ? <Link to={bookmark.notice.href}>{bookmark.notice.title}</Link> : 'Notice no longer available'}</h3>{bookmark.available ? <p>{bookmark.notice.summary}</p> : <p>This notice is no longer visible to your account.</p>}<Button variant="secondary" size="sm" busy={pending === bookmark.noticeId} onClick={() => remove(bookmark.noticeId)}>Remove bookmark</Button></article>)}</div><Pagination meta={data.meta} onPage={setPage} /></>}</DataState>
     </section>
+    <SavedItems />
     <Follows />
     <NotificationPreferences />
     <Link to="/notifications">Open your notification inbox</Link>
   </div>;
+}
+function SavedItems() {
+  const [page, setPage] = useState(1);
+  const bookmarks = useMemberQuery(`/member-tools/item-bookmarks?page=${page}&limit=12`);
+  const [pending, setPending] = useState('');
+  const [error, setError] = useState('');
+  async function remove(id) {
+    setPending(id); setError('');
+    try { await removeItemBookmark(id); setPage(1); bookmarks.reload(); }
+    catch (failure) { setError(failure.message); }
+    finally { setPending(''); }
+  }
+  return <section aria-labelledby="saved-items-title"><div className="row-between"><h2 id="saved-items-title">Saved lost-and-found reports</h2><Button variant="secondary" size="sm" onClick={bookmarks.reload}>Refresh saved items</Button></div>
+    {error && <Alert type="error">{error}</Alert>}
+    <DataState {...bookmarks} onRetry={bookmarks.reload} isEmpty={(data) => !data.data.length} emptyTitle="No saved items" emptyText="Use Save item on a listed lost-and-found report to keep it here.">{(data) => <><div className="grid grid-3">{data.data.map((bookmark) => <article className="card stack" key={bookmark.id}><h3>{bookmark.available ? <Link to={bookmark.item.href}>{bookmark.item.title}</Link> : 'Item no longer available'}</h3>{bookmark.available ? <p>{bookmark.item.summary}</p> : <p>This report is no longer listed. Its details are hidden.</p>}<Button variant="secondary" size="sm" busy={pending === bookmark.itemId} onClick={() => remove(bookmark.itemId)}>Remove saved item</Button></article>)}</div><Pagination meta={data.meta} onPage={setPage} /></>}</DataState>
+  </section>;
 }
 function Follows() {
   const follows = useMemberQuery('/member-tools/follows');

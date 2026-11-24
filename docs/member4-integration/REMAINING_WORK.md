@@ -1,6 +1,6 @@
 # Remaining work and commands — updated main, 2026-11-22
 
-> November 23 integration update: Member 3 now mounts the lost-and-found pages and APIs under `/items` in the combined integration build. References below to unmounted/unavailable items describe the dated November 22 baseline, not the new routing. Item bookmarks, unified cross-type search and consumption of LF CaseEvents by the shared inbox remain pending. Historical test results are retained as historical evidence.
+> November 25 update: item bookmarks, server-paginated combined search and recipient-scoped lost-and-found inbox delivery are now integrated. See `docs/member4-integration/LOST_FOUND_CONNECTION.md` for the current contracts and limits. The older dated results and missing-feature statements below are retained as historical evidence.
 
 Independent Member 4 verification now targets main a53db54fa24f0237ef42bcad2f9a2eb33a4add45, including Member 1 security integration. Exact results/skips are in TEST_RESULTS.md. No team approval, upload, merge or deployment is implied.
 

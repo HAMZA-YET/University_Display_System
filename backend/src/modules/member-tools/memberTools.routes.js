@@ -2,16 +2,21 @@
 const express = require('express');
 const { z } = require('zod');
 const authenticate = require('../../middleware/authenticate');
+const optionalAuth = require('../../middleware/optionalAuth');
 const validate = require('../../middleware/validate');
 const asyncHandler = require('../../utils/asyncHandler');
 const { paginationQuery } = require('../../utils/pagination');
 const service = require('./memberTools.service');
 const router = express.Router();
 router.use((req, res, next) => { res.setHeader('Cache-Control', 'private, no-store'); next(); });
+router.get('/search', optionalAuth, validate({ query: z.object({ ...paginationQuery, q: z.string().trim().max(100).optional() }).strict() }),
+  asyncHandler(async (req, res) => res.json(await require('./discovery.service').searchAll(req.user, req.query))));
 router.use(authenticate);
+router.use(require('../security/origin'));
 const objectId = z.string().regex(/^[a-f0-9]{24}$/, 'Invalid id');
 const id = z.object({ id: objectId }).strict();
 const noticeId = z.object({ noticeId: objectId }).strict();
+const itemId = z.object({ itemId: objectId }).strict();
 const listQuery = z.object(paginationQuery).strict();
 const empty = z.object({}).strict();
 const action = (handler) => asyncHandler(async (req, res) => res.json({ data: await handler(req) }));
@@ -19,6 +24,10 @@ router.get('/bookmarks', validate({ query: listQuery }), asyncHandler(async (req
 router.get('/bookmarks/:noticeId', validate({ params: noticeId, query: empty }), action((req) => service.bookmarkStatus(req.user, req.params.noticeId)));
 router.put('/bookmarks/:noticeId', validate({ params: noticeId, body: empty, query: empty }), action((req) => service.saveBookmark(req.user, req.params.noticeId)));
 router.delete('/bookmarks/:noticeId', validate({ params: noticeId, query: empty }), action((req) => service.removeBookmark(req.user, req.params.noticeId)));
+router.get('/item-bookmarks', validate({ query: listQuery }), asyncHandler(async (req, res) => res.json(await service.listItemBookmarks(req.user, req.query))));
+router.get('/item-bookmarks/:itemId', validate({ params: itemId, query: empty }), action((req) => service.itemBookmarkStatus(req.user, req.params.itemId)));
+router.put('/item-bookmarks/:itemId', validate({ params: itemId, body: empty, query: empty }), action((req) => service.saveItemBookmark(req.user, req.params.itemId)));
+router.delete('/item-bookmarks/:itemId', validate({ params: itemId, query: empty }), action((req) => service.removeItemBookmark(req.user, req.params.itemId)));
 router.get('/follows', validate({ query: empty }), action((req) => service.listFollows(req.user)));
 router.post('/follows', validate({ body: z.object({ kind: z.enum(['category', 'department']), target: z.string().trim().toUpperCase().regex(/^[A-Z_]{2,20}$/) }).strict(), query: empty }), action((req) => service.follow(req.user, req.body)));
 router.delete('/follows/:id', validate({ params: id, query: empty }), action((req) => service.unfollow(req.user, req.params.id)));

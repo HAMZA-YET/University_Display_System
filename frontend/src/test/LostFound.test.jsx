@@ -8,6 +8,9 @@ import LostFoundItem from '../pages/lostFound/LostFoundItem';
 import ProtectedRoute from '../components/layout/ProtectedRoute';
 import * as lfApi from '../api/lostFound';
 
+// Bookmark behavior has its own authenticated API/owner-isolation regressions.
+vi.mock('../member4/items/BookmarkControl', () => ({ default: () => null }));
+
 vi.mock('../api/lostFound', () => ({
   getPublicItem: vi.fn(),
   getMyItem: vi.fn(),

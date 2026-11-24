@@ -14,7 +14,7 @@
  * 4. publicationEnd is null OR now < publicationEnd   (end is exclusive)
  * 5. visibility allows the viewer (PUBLIC for everyone, CAMPUS for any
  *    logged-in user)
- * 6. audience matches the viewer, if the viewer carries audience groups
+ * 6. CAMPUS audience is ALL or matches an administrator-assigned account group
  *
  * Visibility, audience, department and category are read from the approved
  * snapshot copy (publicSearch), never from the working copy.
@@ -25,16 +25,13 @@ function allowedVisibilities(viewer) {
 }
 
 /**
- * Audience rule. The MVP user model has no audience group (student, faculty,
- * staff), so audience is shown to readers as a targeting label. When a future
- * accounts module (Member 1) supplies viewer.audienceGroups, notices are
- * restricted to ALL plus those groups. See docs/DECISIONS.md.
+ * PUBLIC content remains public for every viewer; its audience is a targeting
+ * label. CAMPUS content requires login and, unless audience=ALL, a trusted
+ * account group. Missing/legacy account groups grant no restricted audience.
  */
 function allowedAudiences(viewer) {
-  if (viewer && Array.isArray(viewer.audienceGroups) && viewer.audienceGroups.length) {
-    return ['ALL', ...viewer.audienceGroups];
-  }
-  return null;
+  const groups = viewer && Array.isArray(viewer.audienceGroups) ? viewer.audienceGroups : [];
+  return ['ALL', ...groups.filter(group => ['STUDENTS', 'FACULTY', 'STAFF'].includes(group))];
 }
 
 function buildPublicEligibilityFilter(now, viewer) {
@@ -48,8 +45,10 @@ function buildPublicEligibilityFilter(now, viewer) {
     $or: [{ publicationEnd: null }, { publicationEnd: { $gt: now } }],
     'publicSearch.visibility': { $in: allowedVisibilities(viewer) },
   };
-  const audiences = allowedAudiences(viewer);
-  if (audiences) filter['publicSearch.audience'] = { $in: audiences };
+  filter.$and = [{ $or: [
+    { 'publicSearch.visibility': 'PUBLIC' },
+    { 'publicSearch.audience': { $in: allowedAudiences(viewer) } },
+  ] }];
   return filter;
 }
 
@@ -63,8 +62,7 @@ function isPubliclyVisible(notice, now, viewer) {
   if (notice.publicationEnd && t >= new Date(notice.publicationEnd).getTime()) return false;
   const snapshot = notice.publicSearch || {};
   if (!allowedVisibilities(viewer).includes(snapshot.visibility)) return false;
-  const audiences = allowedAudiences(viewer);
-  if (audiences && !audiences.includes(snapshot.audience)) return false;
+  if (snapshot.visibility === 'CAMPUS' && !allowedAudiences(viewer).includes(snapshot.audience)) return false;
   return true;
 }
 

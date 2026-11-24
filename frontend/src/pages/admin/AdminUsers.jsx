@@ -6,13 +6,16 @@ import Alert from '../../components/ui/Alert';
 import ConfirmDialog from '../../components/ui/ConfirmDialog';
 import Pagination from '../../components/ui/Pagination';
 import Select from '../../components/ui/Select';
+import Checkbox from '../../components/ui/Checkbox';
 import { DataState } from '../../components/ui/States';
 import useApi from '../../hooks/useApi';
 import useAuth from '../../hooks/useAuth';
 import useQueryParams from '../../hooks/useQueryParams';
-import { listUsers, changeRole, changeStatus } from '../../api/users';
+import { listUsers, changeRole, changeStatus, changeAudiences } from '../../api/users';
 import { ROLES, humanize } from '../../lib/labels';
 import { formatDate } from '../../lib/time';
+
+const AUDIENCE_GROUPS = ['STUDENTS', 'FACULTY', 'STAFF'];
 
 export default function AdminUsers() {
   const { user: me } = useAuth();
@@ -40,6 +43,14 @@ export default function AdminUsers() {
           </select>
         ),
     },
+    {
+      key: 'audiences',
+      header: 'Campus audiences',
+      render: (u) => <div className="stack">
+        <span>{(u.audienceGroups || []).map(humanize).join(', ') || 'All-campus notices only'}</span>
+        {u.id !== me.id && <Button size="sm" variant="secondary" onClick={() => setPending({ type: 'audiences', user: u, audienceGroups: u.audienceGroups || [] })}>Edit audiences</Button>}
+      </div>,
+    },
     { key: 'active', header: 'Status', render: (u) => (u.isActive ? 'Active' : 'Deactivated') },
     { key: 'created', header: 'Created', render: (u) => formatDate(u.createdAt) },
     {
@@ -56,7 +67,7 @@ export default function AdminUsers() {
 
   return (
     <>
-      <PageHeader title="Users and roles" description="Changing a role or status signs the user out of existing sessions. Every change is recorded in the audit log." />
+      <PageHeader title="Users and roles" description="Changing a role, status or campus audience signs the user out of existing sessions. Every change is recorded in the audit log." />
       <div className="stack">
         {message && <Alert type="success">{message}</Alert>}
         <div style={{ maxWidth: 260 }}>
@@ -73,10 +84,12 @@ export default function AdminUsers() {
       </div>
       <ConfirmDialog
         open={Boolean(pending)}
-        title={pending && pending.type === 'role' ? 'Change role' : 'Change account status'}
+        title={pending?.type === 'audiences' ? 'Change campus audiences' : pending?.type === 'role' ? 'Change role' : 'Change account status'}
         message={
           pending
-            ? pending.type === 'role'
+            ? pending.type === 'audiences'
+              ? `Assign verified audience groups to ${pending.user.name}. Only confirm groups you have verified; this signs the user out.`
+              : pending.type === 'role'
               ? `Change ${pending.user.name} from ${pending.user.role} to ${pending.role}?`
               : `${pending.isActive ? 'Activate' : 'Deactivate'} ${pending.user.name}?`
             : ''
@@ -86,11 +99,20 @@ export default function AdminUsers() {
         onClose={() => setPending(null)}
         onConfirm={async () => {
           if (pending.type === 'role') await changeRole(pending.user.id, pending.role);
+          else if (pending.type === 'audiences') await changeAudiences(pending.user.id, pending.audienceGroups);
           else await changeStatus(pending.user.id, pending.isActive);
           setMessage(`Updated ${pending.user.name}.`);
           result.reload();
         }}
-      />
+      >
+        {pending?.type === 'audiences' && <fieldset>
+          <legend>Verified campus groups</legend>
+          {AUDIENCE_GROUPS.map(group => <Checkbox key={group} label={humanize(group)} checked={pending.audienceGroups.includes(group)}
+            onChange={(event) => setPending(current => ({ ...current, audienceGroups: event.target.checked
+              ? [...current.audienceGroups, group] : current.audienceGroups.filter(value => value !== group) }))} />)}
+          <p className="hint">With no groups, the account can still read PUBLIC notices and CAMPUS notices addressed to All.</p>
+        </fieldset>}
+      </ConfirmDialog>
     </>
   );
 }

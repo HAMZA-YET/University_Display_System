@@ -12,6 +12,7 @@ import useApi from '../../hooks/useApi';
 import useAuth from '../../hooks/useAuth';
 import { getPublicItem, getMyItem, submitClaim, publicPhotoUrl } from '../../api/lostFound';
 import { lfLabel, postedDate } from '../../lib/lostFoundLabels';
+import BookmarkControl from '../../member4/items/BookmarkControl';
 
 export function BackToLostFound() {
   return (
@@ -148,6 +149,7 @@ export default function LostFoundItem() {
             </article>
 
             <aside className="stack">
+              <BookmarkControl itemId={item.id} />
               {item.type === 'LOST' && (
                 <Alert type="info" title="Did you find this?">
                   Please hand it in at the lost-and-found office and quote reference <strong className="mono">{item.reference}</strong>.
