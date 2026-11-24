@@ -1,7 +1,9 @@
 import { Link } from 'react-router-dom';
 import { zonedParts, formatTime, UNIVERSITY_TZ } from '../../lib/time';
+import { humanize } from '../../lib/labels';
 
-const WEEKDAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+const WEEKDAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+const EVENT_STATES = ['SCHEDULED', 'POSTPONED', 'CANCELLED', 'COMPLETED'];
 
 function key(y, m, d) {
   return `${y}-${m}-${d}`;
@@ -34,44 +36,54 @@ export default function EventCalendar({ year, month, events }) {
   const monthLabel = new Date(Date.UTC(year, month, 1)).toLocaleString('en-GB', { month: 'long', year: 'numeric', timeZone: 'UTC' });
 
   return (
-    <div className="table-wrap calendar-scroll" role="region" aria-label="Monthly event calendar; scroll horizontally to see all days" tabIndex={0}>
-      <table className="calendar">
-        <caption className="visually-hidden">Events in {monthLabel}</caption>
-        <thead>
-          <tr>
-            {WEEKDAYS.map((w) => (
-              <th key={w} scope="col">
-                {w}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {weeks.map((week, wi) => (
-            <tr key={wi}>
-              {week.map((day, di) => {
-                if (!day) return <td key={di} className="other-month" aria-hidden="true" />;
-                const items = byDay.get(key(year, month, day)) || [];
-                const isToday = today && today.year === year && today.month === month && today.day === day;
-                return (
-                  <td key={di} className={isToday ? 'today' : ''}>
-                    <div className="day-num">
-                      {day}
-                      {isToday && <span className="visually-hidden"> (today)</span>}
-                    </div>
-                    {items.map((e) => (
-                      <Link key={e.id} to={`/notices/${e.noticeId}`} className={`cal-event ${e.state}`} title={`${e.title} - ${e.state}`}>
-                        <span className={e.state === 'CANCELLED' ? 'strike' : ''}>{formatTime(e.start)}</span> {e.title}
-                        <span className="visually-hidden"> ({e.state})</span>
-                      </Link>
-                    ))}
-                  </td>
-                );
-              })}
+    <div className="event-calendar-shell">
+      <div className="table-wrap calendar-scroll" role="region" aria-label="Monthly event calendar; scroll horizontally to see all days" tabIndex={0}>
+        <table className="calendar event-month-grid">
+          <caption className="visually-hidden">Events in {monthLabel}</caption>
+          <thead>
+            <tr>
+              {WEEKDAYS.map((weekday, index) => (
+                <th key={weekday} scope="col" className={index > 4 ? 'weekend' : undefined}>
+                  <abbr title={weekday}>{weekday.slice(0, 3)}</abbr>
+                </th>
+              ))}
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {weeks.map((week, wi) => (
+              <tr key={wi}>
+                {week.map((day, di) => {
+                  if (!day) return <td key={di} className={`other-month${di > 4 ? ' weekend' : ''}`} aria-hidden="true" />;
+                  const items = byDay.get(key(year, month, day)) || [];
+                  const isToday = today && today.year === year && today.month === month && today.day === day;
+                  return (
+                    <td key={di} className={[di > 4 ? 'weekend' : '', isToday ? 'today' : ''].filter(Boolean).join(' ')}>
+                      <div className="day-num">
+                        <time dateTime={`${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`} aria-current={isToday ? 'date' : undefined}>
+                          {day}{isToday && <span className="visually-hidden"> (today)</span>}
+                        </time>
+                        {isToday && <span className="calendar-today-label" aria-hidden="true">Today</span>}
+                      </div>
+                      {items.map((e) => (
+                        <Link key={e.id} to={`/notices/${e.noticeId}`} className={`cal-event ${e.state}`} title={`${formatTime(e.start)} · ${e.title} — ${humanize(e.state)}`}>
+                          <span className="cal-event-meta"><time className="cal-event-time" dateTime={e.start}>{formatTime(e.start)}</time><span className="cal-event-state">{humanize(e.state)}</span></span>
+                          <span className="cal-event-title">{e.title}</span>
+                        </Link>
+                      ))}
+                    </td>
+                  );
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <div className="event-calendar-footer">
+        <p>{events.length ? 'Select an event to read its notice.' : 'No events in this month for the selected filters.'}</p>
+        <ul className="event-calendar-legend" aria-label="Event states">
+          {EVENT_STATES.map((state) => <li key={state} className={state}><span aria-hidden="true" />{humanize(state)}</li>)}
+        </ul>
+      </div>
     </div>
   );
 }

@@ -69,7 +69,7 @@ export default function App() {
       <NoticeToaster />
       <main id="main-content" tabIndex={-1}>
         <div className="container">
-          <PageLoadBoundary key={location.pathname + location.search}>
+          <PageLoadBoundary key={location.pathname} resetKey={location.pathname + location.search}>
           <Suspense fallback={<LoadingState label="Loading page…" />}>
           <Routes>
             <Route path="/" element={<Home />} />
