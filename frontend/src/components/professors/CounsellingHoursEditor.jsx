@@ -9,7 +9,7 @@ export default function CounsellingHoursEditor({ value = [], onChange, serverErr
     <fieldset>
       <legend>Counselling hours</legend>
       <div className="stack">
-        {value.length === 0 && <p className="muted small">No slots. The card will say "By appointment only".</p>}
+        {value.length === 0 && <p className="muted small">No counselling hours have been added.</p>}
         {value.map((slot, i) => (
           <div key={i} className="stack" style={{ borderBottom: '1px solid var(--color-border)', paddingBottom: 'var(--space-3)' }}>
             <div className="grid grid-3">

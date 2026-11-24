@@ -1,0 +1,23 @@
+/* Source-backed portraits and qualifications share the campus card rhythm. */
+.prof-card-official { gap: 18px; }
+.prof-card-official .prof-head { align-items: flex-start; gap: 16px; }
+.prof-card-official .prof-photo { width: 78px; height: 104px; object-fit: cover; object-position: center top; border-radius: 7px; }
+.prof-card-official .prof-head > div { padding-top: 2px; }
+.prof-card-official h3 { font-size: 17px; line-height: 1.4; }
+.prof-card-official .prof-head .small { font-size: 12px; line-height: 1.6; margin: 5px 0 0; }
+.prof-source-badge { display: inline-block; margin-top: 9px; font-size: 9px; letter-spacing: .04em; font-weight: 650; color: #486480; background: #edf3f9; border-radius: 4px; padding: 3px 6px; }
+.prof-card .prof-roles, .prof-card .prof-qualifications { display: grid; gap: 7px; padding: 0; margin: 0; }
+.prof-card .prof-roles li, .prof-card .prof-qualifications li { padding: 0; background: none; border-radius: 0; font-size: 12px; line-height: 1.65; }
+.prof-card .prof-roles li { color: #43607e; font-weight: 550; }
+.prof-detail-section h4 { font-size: 12px; letter-spacing: 0; margin: 0 0 9px; }
+.prof-card-official dl { font-size: 12px; padding-block: 15px; }
+.prof-source-note { margin-top: auto; padding-top: 0; }
+.prof-source-note p { font-size: 11px; line-height: 1.65; margin: 0 0 10px; color: var(--color-text-muted); }
+.prof-source-note a { display: inline-flex; align-items: center; gap: 7px; font-size: 11px; font-weight: 650; text-decoration: none; }
+.prof-source-note a:hover { text-decoration: underline; }
+.directory-source-note { font-size: 12px; line-height: 1.8; color: var(--color-text-muted); padding: 15px 18px; border-left: 3px solid #9ab1cc; background: #edf3fa; border-radius: 0 6px 6px 0; margin: 0 0 23px; }
+@media (max-width: 380px) {
+  .prof-card-official .prof-head { gap: 13px; }
+  .prof-card-official .prof-photo { width: 69px; height: 92px; }
+  .prof-card-official h3 { font-size: 16px; }
+}

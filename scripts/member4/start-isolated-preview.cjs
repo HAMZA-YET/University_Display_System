@@ -64,6 +64,11 @@ async function main() {
   const fixture = { baseURL: 'http://127.0.0.1:5017', publicationDate, publicNoticeId: publicNotice.id, campusNoticeId: campusNotice.id, withdrawnId: withdrawn.id, draftId: draft.body.data.id, readerEmail: 'member4.reader@kdu-uids.test', otherEmail: 'member4.other@kdu-uids.test', adminEmail: admin.user.email, mfaEmail: 'member4.mfa@kdu-uids.test', mfaRecoveryCodes: confirmed.body.data.recoveryCodes, password: F.PASSWORD, fictional: true };
   const output = path.join(root, 'node_modules/.cache/member4-e2e-fixtures.json');
   await fs.writeFile(output, JSON.stringify(fixture, null, 2), { mode: 0o600 });
+  if (process.argv.includes('--with-official-faculty')) {
+    const { importFaculty } = require('../../backend/src/cli/import-kdu-faculty');
+    const imported = await importFaculty({ apply: true });
+    if (imported.inserted !== 58) throw Error('Official faculty fixture import failed');
+  }
   server = await new Promise((resolve, reject) => { const listener = app.listen(5017, '127.0.0.1', () => resolve(listener)); listener.on('error', reject); });
   console.log('ISOLATED_TEST_PREVIEW_READY ' + output);
 }

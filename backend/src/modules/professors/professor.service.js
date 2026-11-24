@@ -30,6 +30,14 @@ function toProfessorView(p) {
     profileImage: p.profileImage || null,
     isActive: p.isActive,
     version: p.version,
+    ...(p.sourceKey ? {
+      sourceKey: p.sourceKey,
+      sourceUrl: p.sourceUrl,
+      sourceRetrievedAt: p.sourceRetrievedAt,
+      positionLabel: p.positionLabel || null,
+      roles: p.roles || [],
+      qualifications: p.qualifications || [],
+    } : {}),
   };
 }
 
@@ -55,7 +63,7 @@ async function listProfessors(query, { includeInactive = false } = {}) {
   if (query.department) filter.department = query.department;
   if (query.q) {
     const rx = containsRegex(query.q);
-    filter.$or = [{ name: rx }, { subjects: rx }];
+    filter.$or = [{ name: rx }, { subjects: rx }, { sourceKey: { $exists: true }, $or: [{ qualifications: rx }, { roles: rx }] }];
   }
   const countFilter = { ...filter };
   delete countFilter.department;
@@ -64,7 +72,7 @@ async function listProfessors(query, { includeInactive = false } = {}) {
     Professor.countDocuments(filter),
     Professor.aggregate([{ $match: countFilter }, { $group: { _id: '$department', count: { $sum: 1 } } }]),
   ]);
-  const counts = Object.fromEntries(byDept.map((d) => [d._id, d.count]));
+  const counts = Object.fromEntries(byDept.filter((d) => d._id).map((d) => [d._id, d.count]));
   counts.ALL = byDept.reduce((sum, d) => sum + d.count, 0);
   return { data: items.map(toProfessorView), meta: { ...buildMeta(page, limit, total), departmentCounts: counts } };
 }
@@ -83,12 +91,21 @@ async function createProfessor(ctx, body) {
 }
 
 async function updateProfessor(ctx, id, body, expectedVersion) {
-  await assertDepartment(body.department);
   const existing = await Professor.findById(id).lean();
   if (!existing) throw AppError.notFound();
+  if (!existing.sourceKey) {
+    const fields = { ...body };
+    delete fields.expectedVersion;
+    const parsed = require('./professor.schemas').professorBody.safeParse(fields);
+    if (!parsed.success) throw AppError.badRequest('Some fields are not valid.', parsed.error.issues.map((issue) => ({
+      location: 'body', field: issue.path.join('.') || 'body', message: issue.message,
+    })));
+    body = parsed.data;
+  }
+  if (body.department) await assertDepartment(body.department);
   if (existing.version !== expectedVersion) throw AppError.versionConflict(existing.version, 'professor record');
   const updated = await Professor.findOneAndUpdate(
-    { _id: id, version: expectedVersion },
+    { _id: id, version: expectedVersion, ...(existing.sourceKey ? { sourceKey: existing.sourceKey } : {}) },
     { $set: normalize(body), $inc: { version: 1 } },
     { new: true, runValidators: true }
   ).lean();

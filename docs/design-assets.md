@@ -29,5 +29,7 @@ Files: `frontend/public/assets/kdu-mark.svg`, `campus-detail.svg`, `campus-hero.
 
 ## Verification
 
+Official faculty portraits and published profile details are documented separately in [kdu-faculty.md](kdu-faculty.md). They are stored under `frontend/public/assets/kdu/faculty/`; the original homepage media manifest remains unchanged.
+
 The redesign passed frontend lint, 78 frontend tests and the production build. Disposable local integration checks passed 13 HTTP groups, 7 shared Chrome groups and 10 lost-and-found functional groups. The dedicated design verifier covers all 74 original image hashes and browser decoding, keyboard gallery controls, local film metadata/playback/range requests and dialog focus return, combined search, and layouts at 320/390/768/1280 pixels. No production records are used by these checks. See `scripts/member4/verify-kdu-design.mjs` and the run order in `docs/member4/README.md`.
 

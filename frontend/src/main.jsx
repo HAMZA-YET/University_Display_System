@@ -6,6 +6,8 @@ import { AuthProvider } from './context/AuthContext';
 import './styles/global.css';
 import './styles/portal.css';
 import './styles/kdu.css';
+import './styles/spacing.css';
+import './styles/faculty.css';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>

@@ -1,0 +1,1300 @@
+{
+  "sourceUrl": "https://www.kduniv.ac.kr/global/CMS/Contents/Contents.do?mCode=MN090",
+  "retrievedAt": "2026-11-24T20:50:07Z",
+  "sourceTitle": "KDU Global Faculty",
+  "sourcePageSha256": "7937b7bf133ddff2e307277a5429b315a97f56766fe63a3be4e2c82fdd0a7728",
+  "profileCount": 58,
+  "notes": [
+    "Names, roles, qualifications, and public work emails are transcribed from the official faculty page without correcting its spelling or adding missing facts.",
+    "Each source image belongs to the same faculty card as the corresponding name; image alt text matches the listed name. Original image bytes are retained.",
+    "positionLabel is the final listed academic rank or instructor/faculty designation; roles retains every listed role in source order.",
+    "Public email is null when the official page does not provide one. Departments, rooms, phone numbers, and counselling hours are not inferred."
+  ],
+  "profiles": [
+    {
+      "slug": "juraev-sirojiddin-salomovich",
+      "name": "JURAEV, Sirojiddin Salomovich",
+      "positionLabel": "Associate Professor",
+      "roles": [
+        "Dean of International Faculty",
+        "Associate Professor"
+      ],
+      "qualifications": [
+        "BSc (Economics)",
+        "MA (International Development)",
+        "PhD (Development Policy)"
+      ],
+      "email": "juraev@kduniv.ac.kr",
+      "profileImage": "/assets/kdu/faculty/juraev-sirojiddin-salomovich.jpg",
+      "sourceImageUrl": "https://www.kduniv.ac.kr/resources/homepage/global/_Img/Content/p2.jpg",
+      "sourceOrder": 1,
+      "sha256": "653b83b9a90b28903b5a240874b3d616dc0da79f053881d8442e1d96465c8d29",
+      "width": 105,
+      "height": 140,
+      "bytes": 7274,
+      "contentType": "image/jpeg"
+    },
+    {
+      "slug": "nur-alam-md",
+      "name": "NUR, Alam MD",
+      "positionLabel": "Associate Professor",
+      "roles": [
+        "Dean of Graduate School",
+        "Associate Professor"
+      ],
+      "qualifications": [
+        "BSc (Computer Science)",
+        "MSc (Information Technology)",
+        "PhD (AI and Computer Vision)"
+      ],
+      "email": "na@kduniv.ac.kr",
+      "profileImage": "/assets/kdu/faculty/nur-alam-md.jpg",
+      "sourceImageUrl": "https://www.kduniv.ac.kr/resources/homepage/global/_Img/Content/p49.jpg",
+      "sourceOrder": 2,
+      "sha256": "89c4ee62abd6206be824f5c7fef9f971e627c42469a69acf19df5ef45ed9da9c",
+      "width": 105,
+      "height": 140,
+      "bytes": 8303,
+      "contentType": "image/jpeg"
+    },
+    {
+      "slug": "irisboev-ilkhom",
+      "name": "IRISBOEV, Ilkhom",
+      "positionLabel": "Assistant Professor",
+      "roles": [
+        "Dean of International Office",
+        "Assistant Professor"
+      ],
+      "qualifications": [
+        "BA (International Relations)",
+        "MA (Development Policy)",
+        "PhD Candidate (International Business Management)"
+      ],
+      "email": "ilkhom@kduniv.ac.kr",
+      "profileImage": "/assets/kdu/faculty/irisboev-ilkhom.jpg",
+      "sourceImageUrl": "https://www.kduniv.ac.kr/resources/homepage/global/_Img/Content/p21.jpg",
+      "sourceOrder": 3,
+      "sha256": "b5da480a845c4e2a77fa5dc69201091be2036adc4c9e8e928dc9ccafdce42833",
+      "width": 105,
+      "height": 140,
+      "bytes": 6789,
+      "contentType": "image/jpeg"
+    },
+    {
+      "slug": "al-athwari-baseem",
+      "name": "AL-ATHWARI, Baseem",
+      "positionLabel": "Associate Professor",
+      "roles": [
+        "Director of K-Global Education Center",
+        "Associate Professor"
+      ],
+      "qualifications": [
+        "BSc (Computer Science and Engineering)",
+        "MSc (Technology Management)",
+        "PhD (Technology Management)"
+      ],
+      "email": "baseem_cs@kduniv.ac.kr",
+      "profileImage": "/assets/kdu/faculty/al-athwari-baseem.jpg",
+      "sourceImageUrl": "https://www.kduniv.ac.kr/resources/homepage/global/_Img/Content/p9.jpg",
+      "sourceOrder": 4,
+      "sha256": "86b424d76507b12b8359f6104509293f421e13744f6ffb92a3f279bf30a7de1b",
+      "width": 105,
+      "height": 140,
+      "bytes": 5908,
+      "contentType": "image/jpeg"
+    },
+    {
+      "slug": "seo-yun-kyeong",
+      "name": "SEO, Yun Kyeong",
+      "positionLabel": "Assistant Professor",
+      "roles": [
+        "Associate Dean of International Office",
+        "Assistant Professor"
+      ],
+      "qualifications": [
+        "BA (Education, KFL)",
+        "BA (English Education)",
+        "MA (Education)"
+      ],
+      "email": "yk.seo@kduniv.ac.kr",
+      "profileImage": "/assets/kdu/faculty/seo-yun-kyeong.png",
+      "sourceImageUrl": "https://www.kduniv.ac.kr/resources/homepage/global/_Img/Content/p50.png",
+      "sourceOrder": 5,
+      "sha256": "3465a69f0da573283814247a2460298ec0e082336bb7afe1b52d8ba2d374fa08",
+      "width": 446,
+      "height": 572,
+      "bytes": 498082,
+      "contentType": "image/png"
+    },
+    {
+      "slug": "megha-swati",
+      "name": "MEGHA, Swati",
+      "positionLabel": "Assistant Professor",
+      "roles": [
+        "Associate Dean of Int. Faculty",
+        "Head of Int. Business Administration Dept.",
+        "Assistant Professor"
+      ],
+      "qualifications": [
+        "BSc (Bio Tech)",
+        "MBA (Management Information Systems)",
+        "PhD (Management)"
+      ],
+      "email": "megha@kduniv.ac.kr",
+      "profileImage": "/assets/kdu/faculty/megha-swati.jpg",
+      "sourceImageUrl": "https://www.kduniv.ac.kr/resources/homepage/global/_Img/Content/p30.jpg",
+      "sourceOrder": 6,
+      "sha256": "eb515e80c5f8e26bbdfd9a6cfe80f73b115e87f5a0ef70bbc6b6d7e22ec9b604",
+      "width": 105,
+      "height": 140,
+      "bytes": 7720,
+      "contentType": "image/jpeg"
+    },
+    {
+      "slug": "geraldine-anne-tan",
+      "name": "GERALDINE, Anne Tan",
+      "positionLabel": "Assistant Professor",
+      "roles": [
+        "Associate Dean of Graduate School",
+        "Assistant Professor"
+      ],
+      "qualifications": [
+        "BA (Tourism Management and Engineering)",
+        "MA (International Hospitality Management)",
+        "PhD (Hospitality and Tourism)"
+      ],
+      "email": "annetan@kduniv.ac.kr",
+      "profileImage": "/assets/kdu/faculty/geraldine-anne-tan.jpg",
+      "sourceImageUrl": "https://www.kduniv.ac.kr/resources/homepage/global/_Img/Content/p25.jpg",
+      "sourceOrder": 7,
+      "sha256": "a9ac8922fe3df6df4224f72f692bfc53e2c7011cbd07e8d6f73bc2a20a25751d",
+      "width": 105,
+      "height": 140,
+      "bytes": 6015,
+      "contentType": "image/jpeg"
+    },
+    {
+      "slug": "kim-yong-kyung",
+      "name": "KIM, Yong-Kyung",
+      "positionLabel": "Professor",
+      "roles": [
+        "Head of Korean Business Convergence Dept.",
+        "Professor"
+      ],
+      "qualifications": [
+        "MA (Korean Language)",
+        "PhD (Korean Language)"
+      ],
+      "email": "ykkim@kduniv.ac.kr",
+      "profileImage": "/assets/kdu/faculty/kim-yong-kyung.jpg",
+      "sourceImageUrl": "https://www.kduniv.ac.kr/resources/homepage/global/_Img/Content/p8.jpg",
+      "sourceOrder": 8,
+      "sha256": "70c194c09fe49bc45ec90f5bd49088e6338d5b268161481ca945a7b76020c90e",
+      "width": 105,
+      "height": 140,
+      "bytes": 5608,
+      "contentType": "image/jpeg"
+    },
+    {
+      "slug": "khan-jebran",
+      "name": "KHAN, Jebran",
+      "positionLabel": "Assistant Professor",
+      "roles": [
+        "Head of AI Department",
+        "Assistant Professor"
+      ],
+      "qualifications": [
+        "BSc (Computer Systems Engineering)",
+        "MSc (Computer Systems Engineering)",
+        "PhD (Social Media Analysis, AI and NLP)"
+      ],
+      "email": "jebran@kduniv.ac.kr",
+      "profileImage": "/assets/kdu/faculty/khan-jebran.jpg",
+      "sourceImageUrl": "https://www.kduniv.ac.kr/resources/homepage/global/_Img/Content/p27.jpg",
+      "sourceOrder": 9,
+      "sha256": "fe86ab7009c5e1b632c0aad70131fcd222bdadd328d8b8890a021e4268403426",
+      "width": 105,
+      "height": 140,
+      "bytes": 6404,
+      "contentType": "image/jpeg"
+    },
+    {
+      "slug": "bhandari-khadak-singh",
+      "name": "BHANDARI, Khadak Singh",
+      "positionLabel": "Assistant Professor",
+      "roles": [
+        "Head of Smart Computing Dept.",
+        "Assistant Professor"
+      ],
+      "qualifications": [
+        "BSc (Computer Engineering)",
+        "MSc (Information System Engineering)",
+        "PhD (Internet of Things)"
+      ],
+      "email": "mekhadak@kduniv.ac.kr",
+      "profileImage": "/assets/kdu/faculty/bhandari-khadak-singh.jpg",
+      "sourceImageUrl": "https://www.kduniv.ac.kr/resources/homepage/global/_Img/Content/p14.jpg",
+      "sourceOrder": 10,
+      "sha256": "6d3704747f06bb2e2572012d9667f769e38e04b9bb16bbff2479158075b7825a",
+      "width": 105,
+      "height": 140,
+      "bytes": 6095,
+      "contentType": "image/jpeg"
+    },
+    {
+      "slug": "posso-guerrero-richard-eduardo",
+      "name": "POSSO, Guerrero Richard Eduardo",
+      "positionLabel": "Assistant Professor",
+      "roles": [
+        "Head of Korean Business – AI Department",
+        "Assistant Professor"
+      ],
+      "qualifications": [
+        "BEng (Electronics and Telecommunications)",
+        "MA (Business Information Systems)",
+        "PhD (Engineering and Smart City Global Convergence)"
+      ],
+      "email": "richard@kduniv.ac.kr",
+      "profileImage": "/assets/kdu/faculty/posso-guerrero-richard-eduardo.jpg",
+      "sourceImageUrl": "https://www.kduniv.ac.kr/resources/homepage/global/_Img/Content/p50.jpg",
+      "sourceOrder": 11,
+      "sha256": "03a375a2c0e75989e8e506c71d91600dce12a4b0af5962b1732c05f29089530f",
+      "width": 105,
+      "height": 140,
+      "bytes": 6513,
+      "contentType": "image/jpeg"
+    },
+    {
+      "slug": "sonia-lim-ern-yi",
+      "name": "SONIA, Lim Ern Yi",
+      "positionLabel": "Assistant Professor",
+      "roles": [
+        "Head of Hospitality and AI Innovation Dept.",
+        "Assistant Professor"
+      ],
+      "qualifications": [
+        "BA (International Tourism Management)",
+        "MSc (Tourism)",
+        "PhD (Hospitality and Tourism)"
+      ],
+      "email": "sonia@kduniv.ac.kr",
+      "profileImage": "/assets/kdu/faculty/sonia-lim-ern-yi.jpg",
+      "sourceImageUrl": "https://www.kduniv.ac.kr/resources/homepage/global/_Img/Content/p54.jpg",
+      "sourceOrder": 12,
+      "sha256": "f729280d936333fd2e83fbaa5da323e519b35dd49d6046b749956ac36ab9be45",
+      "width": 105,
+      "height": 140,
+      "bytes": 6657,
+      "contentType": "image/jpeg"
+    },
+    {
+      "slug": "kim-min-jung",
+      "name": "KIM, Min Jung",
+      "positionLabel": "Assistant Professor",
+      "roles": [
+        "Director of Career Development Center",
+        "Assistant Professor"
+      ],
+      "qualifications": [
+        "BA (Korean Pedagogy)",
+        "MA (Teaching Korean as a Foreign Language)"
+      ],
+      "email": "mjkim@kduniv.ac.kr",
+      "profileImage": "/assets/kdu/faculty/kim-min-jung.jpg",
+      "sourceImageUrl": "https://www.kduniv.ac.kr/resources/homepage/global/_Img/Content/p89.jpg",
+      "sourceOrder": 13,
+      "sha256": "ad0a8478176c7bb006c21984da49bcaf6a47684740f9d5fcb51fc5e44b3ccc83",
+      "width": 105,
+      "height": 140,
+      "bytes": 5603,
+      "contentType": "image/jpeg"
+    },
+    {
+      "slug": "villa-munoz-romulo-nayrod",
+      "name": "VILLA MUNOZ, Romulo Nayrod",
+      "positionLabel": "Assistant Professor",
+      "roles": [
+        "Director of Student Residence Halls",
+        "Assistant Professor"
+      ],
+      "qualifications": [
+        "BEng (Mechanical Engineering)",
+        "MA (Logistics Management)",
+        "PhD (Virtual and Augmented Reality)"
+      ],
+      "email": "nayrodvilla@kduniv.ac.kr",
+      "profileImage": "/assets/kdu/faculty/villa-munoz-romulo-nayrod.jpg",
+      "sourceImageUrl": "https://www.kduniv.ac.kr/resources/homepage/global/_Img/Content/p58.jpg",
+      "sourceOrder": 14,
+      "sha256": "efce053159ff51673b7addf90263bbedcf21808004482cb46c644b0ba70ce6d0",
+      "width": 105,
+      "height": 140,
+      "bytes": 6520,
+      "contentType": "image/jpeg"
+    },
+    {
+      "slug": "zakiyya-moosa",
+      "name": "ZAKIYYA, Moosa",
+      "positionLabel": "Assistant Professor",
+      "roles": [
+        "Supervisor of Learning Resources Center",
+        "Assistant Professor"
+      ],
+      "qualifications": [
+        "BA (Business Management)",
+        "MA (Hospitality Management)",
+        "PhD (Hospitality and Tourism)"
+      ],
+      "email": "zakiyya@kduniv.ac.kr",
+      "profileImage": "/assets/kdu/faculty/zakiyya-moosa.jpg",
+      "sourceImageUrl": "https://www.kduniv.ac.kr/resources/homepage/global/_Img/Content/p56.jpg",
+      "sourceOrder": 15,
+      "sha256": "9b19774065eb468407a034ca74c7729c49ecd18e72c5d77a6270923d6770a9d9",
+      "width": 105,
+      "height": 140,
+      "bytes": 7234,
+      "contentType": "image/jpeg"
+    },
+    {
+      "slug": "williams-dana-e",
+      "name": "WILLIAMS, Dana E.",
+      "positionLabel": "Assistant Professor",
+      "roles": [
+        "Supervisor of Human Rights Center",
+        "Assistant Professor"
+      ],
+      "qualifications": [
+        "BSc (Sociology)",
+        "MBA (Master of Business Administration)",
+        "DBA (Doctor of Business Administration)"
+      ],
+      "email": "danawilliams@kduniv.ac.kr",
+      "profileImage": "/assets/kdu/faculty/williams-dana-e.jpg",
+      "sourceImageUrl": "https://www.kduniv.ac.kr/resources/homepage/global/_Img/Content/p16.jpg",
+      "sourceOrder": 16,
+      "sha256": "ecb5a8e5653cccdbdb40ceddbaf145cb333232f7718cec40b3d7d725a4a2aa71",
+      "width": 105,
+      "height": 140,
+      "bytes": 5120,
+      "contentType": "image/jpeg"
+    },
+    {
+      "slug": "park-chul-woong",
+      "name": "PARK, Chul Woong",
+      "positionLabel": "Assistant Professor",
+      "roles": [
+        "Supervisor of Student Counselling Center",
+        "Assistant Professor"
+      ],
+      "qualifications": [
+        "BA (Thai Language)",
+        "MA (Society and Culture)",
+        "PhD Candidate (Korean Language and Literature)"
+      ],
+      "email": "pcw@kduniv.ac.kr",
+      "profileImage": "/assets/kdu/faculty/park-chul-woong.png",
+      "sourceImageUrl": "https://www.kduniv.ac.kr/resources/homepage/global/_Img/Content/p54.png",
+      "sourceOrder": 17,
+      "sha256": "e6c9b1beee20905e081bfad3d915733f92976970fd192ada37441deefa8bbd71",
+      "width": 336,
+      "height": 467,
+      "bytes": 245006,
+      "contentType": "image/png"
+    },
+    {
+      "slug": "choi-jack-k",
+      "name": "CHOI, Jack K.",
+      "positionLabel": "Chair Professor",
+      "roles": [
+        "Chair Professor"
+      ],
+      "qualifications": [
+        "BA (Laws)",
+        "MA (Administration)"
+      ],
+      "email": "jkchoi@kduniv.ac.kr",
+      "profileImage": "/assets/kdu/faculty/choi-jack-k.jpg",
+      "sourceImageUrl": "https://www.kduniv.ac.kr/resources/homepage/global/_Img/Content/p3.jpg",
+      "sourceOrder": 18,
+      "sha256": "8e293b6c346898bdcf60401889542fe76f06fea6ecf76c53408121b7a0f886f0",
+      "width": 105,
+      "height": 140,
+      "bytes": 6480,
+      "contentType": "image/jpeg"
+    },
+    {
+      "slug": "al-absi-ahmed-a",
+      "name": "AL-ABSI, Ahmed A.",
+      "positionLabel": "Associate Professor",
+      "roles": [
+        "Associate Professor"
+      ],
+      "qualifications": [
+        "BSc (Computer Applications)",
+        "MSc (Computer Science)",
+        "PhD (Big Data Processing)"
+      ],
+      "email": "absiahmed@kduniv.ac.kr",
+      "profileImage": "/assets/kdu/faculty/al-absi-ahmed-a.jpg",
+      "sourceImageUrl": "https://www.kduniv.ac.kr/resources/homepage/global/_Img/Content/p5.jpg",
+      "sourceOrder": 19,
+      "sha256": "b46091365bb706f96d9b37bfb6ec35e09f066e7387137a998037150eda4ca78f",
+      "width": 105,
+      "height": 140,
+      "bytes": 6572,
+      "contentType": "image/jpeg"
+    },
+    {
+      "slug": "kwon-hyuckhoon",
+      "name": "KWON, Hyuckhoon",
+      "positionLabel": "Associate Professor",
+      "roles": [
+        "Associate Professor"
+      ],
+      "qualifications": [
+        "BA (Sociology)",
+        "MA (Education)",
+        "PhD (Gerontology)"
+      ],
+      "email": "hxk190@kduniv.ac.kr",
+      "profileImage": "/assets/kdu/faculty/kwon-hyuckhoon.jpg",
+      "sourceImageUrl": "https://www.kduniv.ac.kr/resources/homepage/global/_Img/Content/p7.jpg",
+      "sourceOrder": 20,
+      "sha256": "40e01da5d630afd182aa40412e13f38066abc2285ddf750577807237880594ec",
+      "width": 105,
+      "height": 140,
+      "bytes": 5666,
+      "contentType": "image/jpeg"
+    },
+    {
+      "slug": "yoon-hye-joon",
+      "name": "YOON, Hye-Joon",
+      "positionLabel": "Assistant Professor",
+      "roles": [
+        "Assistant Professor"
+      ],
+      "qualifications": [
+        "MA (TESOL)",
+        "MA (Educational Communication & Technology)",
+        "Ph.D Candidate (Applied Linguistics)"
+      ],
+      "email": "joonyoon@kduniv.ac.kr",
+      "profileImage": "/assets/kdu/faculty/yoon-hye-joon.jpg",
+      "sourceImageUrl": "https://www.kduniv.ac.kr/resources/homepage/global/_Img/Content/p11.jpg",
+      "sourceOrder": 21,
+      "sha256": "4fed69d3e9ab7a3d03868deac6fbcda276ed8ce1e99828c48b5f06517bb705ee",
+      "width": 105,
+      "height": 140,
+      "bytes": 5332,
+      "contentType": "image/jpeg"
+    },
+    {
+      "slug": "hossain-md-sumon",
+      "name": "HOSSAIN, Md Sumon",
+      "positionLabel": "Assistant Professor",
+      "roles": [
+        "Assistant Professor"
+      ],
+      "qualifications": [
+        "BA (Marketing)",
+        "MA (Economics)",
+        "PhD (International Trade)"
+      ],
+      "email": "sumonkrbd@kduniv.ac.kr",
+      "profileImage": "/assets/kdu/faculty/hossain-md-sumon.jpg",
+      "sourceImageUrl": "https://www.kduniv.ac.kr/resources/homepage/global/_Img/Content/p10.jpg",
+      "sourceOrder": 22,
+      "sha256": "52da262f175f57718ae8879d1179614136cc3a61bc5794ecb1c9c099f592ba6b",
+      "width": 105,
+      "height": 140,
+      "bytes": 7047,
+      "contentType": "image/jpeg"
+    },
+    {
+      "slug": "kennedy-grace-c",
+      "name": "KENNEDY, Grace C.",
+      "positionLabel": "Assistant Professor",
+      "roles": [
+        "Assistant Professor"
+      ],
+      "qualifications": [
+        "BSc (Electrical & Electronics Engineering)",
+        "MSc (Information Technology)",
+        "PhD (Computer Science & Engineering)"
+      ],
+      "email": "gkennedy@kduniv.ac.kr",
+      "profileImage": "/assets/kdu/faculty/kennedy-grace-c.jpg",
+      "sourceImageUrl": "https://www.kduniv.ac.kr/resources/homepage/global/_Img/Content/p13.jpg",
+      "sourceOrder": 23,
+      "sha256": "c18565854e3b99ee23564e53b7a0b50a3c49b765bd82793487d5df91372b94c7",
+      "width": 105,
+      "height": 140,
+      "bytes": 5455,
+      "contentType": "image/jpeg"
+    },
+    {
+      "slug": "kim-haeok-liz",
+      "name": "KIM, Haeok Liz",
+      "positionLabel": "Assistant Professor",
+      "roles": [
+        "Assistant Professor"
+      ],
+      "qualifications": [
+        "BA (Tourism Studies)",
+        "MA (International Relations)",
+        "PhD (Tourism)"
+      ],
+      "email": "lizkim@kduniv.ac.kr",
+      "profileImage": "/assets/kdu/faculty/kim-haeok-liz.jpg",
+      "sourceImageUrl": "https://www.kduniv.ac.kr/resources/homepage/global/_Img/Content/p17.jpg",
+      "sourceOrder": 24,
+      "sha256": "bab69f80e09ee4fb4508d5d836a5e765989de754b559edd1912a8b584bc4b1b8",
+      "width": 105,
+      "height": 140,
+      "bytes": 5386,
+      "contentType": "image/jpeg"
+    },
+    {
+      "slug": "abukhalifeh-alaa-nimer",
+      "name": "ABUKHALIFEH, Alaa Nimer",
+      "positionLabel": "Assistant Professor",
+      "roles": [
+        "Assistant Professor"
+      ],
+      "qualifications": [
+        "BSc (Hotel Management)",
+        "MSc (Tourism Management)",
+        "PhD (Hotel Management)"
+      ],
+      "email": "abukhalifeh.alaa@kduniv.ac.kr",
+      "profileImage": "/assets/kdu/faculty/abukhalifeh-alaa-nimer.jpg",
+      "sourceImageUrl": "https://www.kduniv.ac.kr/resources/homepage/global/_Img/Content/p18.jpg",
+      "sourceOrder": 25,
+      "sha256": "1c9b1ceba139efa63c6858211c304b13031467bbabc2c925434fc08f7d3cf243",
+      "width": 105,
+      "height": 140,
+      "bytes": 7307,
+      "contentType": "image/jpeg"
+    },
+    {
+      "slug": "mohammed-a-al-absi",
+      "name": "MOHAMMED, A. Al-Absi",
+      "positionLabel": "Assistant Professor",
+      "roles": [
+        "Assistant Professor"
+      ],
+      "qualifications": [
+        "BSc (Computer Applications)",
+        "MSc (Ubiquitous IT)",
+        "PhD (Unmanned Aerial Vehicle)"
+      ],
+      "email": "mohammed@kduniv.ac.kr",
+      "profileImage": "/assets/kdu/faculty/mohammed-a-al-absi.jpg",
+      "sourceImageUrl": "https://www.kduniv.ac.kr/resources/homepage/global/_Img/Content/p19.jpg",
+      "sourceOrder": 26,
+      "sha256": "b084a7b0290da700395b2206d24bf1374965480c34332583e2fabe91c0c37374",
+      "width": 105,
+      "height": 140,
+      "bytes": 5752,
+      "contentType": "image/jpeg"
+    },
+    {
+      "slug": "motahar-pooya-saeidi",
+      "name": "MOTAHAR, Pooya Saeidi",
+      "positionLabel": "Assistant Professor",
+      "roles": [
+        "Assistant Professor"
+      ],
+      "qualifications": [
+        "BA (Tourism Management)",
+        "MA (Management Hotellerie Restauration)",
+        "PhD (Hospitality and Tourism)"
+      ],
+      "email": "pooyasaeidi@kduniv.ac.kr",
+      "profileImage": "/assets/kdu/faculty/motahar-pooya-saeidi.jpg",
+      "sourceImageUrl": "https://www.kduniv.ac.kr/resources/homepage/global/_Img/Content/p20.jpg",
+      "sourceOrder": 27,
+      "sha256": "d1d59f8ebccbad7318f371a2fda8293e566e71f5255f4af0700fd4ec537e23bf",
+      "width": 105,
+      "height": 140,
+      "bytes": 5981,
+      "contentType": "image/jpeg"
+    },
+    {
+      "slug": "hussein-fouad-mohamed-ali",
+      "name": "HUSSEIN, Fouad Mohamed Ali",
+      "positionLabel": "Assistant Professor",
+      "roles": [
+        "Assistant Professor"
+      ],
+      "qualifications": [
+        "BSc (Mechanical Design and Production Engineering)",
+        "MSc (Mechanical Design and Production Engineering)",
+        "PhD (Mechatronics and Robotics)"
+      ],
+      "email": "hussein.ali@kduniv.ac.kr",
+      "profileImage": "/assets/kdu/faculty/hussein-fouad-mohamed-ali.jpg",
+      "sourceImageUrl": "https://www.kduniv.ac.kr/resources/homepage/global/_Img/Content/p26.jpg",
+      "sourceOrder": 28,
+      "sha256": "e778e586a9867023d3a02451ace4caeef4a1250983c79b7785865f59c528fc6b",
+      "width": 105,
+      "height": 140,
+      "bytes": 3969,
+      "contentType": "image/jpeg"
+    },
+    {
+      "slug": "li-xiang",
+      "name": "LI, Xiang",
+      "positionLabel": "Assistant Professor",
+      "roles": [
+        "Assistant Professor"
+      ],
+      "qualifications": [
+        "BA (International Hospitality Management)",
+        "MA (International Hospitality Management)",
+        "PhD (Business Management)"
+      ],
+      "email": "lixiang@kduniv.ac.kr",
+      "profileImage": "/assets/kdu/faculty/li-xiang.jpg",
+      "sourceImageUrl": "https://www.kduniv.ac.kr/resources/homepage/global/_Img/Content/p28.jpg",
+      "sourceOrder": 29,
+      "sha256": "2abe6968cc2d149fd458edd33513f84f3495a7a2ecc9453c1570867066adda19",
+      "width": 105,
+      "height": 140,
+      "bytes": 5386,
+      "contentType": "image/jpeg"
+    },
+    {
+      "slug": "oh-pyeongseon",
+      "name": "OH, Pyeongseon",
+      "positionLabel": "Assistant Professor",
+      "roles": [
+        "Assistant Professor"
+      ],
+      "qualifications": [
+        "BA (English Literature and Linguistics)",
+        "MA (Communication)",
+        "PhD (Media and Information Studies)"
+      ],
+      "email": "seonoh@kduniv.ac.kr",
+      "profileImage": "/assets/kdu/faculty/oh-pyeongseon.png",
+      "sourceImageUrl": "https://www.kduniv.ac.kr/resources/homepage/global/_Img/Content/p51.png",
+      "sourceOrder": 30,
+      "sha256": "0272958eecace3402113ef621e89e01a1996dd3e307464cf74577a52309d6e14",
+      "width": 339,
+      "height": 431,
+      "bytes": 228447,
+      "contentType": "image/png"
+    },
+    {
+      "slug": "maliuk-andrei",
+      "name": "MALIUK, Andrei",
+      "positionLabel": "Assistant Professor",
+      "roles": [
+        "Assistant Professor"
+      ],
+      "qualifications": [
+        "BSc (Power Industry and Electrical Engineering)",
+        "MSc (Power Industry and Electrical Engineering)",
+        "PhD (Computer Engineering)"
+      ],
+      "email": "andrei@kduniv.ac.kr",
+      "profileImage": "/assets/kdu/faculty/maliuk-andrei.jpg",
+      "sourceImageUrl": "https://www.kduniv.ac.kr/resources/homepage/global/_Img/Content/p51.jpg",
+      "sourceOrder": 31,
+      "sha256": "b27fcd0b176f79e2702f4d0ecdcac9bd25ac171996a35be502a006becb15c205",
+      "width": 105,
+      "height": 140,
+      "bytes": 7609,
+      "contentType": "image/jpeg"
+    },
+    {
+      "slug": "saavedra-arancibia-carlos-andres",
+      "name": "SAAVEDRA, Arancibia Carlos Andres",
+      "positionLabel": "Assistant Professor",
+      "roles": [
+        "Assistant Professor"
+      ],
+      "qualifications": [
+        "BEng (Electronics and Communications)",
+        "MEng (Electronic Engineering)",
+        "PhD (Global Digital InnovationManagement)"
+      ],
+      "email": "carlos@kduniv.ac.kr",
+      "profileImage": "/assets/kdu/faculty/saavedra-arancibia-carlos-andres.jpg",
+      "sourceImageUrl": "https://www.kduniv.ac.kr/resources/homepage/global/_Img/Content/p52.jpg",
+      "sourceOrder": 32,
+      "sha256": "9dd6cd89c1080445c1a17b56fac98c273ebc77319b031fe1c59d88cf8da70cdb",
+      "width": 105,
+      "height": 140,
+      "bytes": 7502,
+      "contentType": "image/jpeg"
+    },
+    {
+      "slug": "ahmed-bilal",
+      "name": "AHMED, Bilal",
+      "positionLabel": "Assistant Professor",
+      "roles": [
+        "Assistant Professor"
+      ],
+      "qualifications": [
+        "BSc (Engineering)",
+        "ME (Game Engineering)",
+        "PhD (Computer Engineering)"
+      ],
+      "email": "bilal@kduniv.ac.kr",
+      "profileImage": "/assets/kdu/faculty/ahmed-bilal.jpg",
+      "sourceImageUrl": "https://www.kduniv.ac.kr/resources/homepage/global/_Img/Content/p81.jpg",
+      "sourceOrder": 33,
+      "sha256": "23ed6e1d65201b9d12dd4e42d520a68c7d05f8a3c76e0d2022954d6426b4aabb",
+      "width": 105,
+      "height": 140,
+      "bytes": 7033,
+      "contentType": "image/jpeg"
+    },
+    {
+      "slug": "loy-benitez-jorge-rafael",
+      "name": "LOY BENITEZ, Jorge Rafael",
+      "positionLabel": "Assistant Professor",
+      "roles": [
+        "Assistant Professor"
+      ],
+      "qualifications": [
+        "BSc (Mining Engineering)",
+        "MSc (Applied Environmental Engineering)",
+        "PhD (Applied Environmental Engineering)"
+      ],
+      "email": "loybenitez@kduniv.ac.kr",
+      "profileImage": "/assets/kdu/faculty/loy-benitez-jorge-rafael.jpg",
+      "sourceImageUrl": "https://www.kduniv.ac.kr/resources/homepage/global/_Img/Content/p53.jpg",
+      "sourceOrder": 34,
+      "sha256": "a40822e12ce6a2f834948a6bdbc74c04e4c5606068bef3fd2b9341ba9c7fab29",
+      "width": 105,
+      "height": 140,
+      "bytes": 7380,
+      "contentType": "image/jpeg"
+    },
+    {
+      "slug": "ajakwe-simeon-okechukwu",
+      "name": "AJAKWE, Simeon Okechukwu",
+      "positionLabel": "Assistant Professor",
+      "roles": [
+        "Assistant Professor"
+      ],
+      "qualifications": [
+        "BSc (Computer Science)",
+        "MSc (Information Technology)",
+        "PhD (IT Convergence Engineering)"
+      ],
+      "email": "profsimeon@kduniv.ac.kr",
+      "profileImage": "/assets/kdu/faculty/ajakwe-simeon-okechukwu.jpg",
+      "sourceImageUrl": "https://www.kduniv.ac.kr/resources/homepage/global/_Img/Content/p55.jpg",
+      "sourceOrder": 35,
+      "sha256": "1da58b4729ddc83bf38e12761943c9de378a35feb6f74f5950b6f23a4f299d93",
+      "width": 105,
+      "height": 140,
+      "bytes": 7414,
+      "contentType": "image/jpeg"
+    },
+    {
+      "slug": "khan-muhammad-aamir-shafique",
+      "name": "KHAN, Muhammad Aamir Shafique",
+      "positionLabel": "Assistant Professor",
+      "roles": [
+        "Assistant Professor"
+      ],
+      "qualifications": [
+        "BSc (Information Technology)",
+        "MSc (Management Sciences)",
+        "PhD (Management Science and Engineering)"
+      ],
+      "email": "aamir@kduniv.ac.kr",
+      "profileImage": "/assets/kdu/faculty/khan-muhammad-aamir-shafique.jpg",
+      "sourceImageUrl": "https://www.kduniv.ac.kr/resources/homepage/global/_Img/Content/p67.jpg",
+      "sourceOrder": 36,
+      "sha256": "b9c075155ae2aa8fe52be8ba04ce89ce246379b40b3c294ea44538a60cebb182",
+      "width": 105,
+      "height": 140,
+      "bytes": 8976,
+      "contentType": "image/jpeg"
+    },
+    {
+      "slug": "ghulam-sarwar",
+      "name": "GHULAM, Sarwar",
+      "positionLabel": "Assistant Professor",
+      "roles": [
+        "Assistant Professor"
+      ],
+      "qualifications": [
+        "BSc (Computer Systems Engineering)",
+        "MSc (Information andCommunication Engineering)",
+        "PhD (Information andCommunication Engineering)"
+      ],
+      "email": "sarwar@kduniv.ac.kr",
+      "profileImage": "/assets/kdu/faculty/ghulam-sarwar.jpg",
+      "sourceImageUrl": "https://www.kduniv.ac.kr/resources/homepage/global/_Img/Content/p68.jpg",
+      "sourceOrder": 37,
+      "sha256": "cb6adb14dfce82752b1ad9214f4e4fa16493d79346251c81a0f572ba03a75019",
+      "width": 105,
+      "height": 140,
+      "bytes": 7678,
+      "contentType": "image/jpeg"
+    },
+    {
+      "slug": "arraut-guerrero-ivan-dario",
+      "name": "ARRAUT GUERRERO, Ivan Dario",
+      "positionLabel": "Assistant Professor",
+      "roles": [
+        "Assistant Professor"
+      ],
+      "qualifications": [
+        "BSc (Mechanical Engineering)",
+        "MSc (Physics)",
+        "PhD (Physics)"
+      ],
+      "email": "ivan@kduniv.ac.kr",
+      "profileImage": "/assets/kdu/faculty/arraut-guerrero-ivan-dario.jpg",
+      "sourceImageUrl": "https://www.kduniv.ac.kr/resources/homepage/global/_Img/Content/p82.jpg",
+      "sourceOrder": 38,
+      "sha256": "4717e28823280f6499d7604960eb88a0b9de82bef3c97f7afbf2f269ba3c2bd1",
+      "width": 105,
+      "height": 140,
+      "bytes": 5378,
+      "contentType": "image/jpeg"
+    },
+    {
+      "slug": "rakhmatov-nematullo",
+      "name": "RAKHMATOV, Nematullo",
+      "positionLabel": "Assistant Professor",
+      "roles": [
+        "Assistant Professor"
+      ],
+      "qualifications": [
+        "BA (Korean Language)",
+        "MSc (Computer Engineering)",
+        "PhD (Computer Science and Engineering)"
+      ],
+      "email": "nematullo@kduniv.ac.kr",
+      "profileImage": "/assets/kdu/faculty/rakhmatov-nematullo.jpg",
+      "sourceImageUrl": "https://www.kduniv.ac.kr/resources/homepage/global/_Img/Content/p83.jpg",
+      "sourceOrder": 39,
+      "sha256": "46bc68e912623c070ee080851c0a464705572bed43d00a684656412bd5913841",
+      "width": 105,
+      "height": 140,
+      "bytes": 4662,
+      "contentType": "image/jpeg"
+    },
+    {
+      "slug": "mondol-simm-raton",
+      "name": "MONDOL, SIMM Raton",
+      "positionLabel": "Assistant Professor",
+      "roles": [
+        "Assistant Professor"
+      ],
+      "qualifications": [
+        "BSc (Electronics and Telecommunication Engineering)",
+        "ME (Information and Communication Engineering)",
+        "PhD (Electrical and Computer Enginerring)"
+      ],
+      "email": "mondol@kduniv.ac.kr",
+      "profileImage": "/assets/kdu/faculty/mondol-simm-raton.jpg",
+      "sourceImageUrl": "https://www.kduniv.ac.kr/resources/homepage/global/_Img/Content/p90.jpg",
+      "sourceOrder": 40,
+      "sha256": "894919e047249b3fc46bd97d778713a9a7d88ab65e5fae85297cd366124ac517",
+      "width": 105,
+      "height": 140,
+      "bytes": 5630,
+      "contentType": "image/jpeg"
+    },
+    {
+      "slug": "njoku-okechukwu-enyeribe",
+      "name": "NJOKU, Okechukwu Enyeribe",
+      "positionLabel": "Assistant Professor",
+      "roles": [
+        "Assistant Professor"
+      ],
+      "qualifications": [
+        "B.Tech. (Industrial Chemistry)",
+        "Postgraduate (Financial Management Technology)",
+        "PhD (Business Administration)"
+      ],
+      "email": "njoku@kduniv.ac.kr",
+      "profileImage": "/assets/kdu/faculty/njoku-okechukwu-enyeribe.jpg",
+      "sourceImageUrl": "https://www.kduniv.ac.kr/resources/homepage/global/_Img/Content/p85.jpg",
+      "sourceOrder": 41,
+      "sha256": "271901ff88b3c96aba9f7368d95f15a16530623589739ba038175da24839a5ff",
+      "width": 105,
+      "height": 140,
+      "bytes": 4927,
+      "contentType": "image/jpeg"
+    },
+    {
+      "slug": "samar-mahmoud-mohamed-abdelmageed",
+      "name": "SAMAR, Mahmoud Mohamed Abdelmageed",
+      "positionLabel": "Assistant Professor",
+      "roles": [
+        "Assistant Professor"
+      ],
+      "qualifications": [
+        "BSc (Statistics)",
+        "MBA (International Business)",
+        "PhD (Business Administration)"
+      ],
+      "email": "samar@kduniv.ac.kr",
+      "profileImage": "/assets/kdu/faculty/samar-mahmoud-mohamed-abdelmageed.jpg",
+      "sourceImageUrl": "https://www.kduniv.ac.kr/resources/homepage/global/_Img/Content/p86.jpg",
+      "sourceOrder": 42,
+      "sha256": "4c7775879291e1d4e3c4728ff1fd6b5e0ab45c5f2f590db782ae95878fd84629",
+      "width": 105,
+      "height": 140,
+      "bytes": 5660,
+      "contentType": "image/jpeg"
+    },
+    {
+      "slug": "heo-hyun-sung",
+      "name": "HEO, HYUN SUNG",
+      "positionLabel": "KAP Instructor",
+      "roles": [
+        "KAP Instructor"
+      ],
+      "qualifications": [
+        "BA (Korean Pedagogy)",
+        "Kiip Interviewer (Certified)",
+        "Social Welfare Expert (Certified)",
+        "Multicultural Family Welfare Counselor (Certified)"
+      ],
+      "email": null,
+      "profileImage": "/assets/kdu/faculty/heo-hyun-sung.jpg",
+      "sourceImageUrl": "https://www.kduniv.ac.kr/resources/homepage/global/_Img/Content/p33.jpg",
+      "sourceOrder": 43,
+      "sha256": "bf1254f9c9fb4d624f26c14f42133bf00e6c07271de57326fae8dfbc6964f3f7",
+      "width": 105,
+      "height": 140,
+      "bytes": 7826,
+      "contentType": "image/jpeg"
+    },
+    {
+      "slug": "pak-david",
+      "name": "PAK, David",
+      "positionLabel": "EAP – Head Instructor",
+      "roles": [
+        "EAP – Head Instructor"
+      ],
+      "qualifications": [
+        "BA (Economics)"
+      ],
+      "email": null,
+      "profileImage": "/assets/kdu/faculty/pak-david.jpg",
+      "sourceImageUrl": "https://www.kduniv.ac.kr/resources/homepage/global/_Img/Content/p87.jpg",
+      "sourceOrder": 44,
+      "sha256": "2118eb74190922e3b768a118b743329ab41216406709c7e88fe565bc61d92e70",
+      "width": 105,
+      "height": 140,
+      "bytes": 4928,
+      "contentType": "image/jpeg"
+    },
+    {
+      "slug": "blake-john-k",
+      "name": "BLAKE, John K.",
+      "positionLabel": "EAP Instructor",
+      "roles": [
+        "EAP Instructor"
+      ],
+      "qualifications": [
+        "BA (Accounting and Information Systems)",
+        "TEFL (Certified)"
+      ],
+      "email": null,
+      "profileImage": "/assets/kdu/faculty/blake-john-k.jpg",
+      "sourceImageUrl": "https://www.kduniv.ac.kr/resources/homepage/global/_Img/Content/p63.jpg",
+      "sourceOrder": 45,
+      "sha256": "89d98359872c9ef9c6234183dd1b57bf09164d53a61f435e88f33c49c9cb3f8f",
+      "width": 448,
+      "height": 547,
+      "bytes": 31073,
+      "contentType": "image/jpeg"
+    },
+    {
+      "slug": "dimakatso-nyathi",
+      "name": "DIMAKATSO, Nyathi",
+      "positionLabel": "EAP Instructor",
+      "roles": [
+        "EAP Instructor"
+      ],
+      "qualifications": [
+        "BSc Hons (Mathematical Statistics)",
+        "TEFL (Certified)"
+      ],
+      "email": null,
+      "profileImage": "/assets/kdu/faculty/dimakatso-nyathi.jpg",
+      "sourceImageUrl": "https://www.kduniv.ac.kr/resources/homepage/global/_Img/Content/p35.jpg",
+      "sourceOrder": 46,
+      "sha256": "2801203623b12825cbdfc05815c301b64db0dd4e18c00f2a5e020b6474d31942",
+      "width": 105,
+      "height": 140,
+      "bytes": 5118,
+      "contentType": "image/jpeg"
+    },
+    {
+      "slug": "smith-barry",
+      "name": "SMITH, Barry",
+      "positionLabel": "EAP Instructor",
+      "roles": [
+        "EAP Instructor"
+      ],
+      "qualifications": [
+        "BA (Psychology)",
+        "TEFL (Certified)"
+      ],
+      "email": null,
+      "profileImage": "/assets/kdu/faculty/smith-barry.jpg",
+      "sourceImageUrl": "https://www.kduniv.ac.kr/resources/homepage/global/_Img/Content/p61.jpg",
+      "sourceOrder": 47,
+      "sha256": "9ee6e57a71db9905b43ec5467bdbd10162997854fe65e916c2d716c847294a25",
+      "width": 431,
+      "height": 552,
+      "bytes": 31151,
+      "contentType": "image/jpeg"
+    },
+    {
+      "slug": "jones-destiny-monae",
+      "name": "JONES, Destiny Monae",
+      "positionLabel": "EAP Instructor",
+      "roles": [
+        "EAP Instructor"
+      ],
+      "qualifications": [
+        "BA (English)"
+      ],
+      "email": null,
+      "profileImage": "/assets/kdu/faculty/jones-destiny-monae.jpg",
+      "sourceImageUrl": "https://www.kduniv.ac.kr/resources/homepage/global/_Img/Content/p88.jpg",
+      "sourceOrder": 48,
+      "sha256": "f091184b04089c90702f21c48eacdb3191425708d969acb1d663cd12ddee03e5",
+      "width": 105,
+      "height": 140,
+      "bytes": 5063,
+      "contentType": "image/jpeg"
+    },
+    {
+      "slug": "mutibi-meryl",
+      "name": "MUTIBI, Meryl",
+      "positionLabel": "EAP Instructor",
+      "roles": [
+        "EAP Instructor"
+      ],
+      "qualifications": [
+        "BA (Psychology)",
+        "MA (Human Resources Management)",
+        "CELTA (Certified)"
+      ],
+      "email": null,
+      "profileImage": "/assets/kdu/faculty/mutibi-meryl.jpg",
+      "sourceImageUrl": "https://www.kduniv.ac.kr/resources/homepage/global/_Img/Content/p66.jpg",
+      "sourceOrder": 49,
+      "sha256": "598aa3b82d02b39c39012723898c1e2d02832252519c054d0622064e58bf8349",
+      "width": 459,
+      "height": 526,
+      "bytes": 40376,
+      "contentType": "image/jpeg"
+    },
+    {
+      "slug": "bunagan-jennifert",
+      "name": "BUNAGAN, JenniferT.",
+      "positionLabel": "Visiting Faculty",
+      "roles": [
+        "Visiting Faculty"
+      ],
+      "qualifications": [
+        "BSc (Nutrition)",
+        "MSc (Food Service Administration)",
+        "PhD Candidate (Food Service Management)"
+      ],
+      "email": "jennifer@kduniv.ac.kr",
+      "profileImage": "/assets/kdu/faculty/bunagan-jennifert.jpg",
+      "sourceImageUrl": "https://www.kduniv.ac.kr/resources/homepage/global/_Img/Content/p78.jpg",
+      "sourceOrder": 50,
+      "sha256": "d15f9d646650c043589d60fcf91feb9dd2a5b375debad641d396ef30bbd2219e",
+      "width": 105,
+      "height": 140,
+      "bytes": 6612,
+      "contentType": "image/jpeg"
+    },
+    {
+      "slug": "rahmatullah-ayu-hasmiati",
+      "name": "RAHMATULLAH, Ayu Hasmiati",
+      "positionLabel": "Visiting Faculty",
+      "roles": [
+        "Visiting Faculty"
+      ],
+      "qualifications": [
+        "BA (English Education & Law)",
+        "MA (Law)",
+        "PhD (Science of Law)"
+      ],
+      "email": null,
+      "profileImage": "/assets/kdu/faculty/rahmatullah-ayu-hasmiati.jpg",
+      "sourceImageUrl": "https://www.kduniv.ac.kr/resources/homepage/global/_Img/Content/p59.jpg",
+      "sourceOrder": 51,
+      "sha256": "29ef1256d8eb93e80316ddb2cddd91e575cf37d71cd990adf0952ae88970122b",
+      "width": 321,
+      "height": 435,
+      "bytes": 22585,
+      "contentType": "image/jpeg"
+    },
+    {
+      "slug": "mannan-zubaer-ibna",
+      "name": "MANNAN, Zubaer Ibna",
+      "positionLabel": "Visiting Faculty",
+      "roles": [
+        "Visiting Faculty"
+      ],
+      "qualifications": [
+        "BSc (Electrical and Electronic Engineering)",
+        "MSc (Electronic Engineering)",
+        "PhD (Bioinformatics Engineering)"
+      ],
+      "email": null,
+      "profileImage": "/assets/kdu/faculty/mannan-zubaer-ibna.jpg",
+      "sourceImageUrl": "https://www.kduniv.ac.kr/resources/homepage/global/_Img/Content/p60.jpg",
+      "sourceOrder": 52,
+      "sha256": "aade384bf48cf4f7153b89723fff904f49b6816a1ea3dbb94a61aa83a740f54d",
+      "width": 314,
+      "height": 389,
+      "bytes": 17768,
+      "contentType": "image/jpeg"
+    },
+    {
+      "slug": "ivanova-aisena-s",
+      "name": "IVANOVA, Aisena S.",
+      "positionLabel": "Visiting Faculty",
+      "roles": [
+        "Visiting Faculty"
+      ],
+      "qualifications": [
+        "BSc (Biotechnology)",
+        "MBA (International Business)",
+        "PhD (Management Studies)"
+      ],
+      "email": null,
+      "profileImage": "/assets/kdu/faculty/ivanova-aisena-s.jpg",
+      "sourceImageUrl": "https://www.kduniv.ac.kr/resources/homepage/global/_Img/Content/p36.jpg",
+      "sourceOrder": 53,
+      "sha256": "0d042e10addf6508281e15e8e9412eb66b60976ad330b6f5a22043b764204551",
+      "width": 105,
+      "height": 140,
+      "bytes": 6691,
+      "contentType": "image/jpeg"
+    },
+    {
+      "slug": "koichubayev-alexandr",
+      "name": "KOICHUBAYEV, Alexandr",
+      "positionLabel": "Visiting Faculty",
+      "roles": [
+        "Visiting Faculty"
+      ],
+      "qualifications": [
+        "BSc (Management)",
+        "MSc (Economics)",
+        "PhD (Economics)"
+      ],
+      "email": null,
+      "profileImage": "/assets/kdu/faculty/koichubayev-alexandr.jpg",
+      "sourceImageUrl": "https://www.kduniv.ac.kr/resources/homepage/global/_Img/Content/p37.jpg",
+      "sourceOrder": 54,
+      "sha256": "7f5b125e9b535732d09158545b125db86270fb0ac7b740f194eaa72dc486c401",
+      "width": 105,
+      "height": 140,
+      "bytes": 6388,
+      "contentType": "image/jpeg"
+    },
+    {
+      "slug": "baildinov-ergali",
+      "name": "BAILDINOV, Ergali",
+      "positionLabel": "Visiting Faculty",
+      "roles": [
+        "Visiting Faculty"
+      ],
+      "qualifications": [
+        "BSc (Mechanical Engineering)",
+        "MA (International Management)",
+        "PhD (Economics)"
+      ],
+      "email": null,
+      "profileImage": "/assets/kdu/faculty/baildinov-ergali.jpg",
+      "sourceImageUrl": "https://www.kduniv.ac.kr/resources/homepage/global/_Img/Content/p38.jpg",
+      "sourceOrder": 55,
+      "sha256": "e86d2b03fcef52eac8740296899250148a275d705aba15cb713cd86e6aab7d09",
+      "width": 105,
+      "height": 140,
+      "bytes": 6456,
+      "contentType": "image/jpeg"
+    },
+    {
+      "slug": "delos-santos-maria-cristina",
+      "name": "DELOS SANTOS, Maria Cristina",
+      "positionLabel": "Visiting Faculty",
+      "roles": [
+        "Visiting Faculty"
+      ],
+      "qualifications": [
+        "BA (Economics)",
+        "MBA (Master of Business Administration)",
+        "PhD (Behavioral Management)"
+      ],
+      "email": null,
+      "profileImage": "/assets/kdu/faculty/delos-santos-maria-cristina.jpg",
+      "sourceImageUrl": "https://www.kduniv.ac.kr/resources/homepage/global/_Img/Content/p39.jpg",
+      "sourceOrder": 56,
+      "sha256": "9bd4ca46436aa6a73bccbab5d2496fffe127af14f970c916a7b1718bf0181e46",
+      "width": 105,
+      "height": 140,
+      "bytes": 5772,
+      "contentType": "image/jpeg"
+    },
+    {
+      "slug": "evizal-abdul-kadir",
+      "name": "EVIZAL, Abdul Kadir",
+      "positionLabel": "Visiting Faculty",
+      "roles": [
+        "Visiting Faculty"
+      ],
+      "qualifications": [
+        "BSc (Electrical Engineering)",
+        "MS (Electrical Engineering)",
+        "PhD (Wireless Communication Systems)"
+      ],
+      "email": null,
+      "profileImage": "/assets/kdu/faculty/evizal-abdul-kadir.jpg",
+      "sourceImageUrl": "https://www.kduniv.ac.kr/resources/homepage/global/_Img/Content/p43.jpg",
+      "sourceOrder": 57,
+      "sha256": "c3d81a3c109ed532f134a6b870f67fc4c785d40595dcc2d4eb6ff76807de450e",
+      "width": 105,
+      "height": 140,
+      "bytes": 5739,
+      "contentType": "image/jpeg"
+    },
+    {
+      "slug": "martynow-roman",
+      "name": "MARTYNOW, Roman",
+      "positionLabel": "Visiting Faculty",
+      "roles": [
+        "Visiting Faculty"
+      ],
+      "qualifications": [
+        "BA (English Philology)",
+        "MA (English Philology -Linguistics)",
+        "Postgraduate Studies (Public Relations)"
+      ],
+      "email": null,
+      "profileImage": "/assets/kdu/faculty/martynow-roman.jpg",
+      "sourceImageUrl": "https://www.kduniv.ac.kr/resources/homepage/global/_Img/Content/p41.jpg",
+      "sourceOrder": 58,
+      "sha256": "ba1a8ceebc4b04035a035592ed6948a5d6bbdcda072b4fe445714f389c3e5514",
+      "width": 105,
+      "height": 140,
+      "bytes": 6978,
+      "contentType": "image/jpeg"
+    }
+  ]
+}
