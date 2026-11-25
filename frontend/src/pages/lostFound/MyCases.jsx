@@ -6,6 +6,7 @@ import Pagination from '../../components/ui/Pagination';
 import { DataState } from '../../components/ui/States';
 import { TypeTag, ClaimStatusBadge } from '../../components/lostFound/LfBadges';
 import DeleteButton from '../../components/lostFound/DeleteButton';
+import BulkDeletableTable from '../../components/lostFound/BulkDeletableTable';
 import { BackToLostFound } from './LostFoundItem';
 import useApi from '../../hooks/useApi';
 import useQueryParams from '../../hooks/useQueryParams';
@@ -74,7 +75,7 @@ function MyReports({ page, type, setParams }) {
       >
         {(d) => (
           <>
-            <Table caption="My reports" columns={columns} rows={d.data} />
+            <BulkDeletableTable caption="My reports" columns={columns} rows={d.data} deleteOne={deleteMyItem} onDone={result.reload} />
             <Pagination meta={d.meta} onPage={(p) => setParams({ page: p })} />
           </>
         )}

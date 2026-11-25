@@ -192,3 +192,10 @@
   .lf-module .lf-claim-group { flex-wrap: wrap; }
   .lf-toasts { top: auto; bottom: 16px; left: 12px; right: 12px; width: auto; }
 }
+
+/* Bulk select + delete on report tables (My Reports, admin items) */
+.lf-bulk-bar { display: flex; align-items: center; gap: var(--space-3); flex-wrap: wrap; padding: var(--space-2) 0; }
+.lf-bulk-all { display: inline-flex; align-items: center; gap: var(--space-2); font-weight: 600; cursor: pointer; }
+.lf-bulk-count { color: var(--color-text-muted); font-size: 0.9rem; }
+.lf-check-col { width: 44px; }
+.lf-bulk-bar input[type="checkbox"], .lf-check-col input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; }
