@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import PageHeader from '../../components/layout/PageHeader';
-import Table from '../../components/ui/Table';
+import BulkDeletableTable from '../../components/lostFound/BulkDeletableTable';
 import Button from '../../components/ui/Button';
 import Select from '../../components/ui/Select';
 import Icon from '../../components/ui/Icon';
@@ -118,7 +118,7 @@ export default function AdminLfItems() {
               <p className="lf-count">
                 Showing <strong>{d.meta.total}</strong> report{d.meta.total === 1 ? '' : 's'}
               </p>
-              <Table caption={title} columns={columns} rows={d.data} />
+              <BulkDeletableTable caption={title} columns={columns} rows={d.data} deleteOne={adminDeleteItem} onDone={result.reload} />
               <Pagination meta={d.meta} onPage={(page) => setParams({ page })} />
             </>
           )}
