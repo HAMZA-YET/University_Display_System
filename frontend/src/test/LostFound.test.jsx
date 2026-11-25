@@ -5,6 +5,7 @@ import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { AuthProvider } from '../context/AuthContext';
 import ItemForm from '../components/lostFound/ItemForm';
 import LostFoundItem from '../pages/lostFound/LostFoundItem';
+import LostFoundBrowse from '../pages/lostFound/LostFoundBrowse';
 import ProtectedRoute from '../components/layout/ProtectedRoute';
 import * as lfApi from '../api/lostFound';
 
@@ -13,6 +14,7 @@ vi.mock('../member4/items/BookmarkControl', () => ({ default: () => null }));
 
 vi.mock('../api/lostFound', () => ({
   getPublicItem: vi.fn(),
+  listPublicItems: vi.fn(),
   getMyItem: vi.fn(),
   submitClaim: vi.fn(),
   publicPhotoUrl: (i, p) => `/x/${i}/${p}`,
@@ -73,13 +75,29 @@ describe('FE-LF Lost and found', () => {
     expect(screen.getByText(/share personal details/i)).toBeInTheDocument();
   });
 
-  test('FE-LF-3 visitors who are not logged in are sent to the login page', () => {
+  test('FE-LF-3 visitors see the lost and found page with a login prompt and no reports', () => {
     render(
       <AuthProvider initialUser={null}>
         <MemoryRouter initialEntries={['/items']}>
           <Routes>
+            <Route path="/items" element={<LostFoundBrowse />} />
+          </Routes>
+        </MemoryRouter>
+      </AuthProvider>
+    );
+    expect(screen.getByRole('heading', { name: 'Lost something? Found something?' })).toBeInTheDocument();
+    expect(screen.getByText('Log in to see lost and found reports')).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /Log in/ })).toHaveAttribute('href', '/login');
+    expect(lfApi.listPublicItems).not.toHaveBeenCalled();
+  });
+
+  test('FE-LF-3b item details still send visitors to the login page', () => {
+    render(
+      <AuthProvider initialUser={null}>
+        <MemoryRouter initialEntries={['/items/abc']}>
+          <Routes>
             <Route element={<ProtectedRoute />}>
-              <Route path="/items" element={<h1>Lost and found list</h1>} />
+              <Route path="/items/:id" element={<h1>Item details</h1>} />
             </Route>
             <Route path="/login" element={<h1>Login page</h1>} />
           </Routes>
@@ -87,7 +105,6 @@ describe('FE-LF Lost and found', () => {
       </AuthProvider>
     );
     expect(screen.getByText('Login page')).toBeInTheDocument();
-    expect(screen.queryByText('Lost and found list')).not.toBeInTheDocument();
   });
 
   test('FE-LF-4 students can claim an open found item', async () => {

@@ -61,7 +61,8 @@ try {
   });
   await check('members-only browse sends visitors to login and remains usable on small screens', async () => {
     await anonymous.page.goto(base + '/items');
-    await anonymous.page.waitForURL(/\/login$/);
+    await anonymous.page.getByText('Log in to see lost and found reports').waitFor();
+    assert.equal(await anonymous.page.locator('.lf-grid').count(), 0);
     await login(viewer.page, fixture.otherEmail);
     await visit(viewer.page, '/items');
     await viewer.page.getByRole('heading', { name: 'Lost something? Found something?' }).waitFor();

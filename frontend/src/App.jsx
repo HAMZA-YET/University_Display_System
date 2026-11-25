@@ -87,9 +87,11 @@ export default function App() {
             <Route path="/search-record/*" element={<Member4Routes />} />
             {/* Lost and found (Member 3): /items is the shared menu entry point */}
             <Route element={<LfLayout />}>
+              {/* Everyone can open /items, but reports are listed only for signed-in
+                  members; visitors see a login prompt instead of the list. */}
+              <Route path="/items" element={<LostFoundBrowse />} />
               {/* Members only: visitors who are not logged in are sent to /login */}
               <Route element={<ProtectedRoute />}>
-                <Route path="/items" element={<LostFoundBrowse />} />
                 <Route path="/items/:id" element={<LostFoundItem />} />
                 <Route path="/items/report" element={<ReportItem />} />
                 <Route path="/items/my-cases" element={<MyCases />} />
