@@ -8,6 +8,8 @@ const AuditLog = require('../src/modules/audit/audit.model');
 const User = require('../src/modules/users/user.model');
 const { signToken } = require('../src/modules/auth/token');
 const { resetEnvCache } = require('../src/config/env');
+const { buildProfiles } = require('../src/cli/import-kdu-faculty');
+const facultyCatalog = require('../src/data/kdu-faculty.json');
 
 const ctx = useTestApp();
 
@@ -102,6 +104,40 @@ describe('PROF Professor directory', () => {
     expect(bySubject.body.data.map((p) => p.name)).toEqual(['Joon Demo']);
     const regexSafe = await request(ctx.app).get('/api/professors').query({ q: '.*' });
     expect(regexSafe.body.data).toHaveLength(0);
+  });
+
+  test('published departments and rooms are filterable and searchable across the directory and campus search', async () => {
+    const profiles = buildProfiles(facultyCatalog);
+    const ai = profiles.find(p => p.sourceKey === 'kdu-global:khan-jebran');
+    const business = profiles.find(p => p.sourceKey === 'kdu-global:megha-swati');
+    const grad = profiles.find(p => p.sourceKey === 'kdu-global:nur-alam-md');
+    await Professor.insertMany([ai, business, grad]);
+
+    const departments = await request(ctx.app).get('/api/professors/departments');
+    expect(departments.body.data).toEqual(expect.arrayContaining([
+      { code: 'AI', name: 'Artificial Intelligence', count: 1 },
+      { code: 'AIDATA', name: 'Artificial Intelligence and Data Science', count: 1 },
+    ]));
+
+    const byDepartment = await request(ctx.app).get('/api/professors').query({ department: 'IBA' });
+    expect(byDepartment.body.data.map(p => [p.name, p.officeRoom])).toEqual([[business.name, '1205']]);
+    expect(byDepartment.body.meta.departmentCounts).toMatchObject({ AI: 1, IBA: 1, AIDATA: 1, ALL: 3 });
+
+    for (const q of ['Jebran Khan', 'Room 1222', '칸', '1222호']) {
+      const response = await request(ctx.app).get('/api/professors').query({ q, department: 'AI' });
+      expect(response.body.data.map(p => [p.name, p.officeRoom])).toEqual([[ai.name, '1222']]);
+    }
+    const combined = await request(ctx.app).get('/api/member-tools/search').query({ q: '1222' });
+    expect(combined.body.data).toEqual([expect.objectContaining({ source: 'professor', title: ai.name, officeRoom: '1222' })]);
+    expect((await Professor.findById(ai._id)).officeRoom).toBeNull();
+
+    await Professor.findByIdAndUpdate(ai._id, { officeRoom: '501B', department: 'BSC' });
+    const oldRoom = await request(ctx.app).get('/api/professors').query({ q: '1222', department: 'AI' });
+    expect(oldRoom.body.data).toEqual([]);
+    const updated = await request(ctx.app).get(`/api/professors/${ai._id}`);
+    expect(updated.body.data).toMatchObject({ officeRoom: '501B', department: 'BSC' });
+    const newRoom = await request(ctx.app).get('/api/professors').query({ q: 'room 501B', department: 'BSC' });
+    expect(newRoom.body.data.map(p => p.name)).toEqual([ai.name]);
   });
 
   test('PROF-4 multiple subjects saved and duplicates removed case-insensitively', async () => {

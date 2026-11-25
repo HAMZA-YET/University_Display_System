@@ -86,7 +86,7 @@ test('dry run is read-only and apply builds the partial index before removing th
 test('repeat import preserves administrator edits, inactivity, versions and timestamps verbatim', async () => {
   await importFaculty({ catalog: smallCatalog(), apply: true });
   const admin = await F.createUserAndLogin(ctx.app, 'ADMIN');
-  const [record] = (await request(ctx.app).get('/api/professors')).body.data;
+  const [record] = (await admin.agent.get('/api/professors').query({ includeInactive: 'true' })).body.data;
   const changed = await admin.agent.put('/api/professors/' + record.id).set('If-Match', '1').send({
     ...editable(record), name: 'Administrator corrected display name', officeRoom: 'Verified room', isActive: false,
   });
@@ -133,7 +133,7 @@ test('new and unsourced admin profiles retain strict validation; sourced metadat
   expect((await admin.agent.put('/api/professors/' + local.body.data.id).set('If-Match', '1').send({ ...localProfile(), subjects: [] })).status).toBe(400);
   await importFaculty({ catalog: missingEmailCatalog(), apply: true });
   const record = await Professor.findOne({ sourceKey: { $exists: true } }).lean();
-  const view = (await request(ctx.app).get('/api/professors/' + record._id)).body.data;
+  const view = (await admin.agent.get('/api/professors/' + record._id)).body.data;
   for (const metadata of [{ sourceKey: 'kdu-global:replacement' }, { sourceUrl: 'https://example.com' }, { positionLabel: 'Fabricated rank' }, { roles: ['Fabricated role'] }, { qualifications: ['Fabricated degree'] }]) {
     const response = await admin.agent.put('/api/professors/' + record._id).set('If-Match', '1').send({ ...editable(view), ...metadata });
     expect(response.status).toBe(400);
@@ -149,11 +149,11 @@ test('public serializer and both searches expose sourced identity and roles with
   expect(directory.status).toBe(200);
   expect(directory.body.data).toHaveLength(1);
   expect(directory.body.data[0]).toMatchObject({
-    name: catalog.profiles[0].name, department: null, subjects: [], counsellingHours: [],
+    name: catalog.profiles[0].name, department: 'IBA', officeRoom: '1108A', subjects: [], counsellingHours: [],
     sourceUrl: catalog.sourceUrl, positionLabel: catalog.profiles[0].positionLabel,
     qualifications: catalog.profiles[0].qualifications,
   });
-  expect(directory.body.meta.departmentCounts).toEqual({ ALL: 1 });
+  expect(directory.body.meta.departmentCounts).toEqual({ ALL: 1, IBA: 1 });
   const byRole = await request(ctx.app).get('/api/professors').query({ q: 'Dean of International Faculty' });
   expect(byRole.body.data.map(profile => profile.name)).toEqual([catalog.profiles[0].name]);
   const combined = await request(ctx.app).get('/api/member-tools/search').query({ q: 'Development Policy' });

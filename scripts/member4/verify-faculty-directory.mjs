@@ -7,6 +7,7 @@ const { chromium } = await import(process.env.UIDS_PLAYWRIGHT_MODULE || 'playwri
 const base = process.env.UIDS_FACULTY_BASE || 'http://127.0.0.1:5187';
 assert.ok(['http://127.0.0.1:5187', 'https://university-display-system.vercel.app'].includes(base));
 const catalog = JSON.parse(await fs.readFile(new URL('../../backend/src/data/kdu-faculty.json', import.meta.url), 'utf8'));
+const contacts = JSON.parse(await fs.readFile(new URL('../../backend/src/data/kdu-faculty-contacts.json', import.meta.url), 'utf8'));
 const output = new URL(`../../node_modules/.cache/faculty-directory-${base.startsWith('https:') ? 'production' : 'local'}/`, import.meta.url);
 await fs.mkdir(output, { recursive: true });
 const browser = await chromium.launch({ channel: 'chrome', headless: true });
@@ -38,10 +39,31 @@ try {
       for (const key of ['name', 'profileImage', 'positionLabel', 'roles', 'qualifications']) assert.deepEqual(profile[key], expected[key]);
       assert.equal(profile.email, expected.email?.toLowerCase() || null);
       assert.equal(profile.sourceUrl, catalog.sourceUrl);
-      for (const key of ['department', 'officeRoom', 'officeBuilding', 'phone']) assert.equal(profile[key], null);
+      assert.equal(profile.department, contacts.profiles[expected.slug]?.department || null);
+      assert.equal(profile.officeRoom, contacts.profiles[expected.slug]?.officeRoom || null);
+      for (const key of ['officeBuilding', 'phone']) assert.equal(profile[key], null);
       assert.deepEqual(profile.subjects, []);
       assert.deepEqual(profile.counsellingHours, []);
     }
+  });
+  await check('directory opens with department choices and filters by room number', async () => {
+    await visit('/professors');
+    const department = page.getByLabel('Department', { exact: true });
+    await department.locator('option[value="AI"]').waitFor({ state: 'attached' });
+    assert.equal(await page.locator('.prof-card').count(), 0);
+    await department.selectOption('AI');
+    await page.getByRole('heading', { name: 'KHAN, Jebran', exact: true }).waitFor();
+    assert.equal(await page.locator('.prof-card-official').count(), Object.values(contacts.profiles).filter(p => p.department === 'AI').length);
+    await page.getByLabel('Search by name, subject or room').fill('1222');
+    await page.waitForURL(url => url.searchParams.get('q') === '1222' && url.searchParams.get('department') === 'AI');
+    await page.getByText('1 faculty member found', { exact: true }).waitFor();
+    await page.locator('.prof-card').getByText('Room 1222', { exact: true }).waitFor();
+    await page.getByRole('button', { name: 'Clear filters' }).click();
+    await page.getByRole('heading', { name: 'Choose a department or search for a professor' }).waitFor();
+    assert.equal(await page.locator('.prof-card').count(), 0);
+    await visit('/search?source=all&q=1222');
+    await page.getByRole('link', { name: 'KHAN, Jebran', exact: true }).waitFor();
+    await page.getByText('Room 1222', { exact: true }).waitFor();
   });
   await check('all 58 local portraits match source hashes and decode at original dimensions', async () => {
     for (const photo of catalog.profiles) assert.equal(createHash('sha256').update(await (await get(photo.profileImage)).body()).digest('hex'), photo.sha256);
@@ -79,7 +101,7 @@ try {
   await check('directory and portraits fit four viewport widths without upscaling or overflow', async () => {
     for (const width of [320, 390, 768, 1280]) {
       await page.setViewportSize({ width, height: width < 768 ? 844 : 1000 });
-      await visit('/professors');
+      await visit('/professors?department=AI');
       await page.locator('.prof-card-official').first().waitFor();
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth), true, `Overflow at ${width}px`);
       assert.ok(await page.locator('.prof-card-official img').first().evaluate(async image => { await image.decode(); return image.naturalWidth > 0 && image.clientWidth <= image.naturalWidth; }));

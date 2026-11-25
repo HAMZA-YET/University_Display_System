@@ -33,6 +33,8 @@ export default function ProfessorCard({ professor, departmentName }) {
   const subjects = professor.subjects || [];
   const hours = professor.counsellingHours || [];
   const office = [professor.officeRoom && `Room ${professor.officeRoom}`, professor.officeBuilding].filter(Boolean).join(', ');
+  const department = departmentName && !/\s\(Demo\)$/i.test(departmentName)
+    ? departmentName : professor.departmentName || departmentName || professor.department;
   return (
     <article className={`prof-card${official ? ' prof-card-official' : ''}`}>
       <div className="prof-head">
@@ -44,7 +46,7 @@ export default function ProfessorCard({ professor, departmentName }) {
         <div>
           <h3>{fullName}</h3>
           <div className="small">{professor.positionLabel || humanize(professor.position)}</div>
-          {professor.department && <div className="small muted">{departmentName || professor.department}</div>}
+          {department && <div className="small muted">{department}</div>}
           {official && <span className="prof-source-badge">KDU Global faculty</span>}
           {/\(Demo\)\s*$/i.test(professor.name) && <span className="sample-badge">Fictional sample profile</span>}
         </div>

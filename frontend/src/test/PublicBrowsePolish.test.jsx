@@ -5,11 +5,11 @@ import { MemoryRouter, useLocation } from 'react-router-dom';
 import Events from '../pages/Events';
 import Professors from '../pages/Professors';
 import { listPublicEvents } from '../api/events';
-import { listProfessors } from '../api/professors';
+import { listProfessors, professorDepartments } from '../api/professors';
 import { monthStartIso, zonedParts } from '../lib/time';
 
 vi.mock('../api/events', () => ({ listPublicEvents: vi.fn() }));
-vi.mock('../api/professors', () => ({ listProfessors: vi.fn() }));
+vi.mock('../api/professors', () => ({ listProfessors: vi.fn(), professorDepartments: vi.fn() }));
 vi.mock('../hooks/useDepartments', () => ({ default: () => ({ departments: [{ code: 'AI', name: 'Artificial Intelligence' }], byCode: { AI: 'Artificial Intelligence' } }) }));
 
 function Location() {
@@ -23,6 +23,7 @@ beforeEach(() => {
   vi.clearAllMocks();
   listPublicEvents.mockResolvedValue({ data: [], meta: { total: 0, page: 1, totalPages: 1 } });
   listProfessors.mockResolvedValue({ data: [], meta: { total: 0, page: 1, totalPages: 1, departmentCounts: {} } });
+  professorDepartments.mockResolvedValue([{ code: 'AI', name: 'Artificial Intelligence', count: 1 }]);
 });
 
 test('events still default to upcoming and All events omits the backend state filter', async () => {
@@ -55,10 +56,21 @@ test('professor results use the server total and Clear filters resets keyword, d
   } : { data: [], meta: { total: 0, page: 1, totalPages: 1, departmentCounts: {} } });
   show(<Professors />, '/professors?q=Machine&department=AI&page=2');
   expect(await screen.findByText('31 professors found')).toBeInTheDocument();
+  expect(screen.getByText('Room 101, Main')).toBeInTheDocument();
   await userEvent.click(screen.getByRole('button', { name: 'Clear filters' }));
-  await waitFor(() => expect(listProfessors).toHaveBeenLastCalledWith({ department: '', q: '', page: 1, limit: 30 }));
   expect(screen.getByTestId('location').textContent).toBe('/professors');
-  expect(screen.getByLabelText('Search by name or subject')).toHaveValue('');
+  expect(screen.getByLabelText('Search by name, subject or room')).toHaveValue('');
   expect(screen.queryByRole('button', { name: 'Clear filters' })).not.toBeInTheDocument();
-  expect(await screen.findByText('0 professors found')).toBeInTheDocument();
+  expect(screen.getByText('Choose a department or search for a professor')).toBeInTheDocument();
+  expect(listProfessors).toHaveBeenCalledTimes(1);
+});
+
+test('the directory waits for a department or search term and sends room searches with the selected department', async () => {
+  show(<Professors />, '/professors');
+  expect(await screen.findByRole('option', { name: 'Artificial Intelligence (1)' })).toBeInTheDocument();
+  expect(listProfessors).not.toHaveBeenCalled();
+  await userEvent.selectOptions(screen.getByLabelText('Department'), 'AI');
+  await waitFor(() => expect(listProfessors).toHaveBeenLastCalledWith({ department: 'AI', q: '', page: 1, limit: 30 }));
+  await userEvent.type(screen.getByLabelText('Search by name, subject or room'), '1222');
+  await waitFor(() => expect(listProfessors).toHaveBeenLastCalledWith({ department: 'AI', q: '1222', page: 1, limit: 30 }));
 });

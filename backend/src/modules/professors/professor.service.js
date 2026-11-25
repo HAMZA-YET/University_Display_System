@@ -6,14 +6,16 @@ const AppError = require('../../utils/AppError');
 const audit = require('../audit/audit.service');
 const { assertDepartment } = require('../departments/department.service');
 const { getPaging, buildMeta } = require('../../utils/pagination');
-const { containsRegex } = require('../../utils/regex');
+const { directoryDepartmentName, directoryFields, professorKeywordMatch, withPublishedContact } = require('./professor.directory');
 
-function toProfessorView(p) {
+function toProfessorView(p, { publicDirectory = false } = {}) {
+  const departmentName = publicDirectory && p.sourceKey ? directoryDepartmentName(p.department) : null;
   return {
     id: String(p._id),
     name: p.name,
     titlePrefix: p.titlePrefix || null,
     department: p.department,
+    ...(departmentName ? { departmentName } : {}),
     position: p.position,
     officeRoom: p.officeRoom,
     officeBuilding: p.officeBuilding,
@@ -52,35 +54,31 @@ function normalize(body) {
   return out;
 }
 
-/**
- * Public list. Search matches name or subject with an escaped,
- * case-insensitive "contains" match so partial words work while typing.
- */
 async function listProfessors(query, { includeInactive = false } = {}) {
   const { page, limit, skip } = getPaging(query);
-  const filter = {};
-  if (!includeInactive) filter.isActive = true;
-  if (query.department) filter.department = query.department;
-  if (query.q) {
-    const rx = containsRegex(query.q);
-    filter.$or = [{ name: rx }, { subjects: rx }, { sourceKey: { $exists: true }, $or: [{ qualifications: rx }, { roles: rx }] }];
-  }
-  const countFilter = { ...filter };
-  delete countFilter.department;
-  const [items, total, byDept] = await Promise.all([
-    Professor.find(filter).collation({ locale: 'en' }).sort({ name: 1, _id: 1 }).skip(skip).limit(limit).lean(),
-    Professor.countDocuments(filter),
-    Professor.aggregate([{ $match: countFilter }, { $group: { _id: '$department', count: { $sum: 1 } } }]),
-  ]);
+  const directory = includeInactive ? [] : [{ $match: { isActive: true } }, ...directoryFields];
+  const department = query.department ? [{ $match: { department: query.department } }] : [];
+  const [{ items, totals, byDept }] = await Professor.aggregate([
+    ...directory,
+    { $match: professorKeywordMatch(query.q) },
+    { $facet: {
+      items: [...department, { $sort: { name: 1, _id: 1 } }, { $skip: skip }, { $limit: limit }],
+      totals: [...department, { $count: 'total' }],
+      byDept: [{ $group: { _id: '$department', count: { $sum: 1 } } }],
+    } },
+  ]).collation({ locale: 'en' });
   const counts = Object.fromEntries(byDept.filter((d) => d._id).map((d) => [d._id, d.count]));
   counts.ALL = byDept.reduce((sum, d) => sum + d.count, 0);
-  return { data: items.map(toProfessorView), meta: { ...buildMeta(page, limit, total), departmentCounts: counts } };
+  return {
+    data: items.map(p => toProfessorView(p, { publicDirectory: !includeInactive })),
+    meta: { ...buildMeta(page, limit, totals[0]?.total || 0), departmentCounts: counts },
+  };
 }
 
 async function getProfessor(id, { includeInactive = false } = {}) {
   const p = await Professor.findById(id).lean();
   if (!p || (!includeInactive && !p.isActive)) throw AppError.notFound();
-  return toProfessorView(p);
+  return includeInactive ? toProfessorView(p) : toProfessorView(withPublishedContact(p), { publicDirectory: true });
 }
 
 async function createProfessor(ctx, body) {
@@ -128,10 +126,21 @@ async function deleteProfessor(ctx, id) {
 async function departmentsWithCounts() {
   const [departments, counts] = await Promise.all([
     Department.find().sort({ displayOrder: 1 }).lean(),
-    Professor.aggregate([{ $match: { isActive: true } }, { $group: { _id: '$department', count: { $sum: 1 } } }]),
+    Professor.aggregate([
+      { $match: { isActive: true } }, ...directoryFields,
+      { $group: { _id: '$department', count: { $sum: 1 } } },
+    ]),
   ]);
   const map = Object.fromEntries(counts.map((c) => [c._id, c.count]));
-  return departments.map((d) => ({ code: d.code, name: d.name, count: map[d.code] || 0 }));
+  const options = new Map(departments.map(({ code, name }) => [
+    code,
+    { code, name: (/\s\(Demo\)$/i.test(name) && directoryDepartmentName(code)) || name, count: map[code] || 0 },
+  ]));
+  for (const { _id: code, count } of counts) {
+    const name = directoryDepartmentName(code);
+    if (name && !options.has(code)) options.set(code, { code, name, count });
+  }
+  return [...options.values()];
 }
 
 module.exports = {

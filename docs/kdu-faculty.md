@@ -4,11 +4,13 @@ The directory uses the [published KDU Global faculty listing](https://www.kduniv
 
 All 58 portrait originals are stored in `frontend/public/assets/kdu/faculty/` (1,430,004 bytes). Each photo was matched using its enclosing source card, heading and image alt text. Source hashes and dimensions are retained in the catalog; images are served locally without enlarging the small original portraits. The source's spelling and PhD Candidate wording are retained.
 
-The source does not provide a reliable department assignment for every person, office rooms/buildings, telephone numbers, teaching-subject lists or counselling schedules. These fields remain empty. Qualifications are displayed as qualifications and searchable as such. They are not presented as taught courses. The application links back to the official listing and never puts a real portrait on a fictional sample profile.
+The [Goseong campus contact directory](https://www.kduniv.ac.kr/kor/CMS/HaksaContactMgr/list3.do?mCode=MN239) supplements the faculty listing. `backend/src/data/kdu-faculty-contacts.json` records matched department assignments and office room numbers. Language program assignments come from the published instructor titles. Unverified locations, building names, and other unpublished details remain empty. Qualifications are searchable and are labelled separately from teaching subjects.
 
 ## Integration and updates
 
 Official records live in the existing `Professor` collection, so Home, directory, dedicated professor search and combined search use the same data. Immutable `sourceKey` values and deterministic identifiers make the manual import repeatable. Importing again only inserts missing records and preserves administrator edits, hidden status and versions. Source roles/qualifications/designations are read-only metadata; contact/office/teaching fields can be maintained through the existing admin form when verified.
+
+The directory waits for a department or keyword before showing profiles. Directory and campus search match names, published roles and qualifications, subjects, and office room numbers. Public reads use the matched contacts as defaults for missing department and room fields. Saved administrator values take precedence. The supplemental contact catalog takes effect on deployment without a database migration.
 
 The operator command is `node backend/src/cli/import-kdu-faculty.js`. Supply the existing database configuration through the environment (for local development, Node's `--env-file=backend/.env` can load it). No flags performs a read-only dry run. `--archive-samples` adds the proposed sample archive counts; `--apply --archive-samples` explicitly applies the plan. This command is not part of application startup, normal builds, seeding or an HTTP endpoint.
 
