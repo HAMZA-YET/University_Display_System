@@ -34,7 +34,6 @@ export default function MyClaim() {
               <span className="row" style={{ gap: 'var(--space-4)' }}>
                 <BackToLostFound />
                 <Link to="/items/my-cases?tab=claims">My Claims</Link>
-                {location.state?.returnTo === '/notifications' && <Link to="/notifications" state={{ focusReturn: true }}>Back to notifications</Link>}
               </span>
             }
             actions={

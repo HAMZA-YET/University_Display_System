@@ -101,33 +101,6 @@
   max-width: 100%;
 }
 
-.lf-module .lf-hero-search {
-  min-width: 0;
-}
-
-.lf-module .lf-hero-search input {
-  min-width: 0;
-}
-
-.lf-module .lf-legend {
-  flex-wrap: wrap;
-  row-gap: 8px;
-}
-
-/* Keep private file names separate from their actions, including long names. */
-section[aria-label="Private proof files"] > ul {
-  padding-left: 20px;
-}
-
-section[aria-label="Private proof files"] > ul > li > span:first-child {
-  display: block;
-  margin-bottom: 8px;
-}
-
-section[aria-label="Private proof files"] > ul > li > .btn {
-  margin: 0 4px 6px 0;
-}
-
 section[aria-labelledby="notification-preferences-title"] fieldset > label {
   display: flex;
   align-items: flex-start;

@@ -224,9 +224,3 @@ Validation on the reviewed source used disposable local data and no production c
 - Desktop/mobile header and footer screenshots matched the preserved previous build; the tested pages had no browser exceptions or horizontal overflow.
 
 An email provider and verified sender are still required for activation/recovery delivery. Blob-provider backup/export, physical evidence purge and unattended retention remain operational follow-ups. Current manual cleanup keeps its dry-run default and stopped-writer safeguards. Email/push/realtime case delivery and item-topic subscriptions are not claimed by this release. These local checks do not certify live privileged operations or a production restore.
-
-## 14. Presentation polish — November 25, 2026
-
-The frontend now retains notification return context on own cases and recovers from an out-of-range item page without dropping filters. Campus search entry points use All sources; professor results preserve their directory context. Event browsing includes All events and a current-month reset, and the directory has result counts and a filter reset. New page navigation resets scroll/focus while browser Back and explicit context-return links retain their own behavior. Account menus dismiss with Escape or an outside click.
-
-Frontend lint, 78 frontend tests and the production build passed. Disposable local verification passed 13 HTTP groups, 7 shared Chrome groups and 11 lost-and-found Chrome groups; additional Chrome checks covered event controls, directory reset and layouts at 320/390/1280 pixels. Desktop/mobile header and footer screenshots matched the preserved official-logo design. No backend, account policy, global styles or production records were changed by this polish. Email setup remains deferred.
