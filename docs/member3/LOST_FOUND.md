@@ -35,7 +35,7 @@ The shared files changed only where they had to be:
 
 | URL | Who | What |
 |---|---|---|
-| `/items` | signed in | Browse and search reports (Found / Lost, categories) |
+| `/items` | everyone; reports for signed-in members | Visitors see the page with a "Log in to see lost and found reports" box and no reports. Members browse and search reports (Found / Lost, categories) |
 | `/items/:id` | signed in | Item details; claim form for FOUND items (hidden from the reporter) |
 | `/items/report` | signed in | Report a lost or found item (up to 3 photos) |
 | `/items/my-cases` | signed in | My reports and my claims |
@@ -160,7 +160,7 @@ These two differ from the original proposal (T07). Please confirm or change them
 ## 9. Demonstration
 
 1. For a disposable local database only, run `ALLOW_DEVELOPMENT_SEED=true npm run seed:development -w backend`, then `npm run dev`.
-2. Open `/items` signed out: you are sent to the login page. Log in, then browse, search for "umbrella", and filter by Found.
+2. Open `/items` signed out: the page opens with a login box and no reports. Log in, then browse, search for "umbrella", and filter by Found.
 3. Log in as `student1@kdu-uids.test` / `Student@12345`.
    - Report a found item with a photo. It appears in `/items` immediately.
    - Open it: "This is your report" appears, and there is no claim form.

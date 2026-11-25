@@ -4,7 +4,7 @@ import LfCategoryIcon from '../../components/lostFound/LfCategoryIcon';
 import Button from '../../components/ui/Button';
 import Icon from '../../components/ui/Icon';
 import Pagination from '../../components/ui/Pagination';
-import { DataState } from '../../components/ui/States';
+import { DataState, EmptyState } from '../../components/ui/States';
 import useApi from '../../hooks/useApi';
 import useAuth from '../../hooks/useAuth';
 import useDebounce from '../../hooks/useDebounce';
@@ -18,9 +18,14 @@ const TYPES = [
   { value: 'LOST', label: 'Lost Items', noun: 'lost items' },
 ];
 
-/** Public Lost & Found home. Students and the admin see the same list. */
+/**
+ * Lost & Found home. Everyone can open the page, but reports are listed only
+ * for signed-in members (the API also refuses visitors). Visitors see a login
+ * prompt where the list would be.
+ */
 export default function LostFoundBrowse() {
-  const { user, hasRole } = useAuth();
+  const { user, loading: authLoading, hasRole } = useAuth();
+  const userId = user ? user.id || user._id : null;
   const isAdmin = hasRole('ADMIN');
   const [params, setParams] = useQueryParams(['type', 'category', 'q', 'page']);
   const [q, setQ] = useState(params.q);
@@ -41,8 +46,11 @@ export default function LostFoundBrowse() {
   }, [debounced]);
 
   const result = useApi(
-    () => listPublicItems({ type: params.type, category: params.category, q: params.q, page: params.page || 1, limit: 12 }),
-    [params.type, params.category, params.q, params.page]
+    () =>
+      userId
+        ? listPublicItems({ type: params.type, category: params.category, q: params.q, page: params.page || 1, limit: 12 })
+        : Promise.resolve(null),
+    [userId, params.type, params.category, params.q, params.page]
   );
   const current = TYPES.find((t) => t.value === params.type) || TYPES[0];
   const filtered = Boolean(params.q || params.category);
@@ -56,6 +64,7 @@ export default function LostFoundBrowse() {
           Search items reported around KDU Global. Found items wait safely at the office; ownership is checked privately before anything is
           handed over.
         </p>
+        {user && (
         <form className="lf-hero-search" role="search" onSubmit={(e) => e.preventDefault()}>
           <Icon name="search" size={18} />
           <label htmlFor="lf-search" className="visually-hidden">
@@ -69,6 +78,7 @@ export default function LostFoundBrowse() {
             placeholder="Try 'umbrella', 'library' or a reference like LF-2026-00001"
           />
         </form>
+        )}
         <div className="lf-hero-actions">
           {isAdmin && (
             <Button to="/admin/lost-found" icon="building">
@@ -85,14 +95,26 @@ export default function LostFoundBrowse() {
               </Button>
             </>
           )}
-          {!user && (
-            <Button to="/login" state={{ from: '/items/report' }} icon="user">
-              Log in to report an item
-            </Button>
-          )}
         </div>
       </section>
 
+      {!user && !authLoading && (
+        <div className="stack">
+          <EmptyState title="Log in to see lost and found reports">
+            <p>Reports are visible only to KDU members, to protect students' belongings and privacy.</p>
+            <div className="lf-hero-actions">
+              <Button to="/login" state={{ from: '/items' }} icon="user">
+                Log in
+              </Button>
+              <Button variant="secondary" to="/register">
+                Create an account
+              </Button>
+            </div>
+          </EmptyState>
+        </div>
+      )}
+
+      {user && (
       <div className="stack">
         <div className="lf-chips" role="group" aria-label="Item type">
           {TYPES.map((t) => (
@@ -157,6 +179,7 @@ export default function LostFoundBrowse() {
           )}
         </DataState>
       </div>
+      )}
     </>
   );
 }
