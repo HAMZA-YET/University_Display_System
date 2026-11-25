@@ -1,12 +1,17 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, within } from '@testing-library/react';
 import { MemoryRouter, useLocation, useNavigate } from 'react-router-dom';
-import { vi, test, expect, beforeEach } from 'vitest';
+import { vi, test, expect, beforeAll, afterAll, beforeEach } from 'vitest';
 import userEvent from '@testing-library/user-event';
 import SearchPage from './SearchPage.jsx';
 const get = vi.hoisted(() => vi.fn());
 vi.mock('../../api/client.js', () => ({ default: { get } }));
 vi.mock('../../hooks/useAuth.js', () => ({ default: () => ({ user: null, loading: false }) }));
 vi.mock('../../hooks/useDepartments.js', () => ({ default: () => ({ departments: [{ code: 'CS', name: 'Computing' }], byCode: { CS: 'Computing' } }) }));
+beforeAll(() => {
+  // JSDOM has no layout; Radix scrolls the focused option in the browser.
+  Element.prototype.scrollIntoView = vi.fn();
+});
+afterAll(() => { delete Element.prototype.scrollIntoView; });
 beforeEach(() => get.mockReset());
 
 function HistoryControls() {
@@ -60,18 +65,44 @@ test('professor source sends directory fields without notice-only filters', asyn
 });
 
 test('URL-restored notice controls submit verified filters and clear completely', async () => {
+  const user = userEvent.setup();
   get.mockResolvedValue({ data: { data: [], meta: { page: 1, limit: 12, total: 0, totalPages: 1 } } });
   render(<MemoryRouter initialEntries={['/search?category=EXAM&from=2026-11-01&sort=newest']}><SearchPage /></MemoryRouter>);
-  expect(screen.getByLabelText('Notice category')).toHaveValue('EXAM');
+  const category = screen.getByRole('combobox', { name: 'Notice category' });
+  expect(category).toHaveTextContent('Exam');
   expect(screen.getByLabelText('Published from (KST, inclusive)')).toHaveValue('2026-11-01');
-  expect(screen.getByLabelText('Sort notices')).toHaveValue('newest');
+  expect(screen.getByRole('combobox', { name: 'Sort notices' })).toHaveTextContent('Newest publication first');
   await screen.findByText('No matching information');
   expect(get.mock.calls[0][1].params.from).toBe('2026-11-01T00:00:00.000+09:00');
-  fireEvent.change(screen.getByLabelText('Notice category'), { target: { value: 'GENERAL' } });
+  category.focus();
+  await user.keyboard('{Enter}');
+  const options = within(await screen.findByRole('listbox', { name: 'Notice category' }));
+  await user.keyboard('{End}');
+  await waitFor(() => expect(options.getByRole('option', { name: 'General' })).toHaveFocus());
+  await user.keyboard('{Enter}');
+  expect(category).toHaveTextContent('General');
+  await waitFor(() => expect(category).toHaveFocus());
   fireEvent.click(screen.getByRole('button', { name: 'Search', exact: true }));
   await waitFor(() => expect(get.mock.calls.at(-1)[1].params.category).toBe('GENERAL'));
   fireEvent.click(screen.getByRole('link', { name: 'Clear search' }));
-  await waitFor(() => expect(screen.getByLabelText('Notice category')).toHaveValue(''));
+  await waitFor(() => expect(screen.getByRole('combobox', { name: 'Notice category' })).toHaveTextContent('All categories'));
   expect(screen.getByLabelText('Published from (KST, inclusive)')).toHaveValue('');
-  expect(screen.getByLabelText('Sort notices')).toHaveValue('default');
+  expect(screen.getByRole('combobox', { name: 'Sort notices' })).toHaveTextContent('University priority order');
+});
+
+test('Escape closes a source menu without changing the current filters', async () => {
+  const user = userEvent.setup();
+  get.mockResolvedValue({ data: { data: [], meta: { page: 1, limit: 12, total: 0, totalPages: 1 } } });
+  render(<MemoryRouter><SearchPage /></MemoryRouter>);
+  await screen.findByText('No matching information');
+  const source = screen.getByRole('combobox', { name: 'Search in' });
+  source.focus();
+  await user.keyboard('{ArrowDown}');
+  const options = within(await screen.findByRole('listbox', { name: 'Search in' }));
+  expect(options.getByRole('option', { name: 'Public notices', selected: true })).toBeInTheDocument();
+  await user.keyboard('{ArrowDown}{Escape}');
+  await waitFor(() => expect(source).toHaveFocus());
+  expect(source).toHaveTextContent('Public notices');
+  expect(screen.queryByRole('listbox')).not.toBeInTheDocument();
+  expect(get).toHaveBeenCalledTimes(1);
 });

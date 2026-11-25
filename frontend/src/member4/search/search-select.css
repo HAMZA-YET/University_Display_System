@@ -1,0 +1,65 @@
+.search-select-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  min-width: 0;
+  height: 46px;
+  padding: 0 13px;
+  border: 1px solid #c8d5e4;
+  border-radius: 7px;
+  background: #fff;
+  color: var(--color-text);
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+
+.search-select-trigger:hover,
+.search-select-trigger[data-state='open'] { border-color: #6389b0; }
+.search-select-trigger:focus-visible { outline: 2px solid #3e78ae; outline-offset: 2px; }
+.search-select-trigger svg { flex: none; color: var(--color-primary); }
+.search-select-trigger[data-state='open'] svg { transform: rotate(180deg); }
+.search-select-value { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.search-select-menu {
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  width: var(--radix-select-trigger-width);
+  max-width: var(--radix-select-content-available-width);
+  max-height: min(19rem, var(--radix-select-content-available-height));
+  overflow: hidden;
+  border: 1px solid #c8d5e4;
+  border-radius: 8px;
+  background: #fff;
+  color: var(--color-text);
+  box-shadow: 0 10px 24px #0b315b26;
+}
+
+.search-select-options { min-height: 0; padding: 4px; overscroll-behavior: contain; }
+.search-select-option {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 16px;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 8px 10px;
+  border-radius: 5px;
+  color: var(--color-text);
+  font-size: 14px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+}
+
+.search-select-option[data-state='checked'] { background: #ebf3fc; color: var(--color-primary); font-weight: 600; }
+.search-select-option[data-highlighted] { outline: 1px solid #6389b0; outline-offset: -1px; background: #deebfa; }
+.search-select-check { display: flex; align-items: center; }
+
+@media (forced-colors: active) {
+  .search-select-trigger:focus-visible,
+  .search-select-option[data-highlighted] { outline-color: Highlight; }
+  .search-select-menu { border-color: CanvasText; }
+}

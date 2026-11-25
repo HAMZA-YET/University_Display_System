@@ -8,7 +8,6 @@ import NoticeCard from '../../components/notices/NoticeCard.jsx';
 import ProfessorCard from '../../components/professors/ProfessorCard.jsx';
 import Button from '../../components/ui/Button.jsx';
 import Input from '../../components/ui/Input.jsx';
-import Select from '../../components/ui/Select.jsx';
 import Pagination from '../../components/ui/Pagination.jsx';
 import { EmptyState, ErrorState, LoadingState } from '../../components/ui/States.jsx';
 import useDepartments from '../../hooks/useDepartments.js';
@@ -16,8 +15,16 @@ import useApi from '../../hooks/useApi.js';
 import useAuth from '../../hooks/useAuth.js';
 import { LF_CATEGORIES, lfLabel } from '../../lib/lostFoundLabels.js';
 import { SEARCH_SOURCES, parseLiveSearch, liveSearchParams, searchConnectedRecords } from './liveSearch.js';
+import SearchSelect from './SearchSelect.jsx';
 
 const request = (path, config) => api.get(path, config).then((response) => response.data);
+const sourceOptions = Object.entries(SEARCH_SOURCES).map(([value, source]) => ({ value, label: source.label }));
+const itemOptions = LF_CATEGORIES.map((value) => ({ value, label: lfLabel(value) }));
+const noticeOptions = CATEGORIES.map((value) => ({ value, label: humanize(value) }));
+const sortOptions = [
+  { value: 'default', label: 'University priority order' },
+  { value: 'newest', label: 'Newest publication first' },
+];
 const resultDestination = (record) => record.source === 'professor'
   ? '/professors?' + new URLSearchParams({ q: record.title })
   : record.href || `/items/${record.id}`;
@@ -70,6 +77,18 @@ function ConnectedSearch({ search, signedIn, focusReturn }) {
     retry();
   }
 
+  function changeSource(source) {
+    setDraft({
+      ...draft,
+      source,
+      department: ['item', 'all'].includes(source) || draft.department === 'ALL' ? '' : draft.department,
+      category: '',
+      from: '',
+      to: '',
+      sort: 'default',
+    });
+  }
+
   const state = result.state || parsed.state;
   return (
     <>
@@ -77,14 +96,14 @@ function ConnectedSearch({ search, signedIn, focusReturn }) {
       <div className="stack">
         <form className="card stack" onSubmit={submit}>
           <div className="grid grid-3">
-            <Select label="Search in" value={draft.source} onChange={(event) => setDraft({ ...draft, source: event.target.value, department: ['item', 'all'].includes(event.target.value) || draft.department === 'ALL' ? '' : draft.department, category: '', from: '', to: '', sort: 'default' })} options={Object.entries(SEARCH_SOURCES).map(([value, source]) => ({ value, label: source.label }))} />
+            <SearchSelect label="Search in" value={draft.source} onChange={changeSource} options={sourceOptions} />
             <Input label="Search text" type="search" maxLength={100} value={draft.q} onChange={(event) => setDraft({ ...draft, q: event.target.value })} placeholder={searchingProfessors ? 'Name, subject or room' : draft.source === 'notice' ? 'Notice title or content' : 'Campus information'} />
-            {['notice', 'professor'].includes(draft.source) && <Select label="Department" value={draft.department} onChange={(event) => setDraft({ ...draft, department: event.target.value })} placeholder="All departments" options={[...(draft.source === 'notice' ? [{ value: 'ALL', label: 'University-wide' }] : []), ...availableDepartments.map((department) => ({ value: department.code, label: department.name }))]} />}
-            {draft.source === 'item' && <Select label="Item category" placeholder="All categories" value={draft.category} options={LF_CATEGORIES.map((value) => ({ value, label: lfLabel(value) }))} onChange={(event) => setDraft({ ...draft, category: event.target.value })} />}
+            {['notice', 'professor'].includes(draft.source) && <SearchSelect label="Department" value={draft.department} onChange={(department) => setDraft({ ...draft, department })} placeholder="All departments" options={[...(draft.source === 'notice' ? [{ value: 'ALL', label: 'University-wide' }] : []), ...availableDepartments.map((department) => ({ value: department.code, label: department.name }))]} />}
+            {draft.source === 'item' && <SearchSelect label="Item category" placeholder="All categories" value={draft.category} options={itemOptions} onChange={(category) => setDraft({ ...draft, category })} />}
           </div>
           {draft.source === 'notice' && <div className="grid grid-2">
-            <Select label="Notice category" placeholder="All categories" value={draft.category} options={CATEGORIES.map((value) => ({ value, label: humanize(value) }))} onChange={(event) => setDraft({ ...draft, category: event.target.value })} />
-            <Select label="Sort notices" value={draft.sort} options={[{ value: 'default', label: 'University priority order' }, { value: 'newest', label: 'Newest publication first' }]} onChange={(event) => setDraft({ ...draft, sort: event.target.value })} />
+            <SearchSelect label="Notice category" placeholder="All categories" value={draft.category} options={noticeOptions} onChange={(category) => setDraft({ ...draft, category })} />
+            <SearchSelect label="Sort notices" value={draft.sort} options={sortOptions} onChange={(sort) => setDraft({ ...draft, sort })} />
             <Input label="Published from (KST, inclusive)" type="date" value={draft.from} onChange={(event) => setDraft({ ...draft, from: event.target.value })} />
             <Input label="Published through (KST, inclusive)" type="date" value={draft.to} onChange={(event) => setDraft({ ...draft, to: event.target.value })} />
           </div>}
