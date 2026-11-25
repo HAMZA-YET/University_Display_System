@@ -78,3 +78,29 @@ test('parallel recovery requests share one recipient cooldown without revealing 
   expect(send).toHaveBeenCalledTimes(1);
   expect(await ActionToken.countDocuments({ purpose: 'recovery' })).toBe(1);
 });
+
+test('activation email links to the separate invitation page without putting its code in the URL', async () => {
+  const send = jest.spyOn(globalThis, 'fetch').mockResolvedValue({ ok: true, json: async () => ({ id: 'synthetic-message-id' }) });
+  await delivery.deliver({ email: 'reader@example.edu', purpose: 'activation', token: 'a'.repeat(64) });
+  const payload = JSON.parse(send.mock.calls[0][1].body);
+  expect(payload.text).toContain('https://university.example/account-activation');
+  expect(payload.text).not.toContain('/account-recovery');
+  expect(payload.text).not.toContain('?token=');
+});
+test.each(['timeout', 'malformed-response'])('provider %s fails closed without exposing secrets', async kind => {
+  const send = jest.spyOn(globalThis, 'fetch');
+  if (kind === 'timeout') send.mockRejectedValue(new Error('private network details'));
+  else send.mockResolvedValue({ ok: true, json: async () => ({ message: 'private provider details' }) });
+  await expect(delivery.deliver({ email: 'reader@example.edu', purpose: 'recovery', token: 'a'.repeat(64) })).rejects.toMatchObject({ code: 'DELIVERY_UNAVAILABLE' });
+});
+test.each(['', 'a'.repeat(63), 'g'.repeat(64), ' ' + 'a'.repeat(64)])('MFA rejects absent or malformed encryption configuration %#', value => {
+  process.env.MFA_ENCRYPTION_KEY = value;
+  expect(() => require('../src/modules/security/crypto').encrypt('synthetic-factor')).toThrow('MFA encryption is not configured.');
+});
+test('a stable 32-byte MFA key decrypts existing factors; another key cannot', () => {
+  const { encrypt, decrypt } = require('../src/modules/security/crypto');
+  process.env.MFA_ENCRYPTION_KEY = require('crypto').randomBytes(32).toString('hex');
+  const encrypted = encrypt('synthetic-factor'); expect(decrypt(encrypted)).toBe('synthetic-factor');
+  process.env.MFA_ENCRYPTION_KEY = require('crypto').randomBytes(32).toString('hex');
+  expect(() => decrypt(encrypted)).toThrow();
+});

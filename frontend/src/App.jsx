@@ -78,7 +78,8 @@ export default function App() {
             <Route path="/events" element={<Events />} />
             <Route path="/professors" element={<Professors />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/account-recovery" element={<AccountRecovery />} />
+            <Route path="/account-recovery" element={<AccountRecovery key="recovery" />} />
+            <Route path="/account-activation" element={<AccountRecovery key="activation" activation />} />
             <Route element={<ProtectedRoute roles={['ADMIN', 'AUTHOR', 'REVIEWER', 'READER']} />}><Route path="/account-security" element={<AccountSecurity />} /></Route>
             <Route path="/register" element={<Register />} />
             <Route path="/setup" element={<Setup token={setupToken} onTokenChange={setSetupToken} />} />
