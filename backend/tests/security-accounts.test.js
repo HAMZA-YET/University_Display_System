@@ -265,3 +265,14 @@ test('new security rate limit keeps the standard API error envelope', async () =
   const response = await request(ctx.app).post('/api/security/recovery/request').send({});
   expect(response.status).toBe(429); expect(response.body.error.code).toBe('RATE_LIMITED');
 });
+
+test('password confirmation mismatch does not consume a valid recovery code', async () => {
+  const user = await createUser('READER'); const token = await service.issue(user, 'recovery', 30);
+  const mismatched = await request(ctx.app).post('/api/security/recovery/complete').send({ token, password: 'NewPassword123', confirmPassword: 'DifferentPassword123' });
+  expect(mismatched.status).toBe(400);
+  expect(await ActionToken.exists({ digest: digest(token) })).toBeTruthy();
+  const reset = await request(ctx.app).post('/api/security/recovery/complete').send({ token, password: 'NewPassword123', confirmPassword: 'NewPassword123' });
+  expect(reset.status).toBe(200);
+  const signedIn = await request(ctx.app).post('/api/auth/login').send({ email: user.email, password: 'NewPassword123' });
+  expect(signedIn.status).toBe(200);
+});

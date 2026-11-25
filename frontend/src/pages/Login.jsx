@@ -83,7 +83,7 @@ export default function Login() {
           Log in
         </Button>
         <p className="small">
-          <Link to="/account-recovery">Recover or activate an account</Link><br />
+          <Link to="/account-recovery">Forgot Password?</Link><br />
           No account? <Link to="/register" state={location.state?.from === '/setup' ? { from: '/setup' } : null}>Register as a reader</Link>
         </p>
       </form>

@@ -19,7 +19,8 @@ router.use(require('./origin'));
 router.use((req, res, next) => { res.setHeader('Cache-Control', 'no-store'); next(); });
 router.use(rateLimit({ windowMs: 15 * 60000, limit: 30, standardHeaders: 'draft-7', legacyHeaders: false, handler: (req, res, next) => next(new AppError(429, 'RATE_LIMITED', 'Too many attempts. Try again later.')) }));
 const codeBody = z.object({ code: z.string().min(6).max(64) }).strict();
-const tokenBody = z.object({ token: z.string().regex(/^[a-f0-9]{64}$/), password }).strict();
+const tokenBody = z.object({ token: z.string().regex(/^[a-f0-9]{64}$/), password, confirmPassword: z.string().max(128).optional() }).strict()
+  .refine(body => body.confirmPassword === undefined || body.confirmPassword === body.password, { message: 'Passwords do not match.', path: ['confirmPassword'] });
 const event = (req, action, user = req.user) => audit.recordSafe({ ...audit.contextFromRequest(req), user },
   { action, entityType: 'USER', entityId: user ? user._id : null });
 router.get('/capabilities', asyncHandler(async (req, res) => {

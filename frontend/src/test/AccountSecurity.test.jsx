@@ -102,8 +102,63 @@ describe('integrated account security screens', () => {
     securityRequest.mockResolvedValue({ accountMessagesAvailable: false, accountCompletionAvailable: true, deliveryChannel: 'disabled' });
     render(<MemoryRouter><AccountRecovery /></MemoryRouter>);
     expect(await screen.findByText(/Recovery messages are unavailable/)).toBeInTheDocument();
-    expect(screen.queryByRole('button', { name: 'Request recovery' })).not.toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Complete' })).toBeInTheDocument();
-    expect(screen.getByLabelText(/^Private message code/)).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: 'Request verification code' })).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Reset password' })).toBeInTheDocument();
+    expect(screen.getByLabelText(/^Verification code/)).toBeInTheDocument();
+  });
+});
+
+describe('Forgot Password', () => {
+  function recovery(activation = false) {
+    securityRequest.mockImplementation(path => Promise.resolve(path === 'capabilities'
+      ? { accountMessagesAvailable: true, accountCompletionAvailable: true } : { accepted: true, completed: true }));
+    render(<MemoryRouter><AccountRecovery activation={activation} /></MemoryRouter>);
+  }
+  async function completeForm(confirm = 'NewPassword123') {
+    fireEvent.change(await screen.findByLabelText(/^Verification code/), { target: { value: 'a'.repeat(64) } });
+    fireEvent.change(screen.getByLabelText(/^New password/), { target: { value: 'NewPassword123' } });
+    fireEvent.change(screen.getByLabelText(/^Confirm new password/), { target: { value: confirm } });
+  }
+  test('login offers Forgot Password without an activation menu', () => {
+    loginPage();
+    expect(screen.getByRole('link', { name: 'Forgot Password?' })).toHaveAttribute('href', '/account-recovery');
+    expect(screen.queryByText('Recover or activate an account')).not.toBeInTheDocument();
+  });
+  test('email, code and confirmed password complete the recovery journey', async () => {
+    recovery(); const events = userEvent.setup();
+    const email = await screen.findByLabelText(/^Registered email/);
+    await events.type(email, 'reader@example.edu');
+    await events.click(screen.getByRole('button', { name: 'Request verification code' }));
+    expect(securityRequest).toHaveBeenCalledWith('recovery/request', { email: 'reader@example.edu' });
+    await completeForm();
+    await events.click(screen.getByRole('button', { name: 'Reset password' }));
+    expect(await screen.findByText(/Password reset successfully/)).toBeInTheDocument();
+    expect(securityRequest).toHaveBeenCalledWith('recovery/complete', { token: 'a'.repeat(64), password: 'NewPassword123', confirmPassword: 'NewPassword123' });
+    expect(screen.queryByLabelText(/^Verification code/)).not.toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Return to login' })).toHaveAttribute('href', '/login');
+    expect(screen.queryByRole('combobox')).not.toBeInTheDocument();
+  });
+  test('mismatched confirmation never submits a reset', async () => {
+    recovery(); const events = userEvent.setup();
+    await events.click(await screen.findByRole('button', { name: 'I already have a code' }));
+    await completeForm('DifferentPassword123');
+    await events.click(screen.getByRole('button', { name: 'Reset password' }));
+    expect(await screen.findByText(/Passwords do not match/)).toBeInTheDocument();
+    expect(securityRequest).toHaveBeenCalledTimes(1);
+  });
+  test('activation is separate and only submits an invitation code', async () => {
+    recovery(true); const events = userEvent.setup(); await completeForm();
+    expect(screen.queryByLabelText(/^Registered email/)).not.toBeInTheDocument();
+    await events.click(screen.getByRole('button', { name: 'Activate account' }));
+    expect(await screen.findByText('Account activated. You can now log in.')).toBeInTheDocument();
+    expect(securityRequest).toHaveBeenCalledWith('activation/complete', expect.objectContaining({ token: 'a'.repeat(64) }));
+  });
+  test('invalid code leaves the reset form available for correction', async () => {
+    recovery(); const events = userEvent.setup();
+    await events.click(await screen.findByRole('button', { name: 'I already have a code' }));
+    securityRequest.mockRejectedValueOnce(new Error('The code is invalid or expired.'));
+    await completeForm(); await events.click(screen.getByRole('button', { name: 'Reset password' }));
+    expect(await screen.findByText('The code is invalid or expired.')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Reset password' })).toBeEnabled();
   });
 });

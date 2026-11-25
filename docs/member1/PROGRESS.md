@@ -37,3 +37,26 @@ A01–A08 are not fully accepted: see INTEGRATION checklist. C security review, 
 Final review added explicit foreign-origin checks on new mutation routes, standard rate-limit errors and JWT-expiry tests. The final full suite passed 219 tests after these additions.
 
 Final staged-index inspection: 41 source/config/documentation/test files, zero secret/path findings, seven ignore probes passed, git diff --cached --check passed. No .env, private file, local database, credential export or backup key is staged. All final tests/build/lint passed before the authorized commit and PR preparation.
+
+## 2026-11-25 — Focused Forgot Password follow-up
+
+Started with a clean working tree, fetched latest main and created feature/member1-security-fixes from a6aee17d4314741048017a203c90b42a788f6a76. Original UIDS-Member1 was not modified. No commit, push, merge or deployment performed.
+
+Changes: frontend Login, AccountRecovery and App now provide a dedicated email → verification code → new password/confirmation → login flow, with activation separately at /account-activation. Existing shared design components are reused. Backend security routes accept optional matching password confirmation without breaking older callers; delivery messages use the correct separate activation link. Existing token format, hashing, expiry, single consumption, session revocation, MFA, suspension and rate limits are retained. No schema or database migration is required.
+
+Latest main already implements Resend production delivery, recipient cooldown and capability checks, so that adapter was reused. The reported delivery error corresponds to unavailable/malformed delivery configuration (local delivery is not allowed in production); the MFA error corresponds to a missing or invalid 64-hex-character encryption key. Live deployment settings were not inspected: these are source-confirmed conditions, not a claim of identifying a particular missing live value. Existing production MFA keys must be preserved.
+
+Changed files: backend/src/modules/security/{delivery,routes}.js; backend/tests/security-{accounts,production}.test.js; frontend/src/App.jsx; frontend/src/pages/{Login,AccountRecovery}.jsx; frontend/src/test/AccountSecurity.test.jsx; docs/member1/{INTEGRATION,FORGOT_PASSWORD_DEPLOYMENT,PROGRESS}.md.
+
+Actual verification:
+- Focused backend Jest: 40 passed, 0 failed; focused frontend AccountSecurity: 13 passed, 0 failed (overlap with full suite).
+- Full npm test: 397 passed, 0 failed, 3 skipped. Breakdown: backend Jest 276 passed/1 skipped across 25 suites; operator CLI 6 passed; security CLI 2 passed/2 skipped; lost-found retention CLI 4 passed; frontend 96 passed across 22 files; Member 4 runner 13 passed. Nested Member 4 assertion summaries are not counted a second time. Skips are Windows-specific permission/symlink checks.
+- Test MongoDB uses disposable data and the existing cached MongoDB 7.0.24 executable through MONGOMS_SYSTEM_BINARY. A MongoDB child-process shutdown warning required SIGKILL after the suite; tests nevertheless completed successfully. No production database used.
+- npm run lint passed. Production build result recorded below.
+- git diff --check passed; limited pattern/path scan of the 10 changed/new files before this progress entry found no private-key blocks, common access-token formats, credential-bearing MongoDB URIs or sensitive generated paths. This is not a comprehensive secret-scanner guarantee.
+
+New coverage: complete recovery UI journey, login wording, invalid code retry, client/server password confirmation (mismatch does not consume token), separate activation flow/link, provider failure sanitization, malformed/missing MFA encryption keys and failure to decrypt with a different key. Existing expiry/replay, suspension, session, authorization and teammate suites passed.
+
+Remaining acceptance: Rahul must configure the backend Vercel environment and verified Resend sender, then approve a future deployment and test actual controlled-inbox delivery and existing MFA. Provider tests mock HTTP; no real email or manual browser test was performed. Exact variables and safe key handling are in FORGOT_PASSWORD_DEPLOYMENT.md. Historical limitations above describe the earlier integration; current main already supplies production email support. No bypass or new authentication contract was introduced.
+
+Final check: npm run build passed (Vite production output, 635 modules); full verification command exited 0. No application build failures remain.
