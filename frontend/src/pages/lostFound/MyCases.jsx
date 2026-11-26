@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom';
 import PageHeader from '../../components/layout/PageHeader';
-import Table from '../../components/ui/Table';
 import Button from '../../components/ui/Button';
 import Pagination from '../../components/ui/Pagination';
 import { DataState } from '../../components/ui/States';
@@ -113,7 +112,7 @@ function MyClaims({ page, setParams }) {
     >
       {(d) => (
         <>
-          <Table caption="My claims" columns={columns} rows={d.data} />
+          <BulkDeletableTable caption="My claims" columns={columns} rows={d.data} deleteOne={deleteMyClaim} onDone={result.reload} itemNoun="claim" />
           <Pagination meta={d.meta} onPage={(p) => setParams({ page: p })} />
         </>
       )}
